@@ -1,0 +1,18 @@
+local ITEM = Clockwork.item:New("weapon_base");
+	ITEM.name = "M249 SAW";
+	ITEM.cost = 15000;
+	ITEM.model = "models/weapons/w_mach_m249para.mdl";
+	ITEM.weight = 7.5;
+	ITEM.uniqueID = "rcs_m249";
+	ITEM.business = false;
+	ITEM.batch = 1;
+	ITEM.access = "V";
+	ITEM.description = "A huge light machine gun, chambered in 5.56x45mm, it utilizes a 100 round belt in a box magazine, created in the United States to lay down heavy suppressive fire..";
+	ITEM.isAttachment = true;
+	ITEM.hasFlashlight = false;
+	ITEM.loweredOrigin = Vector(3, 0, -4);
+	ITEM.loweredAngles = Angle(0, 45, 0);
+	ITEM.attachmentBone = "ValveBiped.Bip01_Spine";
+	ITEM.attachmentOffsetAngles = Angle(0, 21.79, 0);
+	ITEM.attachmentOffsetVector = Vector(-6.36, 4.24, 9.9);
+ITEM:Register();

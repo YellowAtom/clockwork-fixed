@@ -1,0 +1,18 @@
+local ITEM = Clockwork.item:New("weapon_base");
+    ITEM.name = "Famas";
+    ITEM.cost = 1500;
+    ITEM.model = "models/weapons/w_rif_famas.mdl";
+    ITEM.weight = 3.8;
+    ITEM.access = "V";
+    ITEM.uniqueID = "rcs_famas";
+    ITEM.business = false;
+    ITEM.batch = 1;
+    ITEM.description = "The Famas, designed and created in 1967, it's a French bullpup rifle that's chambered in 7.62x38mm, an interesting rifle used by few counter terrorism agencies before the war.";
+    ITEM.isAttachment = true;
+    ITEM.hasFlashlight = false;
+    ITEM.loweredOrigin = Vector(3, 0, -4);
+    ITEM.loweredAngles = Angle(0, 45, 0);
+    ITEM.attachmentBone = "ValveBiped.Bip01_Spine";
+    ITEM.attachmentOffsetAngles = Angle(0, 18, 0);
+    ITEM.attachmentOffsetVector = Vector(-5.73, 4.38, 11.79);
+ITEM:Register();

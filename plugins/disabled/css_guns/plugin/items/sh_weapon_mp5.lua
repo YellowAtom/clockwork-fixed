@@ -1,0 +1,18 @@
+local ITEM = Clockwork.item:New("weapon_base");
+    ITEM.name = "H&K MP5";
+    ITEM.cost = 1200;
+    ITEM.model = "models/weapons/w_smg_mp5.mdl";
+    ITEM.weight = 3;
+    ITEM.access = "V";
+    ITEM.uniqueID = "rcs_mp5";
+    ITEM.business = true;
+    ITEM.batch = 1;
+    ITEM.description = "The Heckler & Koch MP5 was created in West Germany, designed in the 1960s, it uses a 30 round magazine and is chambered in 9x19mm Parabellum, used as a very competent and reliable Submachine Gun.";
+    ITEM.isAttachment = true;
+    ITEM.hasFlashlight = false;
+    ITEM.loweredOrigin = Vector(3, 0, -4);
+    ITEM.loweredAngles = Angle(0, 45, 0);
+    ITEM.attachmentBone = "ValveBiped.Bip01_Spine";
+    ITEM.attachmentOffsetAngles = Angle(0, 18, 0);
+    ITEM.attachmentOffsetVector = Vector(-5.73, 4.38, 11.79);
+ITEM:Register();

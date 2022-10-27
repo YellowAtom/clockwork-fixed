@@ -1,0 +1,2 @@
+Clockwork.config:AddToSystem("Permanent door owners", "perma_door_owners", "Whether or not characters will keep their doors forever, unpurchasable by others.")
+Clockwork.config:AddToSystem("Keep doors on death", "keep_doors_on_death", "Whether or not characters will keep their doors when they die.")

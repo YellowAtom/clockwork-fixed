@@ -1,0 +1,18 @@
+local ITEM = Clockwork.item:New("weapon_base");
+    ITEM.name = "AK-47";
+    ITEM.cost = 900;
+    ITEM.model = "models/weapons/w_rif_ak47.mdl";
+    ITEM.weight = 3.1;
+    ITEM.access = "V";
+    ITEM.uniqueID = "rcs_ak47";
+    ITEM.business = false;
+    ITEM.batch = 1;
+    ITEM.description = "The classic AK-47 Kalashnikov, designed and created in 1945, used by the Soviets and many militaries due to it's open and spacious build, and reliability.";
+    ITEM.isAttachment = true;
+    ITEM.hasFlashlight = false;
+    ITEM.loweredOrigin = Vector(3, 0, -4);
+    ITEM.loweredAngles = Angle(0, 45, 0);
+    ITEM.attachmentBone = "ValveBiped.Bip01_Spine";
+    ITEM.attachmentOffsetAngles = Angle(0, 18, 0);
+    ITEM.attachmentOffsetVector = Vector(-5.73, 4.38, 11.79);
+ITEM:Register();
