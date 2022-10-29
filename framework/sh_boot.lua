@@ -29,7 +29,7 @@ Clockwork.Name = "Clockwork";
 Clockwork.KernelVersion = "0.101-UG";
 Clockwork.DeveloperVersion = true;
 Clockwork.Website = "https://undeterminedgaming.com";
-Clockwork.Author = "Yell0wAt0m";
+Clockwork.Author = "Undetermined Gaming";
 Clockwork.Email = "";
 
 function Clockwork:GetGameDescription()
