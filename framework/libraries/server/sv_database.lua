@@ -492,7 +492,7 @@ end;
 
 function Clockwork.database:Connect(host, username, password, database, port)
 	if (host == "example.com") then
-		ErrorNoHalt("[Clockwork] No MySQL details found. Connecting to database using SQLite...\n");
+		MsgC(Color(50, 255, 255), "[Clockwork] No MySQL details found. Connecting to database using SQLite...\n");
 
 		self.liteSql = true;
 		self:OnConnected();
@@ -506,7 +506,7 @@ function Clockwork.database:Connect(host, username, password, database, port)
 	if (system.IsLinux() and mysqloo) then
 		self.MDB = mysqloo.connect(host, username, password, database, port);
 
-		ErrorNoHalt("[Clockwork] Connecting to database using MySQLOO...\n");
+		MsgC(Color(50, 255, 255), "[Clockwork] Connecting to database using MySQLOO...\n");
 
 		function self.MDB.onConnected(db)
 			Clockwork.database:OnConnected();
@@ -531,10 +531,11 @@ function Clockwork.database:Connect(host, username, password, database, port)
 		port
 	);
 
-	ErrorNoHalt("[Clockwork] Connecting to database using tmysql4...\n");
+	MsgC(Color(50, 255, 255), "[Clockwork] Connecting to database using tmysql4...\n");
 
 	if (databaseConnection) then
 		self:OnConnected();
+		MsgC(Color(50, 255, 50), "[Clockwork] Database connection established!\n")
 	else
 		self:OnConnectionFailed(errText);
 	end;
