@@ -9,19 +9,19 @@ local stages = {
 };
 
 local function CreateBeardTimer(player)
-	local delay = Clockwork.config:Get("beard_grow_time"):Get() - math.max( (player:GetCharacterData("BeardTimeGrowing")), 0 );
+	local delay = Clockwork.config:Get("beard_grow_time"):Get() - math.max(player:GetCharacterData("BeardTimeGrowing") or 0, 0 );
 
 	player.onLoadTime = CurTime();
 
-	timer.Create("Beard_"..player:SteamID64(), delay, 1, function()
-		if (!IsValid(player)) then return; end;
+	timer.Create("Beard_" .. player:SteamID64(), delay, 1, function()
+		if (!IsValid(player)) then return end;
 
 		local beardStage = player:GetCharacterData("BeardStage");
 
 		player.onLoadTime = 0;
 		player:SetCharacterData("BeardTimeGrowing", 0);
-		player:SetCharacterData("BeardStage", beardStage+1);
-		Clockwork.player:Notify(player, "My beard has grown a "..(beardStage == BEARD_NONE and "bit" or "lot").." lately..");
+		player:SetCharacterData("BeardStage", beardStage + 1);
+		Clockwork.player:Notify(player, "My beard has grown a " .. (beardStage == BEARD_NONE and "bit" or "lot") .. " lately..");
 
 		if (player:GetCharacterData("BeardStage") <= 1) then
 			CreateBeardTimer(player);
@@ -31,10 +31,10 @@ local function CreateBeardTimer(player)
 			local model = player:GetModel();
 			local bodygroups = player:GetCharacterData("bodygroups") or {};
 			bodygroups[model] = bodygroups[model] or {};
-				   
-			bodygroups[model][beardGroupID] = stages[beardStage+1];
+
+			bodygroups[model][beardGroupID] = stages[beardStage + 1];
 			player:SetCharacterData("bodygroups", bodygroups);
-			player:SetBodygroup(beardGroupID, stages[beardStage+1]);
+			player:SetBodygroup(beardGroupID, stages[beardStage + 1]);
 		end;
 	end);
 end;
@@ -56,8 +56,8 @@ end;
 
 function PLUGIN:PlayerCharacterUnloaded(player)
 	if (player:CanGrowBeard()) then
-		if (timer.Exists( "Beard_"..player:SteamID64() )) then
-			timer.Remove("Beard_"..player:SteamID64());
+		if (timer.Exists( "Beard_" .. player:SteamID64() )) then
+			timer.Remove("Beard_" .. player:SteamID64());
 		end;
 
 		if (player:GetCharacterData("BeardStage") <= 1) then
@@ -90,7 +90,7 @@ Clockwork.datastream:Hook("ShaveBeard", function(player, data)
 					return;
 				end;
 
-				if (target:GetShootPos():DistToSqr(player:GetShootPos()) >= 192*192) then
+				if (target:GetShootPos():DistToSqr(player:GetShootPos()) >= 192 * 192) then
 					Clockwork.player:Notify(player, "Target is too far away!");
 					return;
 				end;
@@ -109,24 +109,24 @@ Clockwork.datastream:Hook("ShaveBeard", function(player, data)
 					target:SetCharacterData("BeardTimeGrowing", 0);
 					target:SetCharacterData("bodygroups", bodygroups);
 
-					if (timer.Exists("Beard_"..target:SteamID64())) then
-						timer.Remove("Beard_"..target:SteamID64());
+					if (timer.Exists("Beard_" .. target:SteamID64())) then
+						timer.Remove("Beard_" .. target:SteamID64());
 					end;
 
 					if (target:GetCharacterData("BeardStage") <= 1) then
 						CreateBeardTimer(target);
 					end;
 
-					Clockwork.player:Notify(target, "Your beard has been "..(data.style and "styled." or "shaved off."));
+					Clockwork.player:Notify(target, "Your beard has been " .. (data.style and "styled." or "shaved off."));
 
 					if (target != player) then
-						Clockwork.player:Notify(player, "You have "..(data.style and "styled " or "shaved off ")..target:Name().."'s beard.");
+						Clockwork.player:Notify(player, "You have " .. (data.style and "styled " or "shaved off ") .. target:Name() .. "'s beard.");
 					end;
 				else
-					Clockwork.player:Notify(player, target:Name().." does not have enough facial hair!");
+					Clockwork.player:Notify(player, target:Name() .. " does not have enough facial hair!");
 				end;
 			else
-				Clockwork.player:Notify(player, target:Name().." has no facial hair!");
+				Clockwork.player:Notify(player, target:Name() .. " has no facial hair!");
 			end;
 		else
 			Clockwork.player:Notify(player, "You do not own a razor!");
