@@ -334,16 +334,18 @@ end;
 function Clockwork.plugin:CheckMismatches()
 	if (Schema) then
 		local funcIdxMismatches = {};
-		
+
 		for k, v in pairs(Schema) do
 			if (type(v) == "function" and Schema.__funcIdx[k]
 			and tostring(v) ~= Schema.__funcIdx[k]) then
 				table.insert(funcIdxMismatches, k);
 			end;
 		end;
-		
-		for k, v in ipairs(funcIdxMismatches) do
-			MsgC(Color(255, 255, 50), "[Clockwork:Plugin] The Schema hook '"..v.."' was overriden by a plugin!\n");
+
+		if SERVER then
+			for k, v in ipairs(funcIdxMismatches) do
+				MsgC(Color(255, 255, 50), "[Clockwork:Plugin] The Schema hook '" .. v .. "' was overriden by a plugin!\n");
+			end;
 		end;
 	end;
 end;
@@ -504,8 +506,6 @@ function Clockwork.plugin:Include(directory, isSchema)
 					table.Merge(PLUGIN, iniTable);
 
 					CW_PLUGIN_SHARED.iniTables[pathCRC] = iniTable;
-				else
-					MsgC(Color(255, 100, 0, 255), "\n[Clockwork:Plugin] The " .. PLUGIN_FOLDERNAME .. " plugin has no plugin.ini!\n");
 				end;
 
 				--[[ if (iniTable["compatibility"]) then
@@ -521,6 +521,8 @@ function Clockwork.plugin:Include(directory, isSchema)
 				else
 					MsgC(Color(255,165,0),"[Clockwork:Plugin] The " .. PLUGIN_FOLDERNAME .. " plugin has no compatibility value set!\n");
 				end ]]
+			else
+				MsgC(Color(255, 255, 50, 255), "[Clockwork:Plugin] The " .. PLUGIN_FOLDERNAME .. " plugin has no plugin.ini!\n");
 			end;
 		else
 			local iniTable = CW_PLUGIN_SHARED.iniTables[pathCRC];
@@ -532,7 +534,7 @@ function Clockwork.plugin:Include(directory, isSchema)
 					unloaded[PLUGIN_FOLDERNAME] = true;
 				end;
 			else
-				MsgC(Color(255, 100, 0, 255), "\n[Clockwork:Plugin] The " .. PLUGIN_FOLDERNAME .. " plugin has no plugin.ini!\n");
+				MsgC(Color(255, 100, 0, 255), "[Clockwork:Plugin] The " .. PLUGIN_FOLDERNAME .. " plugin has no plugin.ini!\n");
 			end;
 		end;
 
