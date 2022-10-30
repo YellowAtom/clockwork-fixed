@@ -49,7 +49,7 @@ end;
 function PLUGIN:PlayerCharacterLoaded(player)
 	player.onLoadTime = nil;
 
-	if (player:CanGrowBeard() and player:GetCharacterData("BeardStage") <= 1) then
+	if (player:CanGrowBeard() and (player:GetCharacterData("BeardStage") or 0) <= 1) then
 		CreateBeardTimer(player);
 	end;
 end;
@@ -60,14 +60,14 @@ function PLUGIN:PlayerCharacterUnloaded(player)
 			timer.Remove("Beard_" .. player:SteamID64());
 		end;
 
-		if (player:GetCharacterData("BeardStage") <= 1) then
+		if ((player:GetCharacterData("BeardStage") or 0) <= 1) then
 			player:SetCharacterData("BeardTimeGrowing", CurTime() - player.onLoadTime);
 		end;
 	end;
 end;
 
 function PLUGIN:PlayerSaveData(player)
-	if (player:CanGrowBeard() and player:GetCharacterData("BeardStage") <= 1) then
+	if (player:CanGrowBeard() and (player:GetCharacterData("BeardStage") or 0) <= 1) then
 		player:SetCharacterData("BeardTimeGrowing", CurTime() - player.onLoadTime);
 	end;
 end;
