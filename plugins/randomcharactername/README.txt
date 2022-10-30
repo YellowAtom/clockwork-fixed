@@ -1,1 +1,0 @@
-Put the data folder in garrysmod/garrysmod or this won't work.
