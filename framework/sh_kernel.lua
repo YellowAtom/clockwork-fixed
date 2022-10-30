@@ -2938,8 +2938,6 @@ else
 			barInfo = newBarInfo;
 		end;
 
-		local alpha = mathClamp(mathAbs(mathSin(UnPredictedCurTime()) * 50), 0, 50);
-
 		if (!Clockwork.plugin:Call("PreDrawBar", barInfo)) then
 			if (barInfo.drawBackground) then
 				SMALL_BAR_BG:Draw(barInfo.x, barInfo.y, barInfo.width, barInfo.height, barInfo.cornerSize, backgroundColor, 50);
@@ -2947,23 +2945,22 @@ else
 
 			if (barInfo.drawProgress) then
 				render.SetScissorRect(barInfo.x, barInfo.y, barInfo.x + barInfo.progressWidth, barInfo.y + barInfo.height, true);
-					SMALL_BAR_FG:Draw(barInfo.x + 2, barInfo.y + 2, barInfo.width - 4, barInfo.height - 4, 3, barInfo.color, 150);
+				SMALL_BAR_FG:Draw(barInfo.x + 2, barInfo.y + 2, barInfo.width - 4, barInfo.height - 4, 3, barInfo.color, 150);
 				render.SetScissorRect(barInfo.x, barInfo.y, barInfo.x + barInfo.progressWidth, barInfo.height, false);
 			end;
 
-			if barInfo.flash and (alpha > 0) then
-				draw.RoundedBox(0, barInfo.x + 2, barInfo.y + 2, barInfo.width - 4, barInfo.height - 4,
-				Color(colorWhite.r, colorWhite.g, colorWhite.b, alpha));
+			local alpha = mathClamp(mathSin(UnPredictedCurTime() * 50), 0, 50);
+
+			if barInfo.flash and alpha > 0 then
+				surface.SetDrawColor(colorWhite.r, colorWhite.g, colorWhite.b, alpha)
+				surface.DrawRect(barInfo.x + 2, barInfo.y + 2, barInfo.width - 4, barInfo.height - 4)
 			end;
 		end;
 
 		if (!Clockwork.plugin:Call("PostDrawBar", barInfo)) then
 			if (barInfo.text and barInfo.text ~= "") then
 				self:OverrideMainFont(Clockwork.option:GetFont("bar_text"));
-					self:DrawSimpleText(
-						barInfo.text, barInfo.x + (barInfo.width / 2), barInfo.y + (barInfo.height / 2),
-						Color(colorWhite.r, colorWhite.g, colorWhite.b, alpha), 1, 1
-					);
+				self:DrawSimpleText(barInfo.text, barInfo.x + (barInfo.width / 2), barInfo.y + (barInfo.height / 2), Color(colorWhite.r, colorWhite.g, colorWhite.b, 255), 1, 1);
 				self:OverrideMainFont(false);
 			end;
 		end;
