@@ -466,7 +466,8 @@ function Clockwork.plugin:Include(directory, isSchema)
 	PLUGIN_FOLDERNAME = folderName;
 
 	if (isSchema) then
-		PLUGIN = self:New(); Schema = PLUGIN;
+		PLUGIN = self:New();
+		Schema = PLUGIN;
 
 		if (SERVER) then
 			local schemaInfo = Clockwork.kernel:GetSchemaGamemodeInfo();
@@ -507,7 +508,7 @@ function Clockwork.plugin:Include(directory, isSchema)
 					MsgC(Color(255, 100, 0, 255), "\n[Clockwork:Plugin] The " .. PLUGIN_FOLDERNAME .. " plugin has no plugin.ini!\n");
 				end;
 
-				if (iniTable["compatibility"]) then
+				--[[ if (iniTable["compatibility"]) then
 					local compatibility = iniTable["compatibility"];
 					local versionBuild = Clockwork.kernel:GetVersionBuild();
 					local version = Clockwork.kernel:GetVersion();
@@ -515,11 +516,11 @@ function Clockwork.plugin:Include(directory, isSchema)
 					local name = iniTable["name"] or PLUGIN_FOLDERNAME;
 
 					if (self:CompareVersion(compatibility, name, version, build)) then
-						--MsgC(Color(255, 165, 0), "[Clockwork:Plugin] The " .. name .. " plugin [" .. compatibility .. "] may not be compatible with Clockwork " .. versionBuild .. "!\nYou might need to update your framework!\n");
+						MsgC(Color(255, 165, 0), "[Clockwork:Plugin] The " .. name .. " plugin [" .. compatibility .. "] may not be compatible with Clockwork " .. versionBuild .. "!\nYou might need to update your framework!\n");
 					end;
 				else
-					--MsgC(Color(255,165,0),"[Clockwork:Plugin] The " .. PLUGIN_FOLDERNAME .. " plugin has no compatibility value set!\n");
-				end
+					MsgC(Color(255,165,0),"[Clockwork:Plugin] The " .. PLUGIN_FOLDERNAME .. " plugin has no compatibility value set!\n");
+				end ]]
 			end;
 		else
 			local iniTable = CW_PLUGIN_SHARED.iniTables[pathCRC];
