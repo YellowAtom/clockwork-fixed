@@ -35,6 +35,7 @@ AddCSLuaFile("sh_kernel.lua");
 AddCSLuaFile("sh_enum.lua");
 AddCSLuaFile("sh_boot.lua");
 AddCSLuaFile("Clockwork.lua");
+
 include("sh_enum.lua");
 include("sh_kernel.lua");
 
@@ -71,7 +72,7 @@ Clockwork.kernel:IncludeSchema();
 Clockwork.plugin:Call("ClockworkSchemaLoaded");
 
 if (SERVER) then
-	MsgC(Color(0, 255, 100, 255), "[Clockwork] Successfully loaded "..Schema:GetName().." version "..Clockwork.kernel:GetSchemaGamemodeVersion().." by "..Schema:GetAuthor()..".\n");
+	MsgC(Color(0, 255, 100, 255), "[Clockwork] Successfully loaded " .. Schema:GetName() .. " version " .. Clockwork.kernel:GetSchemaGamemodeVersion() .. " by " .. Schema:GetAuthor() .. ".\n");
 end;
 
 Clockwork.kernel:IncludeDirectory("commands/", true);
