@@ -16,10 +16,10 @@ if CLIENT then
 end
 
 SWEP.HoldType = "pistol"
-SWEP.Category = "RealCS"
+SWEP.Category = "HL2RP - CS"
 SWEP.Base = "rcs_base"
-SWEP.Spawnable = false
-SWEP.AdminSpawnable = false
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = true
 SWEP.ViewModel = "models/weapons/v_pist_glock18.mdl"
 SWEP.WorldModel = "models/weapons/w_pist_glock18.mdl"
 SWEP.Weight = 5

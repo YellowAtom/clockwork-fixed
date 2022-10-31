@@ -23,11 +23,11 @@ if CLIENT then
 end
 
 SWEP.HoldType = "ar2"
-SWEP.Category = "RealCS"
+SWEP.Category = "HL2RP - CS"
 SWEP.Base = "rcs_base_silencer_rifle"
 SWEP.Penetrating = true
-SWEP.Spawnable = false
-SWEP.AdminSpawnable = false
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = true
 SWEP.ViewModel = "models/weapons/v_rif_m4a1.mdl"
 SWEP.WorldModel = "models/weapons/w_rif_m4a1.mdl"
 SWEP.Weight = 5

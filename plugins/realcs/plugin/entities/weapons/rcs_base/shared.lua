@@ -111,7 +111,7 @@ end
 
 SWEP.StrobePace = 1.1 --frequency of that going in and out for the selection icon, lower for faster, higher for slower
 SWEP.HoldType = "ar2"
-SWEP.Category = "RealCS"
+SWEP.Category = "HL2RP - CS"
 SWEP.Spawnable = false
 SWEP.AdminSpawnable = true
 SWEP.ViewModel = "models/weapons/v_snip_awp.mdl"

@@ -21,11 +21,11 @@ if CLIENT then
 end
 
 SWEP.HoldType = "ar2"
-SWEP.Category = "RealCS"
+SWEP.Category = "HL2RP - CS"
 SWEP.Base = "rcs_base_bsnip"
 SWEP.Penetrating = true
-SWEP.Spawnable = false
-SWEP.AdminSpawnable = false
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = true
 SWEP.ViewModel = "models/weapons/v_snip_scout.mdl"
 SWEP.WorldModel = "models/weapons/w_snip_scout.mdl"
 SWEP.Weight = 5

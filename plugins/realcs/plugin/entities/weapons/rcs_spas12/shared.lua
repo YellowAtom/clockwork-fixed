@@ -16,11 +16,11 @@ if CLIENT then
 end
 
 SWEP.HoldType = "ar2"
-SWEP.Category = "RealCS"
+SWEP.Category = "HL2RP - CS"
 SWEP.Base = "rcs_base_shotgun"
 SWEP.PlayReloadSounds = true
-SWEP.Spawnable = false
-SWEP.AdminSpawnable = false
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = true
 SWEP.DefaultVFOV = 60
 SWEP.ViewModelFOV = 60
 SWEP.IsShotgun = true

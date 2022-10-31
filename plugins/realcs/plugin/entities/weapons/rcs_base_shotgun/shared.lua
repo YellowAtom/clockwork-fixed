@@ -11,11 +11,11 @@ if CLIENT then
 	killicon.AddFont(SWEP.NameOfSWEP, "CSKillIcons", SWEP.IconLetter, Color(255, 80, 0, 255))
 end
 
-SWEP.Category = "RealCS"
+SWEP.Category = "HL2RP - CS"
 SWEP.Base = "rcs_base"
 SWEP.HoldType = "crossbow"
-SWEP.Spawnable = false
-SWEP.AdminSpawnable = false
+SWEP.Spawnable = true
+SWEP.AdminSpawnable = true
 SWEP.IsShotgun = true
 SWEP.ViewModel = "models/weapons/v_shot_m3super92.mdl"
 SWEP.WorldModel = "models/weapons/w_shot_m3super90.mdl"
