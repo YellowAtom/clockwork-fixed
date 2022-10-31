@@ -34,8 +34,6 @@ AddCSLuaFile("sh_kernel.lua")
 AddCSLuaFile("sh_enum.lua")
 AddCSLuaFile("sh_boot.lua")
 
-AddCSLuaFile("clockwork_shared.lua")
-
 include("sh_enum.lua")
 include("sh_kernel.lua")
 
@@ -127,4 +125,6 @@ Clockwork.plugin:IncludeEntities("Clockwork/framework")
 
 if SERVER then
 	Clockwork.file:Write("lua/clockwork_shared.lua", "CW_PLUGIN_SHARED_SERIAL = [[" .. Clockwork.kernel:Serialize(CW_PLUGIN_SHARED) .. "]]")
+
+	AddCSLuaFile("clockwork_shared.lua")
 end
