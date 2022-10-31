@@ -1,16 +1,15 @@
---[[
-	© CloudSixteen.com do not share, re-distribute or modify
-	without permission of its author (kurozael@gmail.com).
 
-	Clockwork was created by Conna Wiles (also known as kurozael.)
-	http://cloudsixteen.com/license/clockwork.html
---]]
+local Clockwork = Clockwork
 
-local Clockwork = Clockwork;
+Clockwork.SharedVars = Clockwork.kernel:NewLibrary("SharedVars")
 
-Clockwork.SharedVars = Clockwork.kernel:NewLibrary("SharedVars");
-Clockwork.SharedVars.player = Clockwork.SharedVars.player or {vars = {}};
-Clockwork.SharedVars.global = Clockwork.SharedVars.global or {vars = {}};
+Clockwork.SharedVars.player = Clockwork.SharedVars.player or {
+	vars = {}
+}
+
+Clockwork.SharedVars.global = Clockwork.SharedVars.global or {
+	vars = {}
+}
 
 --[[
 	@codebase Shared
@@ -18,12 +17,12 @@ Clockwork.SharedVars.global = Clockwork.SharedVars.global or {vars = {}};
 	@param {Table} The global shared variable object.
 --]]
 function Clockwork.SharedVars:Global(getVars)
-	if (!getVars) then
-		return self.global.vars;
+	if not getVars then
+		return self.global.vars
 	else
-		return self.global;
-	end;
-end;
+		return self.global
+	end
+end
 
 --[[
 	@codebase Shared
@@ -31,12 +30,12 @@ end;
 	@param {Table} The player shared variable object.
 --]]
 function Clockwork.SharedVars:Player(getVars)
-	if (!getVars) then
-		return self.player.vars;
+	if not getVars then
+		return self.player.vars
 	else
-		return self.player;
-	end;
-end;
+		return self.player
+	end
+end
 
 --[[
 	@codebase Shared
@@ -50,8 +49,8 @@ function Clockwork.SharedVars.player:Add(name, class, playerOnly)
 		playerOnly = playerOnly,
 		class = class,
 		name = name
-	};
-end;
+	}
+end
 
 --[[
 	@codebase Shared
@@ -60,8 +59,8 @@ end;
 	@param {Bool} Whether or not the shared variable is global.
 --]]
 function Clockwork.SharedVars.player:String(name, playerOnly)
-	self:Add(name, NWTYPE_STRING, playerOnly);
-end;
+	self:Add(name, NWTYPE_STRING, playerOnly)
+end
 
 --[[
 	@codebase Shared
@@ -70,8 +69,8 @@ end;
 	@param {Bool} Whether or not the shared variable is global.
 --]]
 function Clockwork.SharedVars.player:Entity(name, playerOnly)
-	self:Add(name, NWTYPE_ENTITY, playerOnly);
-end;
+	self:Add(name, NWTYPE_ENTITY, playerOnly)
+end
 
 --[[
 	@codebase Shared
@@ -80,8 +79,8 @@ end;
 	@param {Bool} Whether or not the shared variable is global.
 --]]
 function Clockwork.SharedVars.player:Vector(name, playerOnly)
-	self:Add(name, NWTYPE_VECTOR, playerOnly);
-end;
+	self:Add(name, NWTYPE_VECTOR, playerOnly)
+end
 
 --[[
 	@codebase Shared
@@ -90,8 +89,8 @@ end;
 	@param {Bool} Whether or not the shared variable is global.
 --]]
 function Clockwork.SharedVars.player:Number(name, playerOnly)
-	self:Add(name, NWTYPE_NUMBER, playerOnly);
-end;
+	self:Add(name, NWTYPE_NUMBER, playerOnly)
+end
 
 --[[
 	@codebase Shared
@@ -100,8 +99,8 @@ end;
 	@param {Bool} Whether or not the shared variable is global.
 --]]
 function Clockwork.SharedVars.player:Angle(name, playerOnly)
-	self:Add(name, NWTYPE_ANGLE, playerOnly);
-end;
+	self:Add(name, NWTYPE_ANGLE, playerOnly)
+end
 
 --[[
 	@codebase Shared
@@ -110,8 +109,8 @@ end;
 	@param {Bool} Whether or not the shared variable is global.
 --]]
 function Clockwork.SharedVars.player:Float(name, playerOnly)
-	self:Add(name, NWTYPE_FLOAT, playerOnly);
-end;
+	self:Add(name, NWTYPE_FLOAT, playerOnly)
+end
 
 --[[
 	@codebase Shared
@@ -120,8 +119,8 @@ end;
 	@param {Bool} Whether or not the shared variable is global.
 --]]
 function Clockwork.SharedVars.player:Bool(name, playerOnly)
-	self:Add(name, NWTYPE_BOOL, playerOnly);
-end;
+	self:Add(name, NWTYPE_BOOL, playerOnly)
+end
 
 --[[
 	@codebase Shared
@@ -133,8 +132,8 @@ function Clockwork.SharedVars.global:Add(name, class)
 	self.vars[name] = {
 		class = class,
 		name = name
-	};
-end;
+	}
+end
 
 --[[
 	@codebase Shared
@@ -142,8 +141,8 @@ end;
 	@param {String} A unique identifier.
 --]]
 function Clockwork.SharedVars.global:String(name)
-	self:Add(name, NWTYPE_STRING);
-end;
+	self:Add(name, NWTYPE_STRING)
+end
 
 --[[
 	@codebase Shared
@@ -151,8 +150,8 @@ end;
 	@param {String} A unique identifier.
 --]]
 function Clockwork.SharedVars.global:Entity(name)
-	self:Add(name, NWTYPE_ENTITY);
-end;
+	self:Add(name, NWTYPE_ENTITY)
+end
 
 --[[
 	@codebase Shared
@@ -160,8 +159,8 @@ end;
 	@param {String} A unique identifier.
 --]]
 function Clockwork.SharedVars.global:Vector(name)
-	self:Add(name, NWTYPE_VECTOR);
-end;
+	self:Add(name, NWTYPE_VECTOR)
+end
 
 --[[
 	@codebase Shared
@@ -169,8 +168,8 @@ end;
 	@param {String} A unique identifier.
 --]]
 function Clockwork.SharedVars.global:Number(name)
-	self:Add(name, NWTYPE_NUMBER);
-end;
+	self:Add(name, NWTYPE_NUMBER)
+end
 
 --[[
 	@codebase Shared
@@ -178,8 +177,8 @@ end;
 	@param {String} A unique identifier.
 --]]
 function Clockwork.SharedVars.global:Angle(name)
-	self:Add(name, NWTYPE_ANGLE);
-end;
+	self:Add(name, NWTYPE_ANGLE)
+end
 
 --[[
 	@codebase Shared
@@ -187,8 +186,8 @@ end;
 	@param {String} A unique identifier.
 --]]
 function Clockwork.SharedVars.global:Float(name)
-	self:Add(name, NWTYPE_FLOAT);
-end;
+	self:Add(name, NWTYPE_FLOAT)
+end
 
 --[[
 	@codebase Shared
@@ -196,5 +195,5 @@ end;
 	@param {String} A unique identifier.
 --]]
 function Clockwork.SharedVars.global:Bool(name)
-	self:Add(name, NWTYPE_BOOL);
-end;
+	self:Add(name, NWTYPE_BOOL)
+end

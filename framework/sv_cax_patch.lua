@@ -5,25 +5,12 @@ function CloudAuthX.GetVersion()
 	return CLOUDAUTHX_VERSION
 end
 
-function CloudAuthX.kernel:IncludeSchema()
-	local schemaFolder = Clockwork.kernel:GetSchemaFolder()
-	if schemaFolder == "" then return end
-
-	Clockwork.config:Load(nil, true)
-	Clockwork.plugin:Include(schemaFolder .. "/schema", true)
-	Clockwork.config:Load()
-end
-
 function CloudAuthX.Base64Encode(data)
-	if not data then return "" end
-
-	return util.Base64Encode(data)
+	return data and util.Base64Encode(data) or ""
 end
 
 function CloudAuthX.Base64Decode(data)
-	if not data then return "" end
-
-	return util.Base64Decode(data)
+	return data and util.Base64Decode(data) or ""
 end
 
 function CloudAuthX.External(data)

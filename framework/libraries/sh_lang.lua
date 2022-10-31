@@ -1,23 +1,19 @@
---[[
-	© CloudSixteen.com do not share, re-distribute or modify
-	without permission of its author (kurozael@gmail.com).
-
-	Clockwork was created by Conna Wiles (also known as kurozael.)
-	http://cloudsixteen.com/license/clockwork.html
---]]
 
 --[[
 	@codebase Shared
 	@details Provides an interface for the language system.
 	@field stored A table containing a list of stored languages.
 --]]
-Clockwork.lang = Clockwork.kernel:NewLibrary("Lang");
-Clockwork.lang.stored = Clockwork.lang.stored or {};
-Clockwork.lang.natives = {};
-Clockwork.lang.default = "English";
-Clockwork.lang.codes = {};
+Clockwork.lang = Clockwork.kernel:NewLibrary("Lang")
 
-CW_LANGUAGE_CLASS = {__index = CW_LANGUAGE_CLASS};
+Clockwork.lang.stored = Clockwork.lang.stored or {}
+Clockwork.lang.natives = {}
+Clockwork.lang.default = "English"
+Clockwork.lang.codes = {}
+
+CW_LANGUAGE_CLASS = {
+	__index = CW_LANGUAGE_CLASS
+}
 
 --[[
 	@codebase Shared
@@ -26,12 +22,12 @@ CW_LANGUAGE_CLASS = {__index = CW_LANGUAGE_CLASS};
 	@returns {String} The language table for the given language.
 --]]
 function Clockwork.lang:GetTable(name)
-	if (!Clockwork.lang.stored[name]) then
-		Clockwork.lang.stored[name] = Clockwork.kernel:NewMetaTable(CW_LANGUAGE_CLASS);
-	end;
-	
-	return Clockwork.lang.stored[name];
-end;
+	if not Clockwork.lang.stored[name] then
+		Clockwork.lang.stored[name] = Clockwork.kernel:NewMetaTable(CW_LANGUAGE_CLASS)
+	end
+
+	return Clockwork.lang.stored[name]
+end
 
 --[[
 	@codebase Shared
@@ -39,8 +35,8 @@ end;
 	@returns {String} The native language string.
 --]]
 function Clockwork.lang:GetNative(name)
-	return Clockwork.lang.natives[name];
-end;
+	return Clockwork.lang.natives[name]
+end
 
 --[[
 	@codebase Shared
@@ -49,9 +45,8 @@ end;
 	@param {String} Then native text to display.
 --]]
 function Clockwork.lang:SetNative(name, value)
-	Clockwork.lang.natives[name] = value;
-end;
-
+	Clockwork.lang.natives[name] = value
+end
 
 --[[
 	@codebase Shared
@@ -59,8 +54,8 @@ end;
 	@returns {String} The table containing all the languages.
 --]]
 function Clockwork.lang:GetAll()
-	return self.stored;
-end;
+	return self.stored
+end
 
 --[[
 	@codebase Shared
@@ -71,41 +66,40 @@ end;
 	@returns {String} The final string for the given identifier.
 --]]
 function Clockwork.lang:GetString(language, identifier, ...)
-	local subs = {...};
-	local output = nil;
-	
-	if (!language) then
-		language = self.default;
-	end;
-	
-	if (self.stored[language]) then
-		output = self.stored[language][identifier];
-	end;
-	
-	if (!output) then
-		output = self.stored[self.default][identifier] or identifier;
-	end;
-	
-	if (type(subs[1]) == "function") then
-		local process = subs[1];
-		
-		output = process(output);
-		
-		table.remove(subs, 1);
-	end;
-	
-	if (type(output) == "table") then
+	local subs = {...}
+
+	local output = nil
+
+	if not language then
+		language = self.default
+	end
+
+	if self.stored[language] then
+		output = self.stored[language][identifier]
+	end
+
+	if not output then
+		output = self.stored[self.default][identifier] or identifier
+	end
+
+	if type(subs[1]) == "function" then
+		local process = subs[1]
+		output = process(output)
+		table.remove(subs, 1)
+	end
+
+	if type(output) == "table" then
 		for k, v in ipairs(output) do
-			if (type(v) == "string") then
-				output[k] = self:ReplaceSubs(language, v, subs);
-			end;
-		end;
-		
-		return output;
+			if type(v) == "string" then
+				output[k] = self:ReplaceSubs(language, v, subs)
+			end
+		end
+
+		return output
 	else
-		return self:ReplaceSubs(language, output, subs);
-	end;
-end;
+		return self:ReplaceSubs(language, output, subs)
+	end
+end
 
 --[[
 	@codebase Shared
@@ -114,8 +108,8 @@ end;
 	@param {String} The code to set.
 --]]
 function Clockwork.lang:SetCode(name, code)
-	self.codes[code] = name;
-end;
+	self.codes[code] = name
+end
 
 --[[
 	@codebase Shared
@@ -124,8 +118,8 @@ end;
 	@returns {String} The language found.
 --]]
 function Clockwork.lang:GetFromCode(code)
-	return self.codes[code];
-end;
+	return self.codes[code]
+end
 
 --[[
 	@codebase Shared
@@ -137,90 +131,87 @@ end;
 --]]
 function Clockwork.lang:ReplaceSubs(language, input, subs)
 	for child in string.gmatch(input, "%{(.-)%}") do
-		input = string.gsub(input, "{"..child.."}", self:GetString(language, child));
-	end;
-	
-	for child in string.gmatch(input, "%~(.-)%~") do
-		input = string.gsub(input, "~"..child.."~", string.lower(self:GetString(language, child)));
-	end;
-	
-	for k, v in ipairs(subs) do
-		if (istable(v)) then
-			input = string.gsub(input, "#"..k, T(v), 1);
-		else
-			input = string.gsub(input, "#"..k, tostring(v), 1);
-		end;
-	end;
-	
-	return input;
-end;
+		input = string.gsub(input, "{" .. child .. "}", self:GetString(language, child))
+	end
 
-if (CLIENT) then
-	function L(identifier, ...)
-		if (type(identifier) == "table") then
-			return L(unpack(data));
-		end;
-		
-		local language = CW_CONVAR_LANG:GetString();
-		
-		return Clockwork.lang:GetString(language, identifier, ...);
-	end;
-	
-	function T(data)
-		if (type(data) == "table") then
-			return L(unpack(data));
+	for child in string.gmatch(input, "%~(.-)%~") do
+		input = string.gsub(input, "~" .. child .. "~", string.lower(self:GetString(language, child)))
+	end
+
+	for k, v in ipairs(subs) do
+		if istable(v) then
+			input = string.gsub(input, "#" .. k, T(v), 1)
 		else
-			return L(data);
-		end;
-	end;
+			input = string.gsub(input, "#" .. k, tostring(v), 1)
+		end
+	end
+
+	return input
+end
+
+if CLIENT then
+	function L(identifier, ...)
+		if type(identifier) == "table" then return L(unpack(data)) end
+		local language = CW_CONVAR_LANG:GetString()
+
+		return Clockwork.lang:GetString(language, identifier, ...)
+	end
+
+	function T(data)
+		if type(data) == "table" then
+			return L(unpack(data))
+		else
+			return L(data)
+		end
+	end
 else
 	function L(player, identifier, ...)
-		if (player != nil) then
-			if (type(player) != "string") then
-				local language = player:GetInfo("cwLang");
-				return Clockwork.lang:GetString(language, identifier, ...);
+		if player ~= nil then
+			if type(player) ~= "string" then
+				local language = player:GetInfo("cwLang")
+
+				return Clockwork.lang:GetString(language, identifier, ...)
 			else
-				return Clockwork.lang:GetString(nil, player, identifier, ...);
-			end;
+				return Clockwork.lang:GetString(nil, player, identifier, ...)
+			end
 		else
-			return Clockwork.lang:GetString(nil, identifier, ...);
-		end;
-	end;
-	
+			return Clockwork.lang:GetString(nil, identifier, ...)
+		end
+	end
+
 	function T(player, data)
-		if (type(player) == "table") then
-			return L(nil, unpack(player));
-		elseif (type(player) == "string") then
-			return L(nil, player);
-		elseif (type(data) == "table") then
-			return L(player, unpack(data));
+		if type(player) == "table" then
+			return L(nil, unpack(player))
+		elseif type(player) == "string" then
+			return L(nil, player)
+		elseif type(data) == "table" then
+			return L(player, unpack(data))
 		else
-			return L(data);
-		end;
-	end;
-		
-	Clockwork.lang.fileList = {};
+			return L(data)
+		end
+	end
+
+	Clockwork.lang.fileList = {}
 
 	function Clockwork.lang:Add(language, fileName)
-		if (not self.fileList[language]) then
-			self.fileList[language] = {};
-		end;
-		
-		table.insert(self.fileList[language], fileName);
-	end;
+		if not self.fileList[language] then
+			self.fileList[language] = {}
+		end
 
-	function Clockwork.lang:Set(language) end;
+		table.insert(self.fileList[language], fileName)
+	end
 
-end;
+	function Clockwork.lang:Set(language)
+	end
+end
 
-Clockwork.lang:SetNative("Korean", "한국어");
-Clockwork.lang:SetNative("French", "Français");
-Clockwork.lang:SetNative("Spanish", "Español");
-Clockwork.lang:SetNative("Swedish", "Svenska");
-
-Clockwork.lang:SetCode("Korean", "ko");
-Clockwork.lang:SetCode("French", "fr");
-Clockwork.lang:SetCode("English", "en");
-Clockwork.lang:SetCode("Swedish", "sv-se");
-Clockwork.lang:SetCode("Spanish", "es");
-Clockwork.lang:SetCode("Russian", "ru");
+Clockwork.lang:SetNative("Korean", "한국어")
+Clockwork.lang:SetNative("French", "Français")
+Clockwork.lang:SetNative("Spanish", "Español")
+Clockwork.lang:SetNative("Swedish", "Svenska")
+Clockwork.lang:SetCode("Korean", "ko")
+Clockwork.lang:SetCode("French", "fr")
+Clockwork.lang:SetCode("English", "en")
+Clockwork.lang:SetCode("Swedish", "sv-se")
+Clockwork.lang:SetCode("Spanish", "es")
+Clockwork.lang:SetCode("Russian", "ru")

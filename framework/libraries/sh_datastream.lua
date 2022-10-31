@@ -1,12 +1,12 @@
 
-local Clockwork = Clockwork;
-local net = net;
-local pairs = pairs;
-local type = type;
-local util = util;
+local Clockwork = Clockwork
+local net = net
+local pairs = pairs
+local type = type
+local util = util
 
-Clockwork.datastream = Clockwork.kernel:NewLibrary("Datastream");
-Clockwork.datastream.stored = Clockwork.datastream.stored or {};
+Clockwork.datastream = Clockwork.kernel:NewLibrary("Datastream")
+Clockwork.datastream.stored = Clockwork.datastream.stored or {}
 
 --[[
 	@codebase Shared
@@ -15,11 +15,11 @@ Clockwork.datastream.stored = Clockwork.datastream.stored or {};
 	@param {Function} The datastream callback.
 --]]
 function Clockwork.datastream:Hook(name, Callback)
-	self.stored[name] = Callback;
-end;
+	self.stored[name] = Callback
+end
 
-if (SERVER) then
-	util.AddNetworkString("cwDataDS");
+if SERVER then
+	util.AddNetworkString("cwDataDS")
 
 	--[[
 		@codebase Shared
@@ -30,42 +30,45 @@ if (SERVER) then
 		@returns {Unknown}
 	--]]
 	function Clockwork.datastream:Start(player, name, data)
-		local recipients = {};
-		local bShouldSend = false;
+		local recipients = {}
+		local bShouldSend = false
 
-		if (type(player) != "table") then
-			if (!player) then
-				player = cwPlayer.GetAll();
+		if type(player) ~= "table" then
+			if not player then
+				player = cwPlayer.GetAll()
 			else
-				player = {player};
-			end;
-		end;
+				player = {player}
+			end
+		end
 
 		for k, v in pairs(player) do
-			if (type(v) == "Player") then
-				recipients[#recipients + 1] = v;
+			if type(v) == "Player" then
+				recipients[#recipients + 1] = v
+				bShouldSend = true
+			elseif type(k) == "Player" then
+				recipients[#recipients + 1] = k
+				bShouldSend = true
+			end
+		end
 
-				bShouldSend = true;
-			elseif (type(k) == "Player") then
-				recipients[#recipients + 1] = k;
+		if data == nil then
+			data = 0
+		end
 
-				bShouldSend = true;
-			end;
-		end;
+		local dataTable = {
+			data = data
+		}
 
-		if (data == nil) then data = 0; end;
+		local encodedData = Clockwork.kernel:Serialize(dataTable)
 
-		local dataTable = {data = data};
-		local encodedData = Clockwork.kernel:Serialize(dataTable);
-
-		if (encodedData and #encodedData > 0 and bShouldSend) then
-			net.Start("cwDataDS");
-				net.WriteString(name);
-				net.WriteUInt(#encodedData, 32);
-				net.WriteData(encodedData, #encodedData);
-			net.Send(recipients);
-		end;
-	end;
+		if encodedData and #encodedData > 0 and bShouldSend then
+			net.Start("cwDataDS")
+			net.WriteString(name)
+			net.WriteUInt(#encodedData, 32)
+			net.WriteData(encodedData, #encodedData)
+			net.Send(recipients)
+		end
+	end
 
 	--[[
 		@codebase Shared
@@ -76,43 +79,43 @@ if (SERVER) then
 	--]]
 	function Clockwork.datastream:Listen(name, Callback)
 		self:Hook(name, function(player, data)
-			local bShouldReply, reply = Callback(player, data);
+			local bShouldReply, reply = Callback(player, data)
 
-			if (bShouldReply) then
-				self:Start(player, name, reply);
-			end;
-		end);
-	end;
+			if bShouldReply then
+				self:Start(player, name, reply)
+			end
+		end)
+	end
 
 	net.Receive("cwDataDS", function(length, player)
-		local CW_DS_NAME = net.ReadString();
-		local CW_DS_LENGTH = net.ReadUInt(32);
-		local CW_DS_DATA = net.ReadData(CW_DS_LENGTH);
+		local CW_DS_NAME = net.ReadString()
+		local CW_DS_LENGTH = net.ReadUInt(32)
+		local CW_DS_DATA = net.ReadData(CW_DS_LENGTH)
 
-		if (CW_DS_NAME and CW_DS_DATA and CW_DS_LENGTH) then
-			player.cwDataStreamName = CW_DS_NAME;
-			player.cwDataStreamData = "";
+		if CW_DS_NAME and CW_DS_DATA and CW_DS_LENGTH then
+			player.cwDataStreamName = CW_DS_NAME
+			player.cwDataStreamData = ""
 
-			if (player.cwDataStreamName and player.cwDataStreamData) then
-				player.cwDataStreamData = CW_DS_DATA;
+			if player.cwDataStreamName and player.cwDataStreamData then
+				player.cwDataStreamData = CW_DS_DATA
 
-				if (Clockwork.datastream.stored[player.cwDataStreamName]) then
-					local wasSuccess, value = xpcall(Clockwork.kernel.Deserialize, debug.traceback, Clockwork.kernel, player.cwDataStreamData);
+				if Clockwork.datastream.stored[player.cwDataStreamName] then
+					local wasSuccess, value = xpcall(Clockwork.kernel.Deserialize, debug.traceback, Clockwork.kernel, player.cwDataStreamData)
 
-					if (wasSuccess) then
-						Clockwork.datastream.stored[player.cwDataStreamName](player, value.data);
-					elseif (value != nil) then
-						MsgC(Color(255, 100, 0, 255), "[Clockwork:Datastream] The '" .. CW_DS_NAME .. "' datastream has failed to run.\n" .. value .. "\nData: " .. tostring(player.cwDataStreamData) .. "\n");
-					end;
-				end;
+					if wasSuccess then
+						Clockwork.datastream.stored[player.cwDataStreamName](player, value.data)
+					elseif value ~= nil then
+						MsgC(Color(255, 100, 0, 255), "[Clockwork:Datastream] The '" .. CW_DS_NAME .. "' datastream has failed to run.\n" .. value .. "\nData: " .. tostring(player.cwDataStreamData) .. "\n")
+					end
+				end
 
-				player.cwDataStreamName = nil;
-				player.cwDataStreamData = nil;
-			end;
-		end;
+				player.cwDataStreamName = nil
+				player.cwDataStreamData = nil
+			end
+		end
 
-		CW_DS_NAME, CW_DS_DATA, CW_DS_LENGTH = nil, nil, nil;
-	end);
+		CW_DS_NAME, CW_DS_DATA, CW_DS_LENGTH = nil, nil, nil
+	end)
 else
 	--[[
 		@codebase Shared
@@ -122,19 +125,24 @@ else
 		@returns {Unknown}
 	--]]
 	function Clockwork.datastream:Start(name, data)
-		if (data == nil) then data = 0; end;
+		if data == nil then
+			data = 0
+		end
 
-		local dataTable = {data = data};
-		local encodedData = Clockwork.kernel:Serialize(dataTable);
+		local dataTable = {
+			data = data
+		}
 
-		if (encodedData and #encodedData > 0) then
-			net.Start("cwDataDS");
-				net.WriteString(name);
-				net.WriteUInt(#encodedData, 32);
-				net.WriteData(encodedData, #encodedData);
-			net.SendToServer();
-		end;
-	end;
+		local encodedData = Clockwork.kernel:Serialize(dataTable)
+
+		if encodedData and #encodedData > 0 then
+			net.Start("cwDataDS")
+			net.WriteString(name)
+			net.WriteUInt(#encodedData, 32)
+			net.WriteData(encodedData, #encodedData)
+			net.SendToServer()
+		end
+	end
 
 	--[[
 		@codebase Shared
@@ -145,25 +153,25 @@ else
 		@returns {Unknown}
 	--]]
 	function Clockwork.datastream:Request(name, data, Callback)
-		self:Hook(name, Callback);
-		self:Start(name, data);
-	end;
+		self:Hook(name, Callback)
+		self:Start(name, data)
+	end
 
 	net.Receive("cwDataDS", function(length)
-		local CW_DS_NAME = net.ReadString();
-		local CW_DS_LENGTH = net.ReadUInt(32);
-		local CW_DS_DATA = net.ReadData(CW_DS_LENGTH);
+		local CW_DS_NAME = net.ReadString()
+		local CW_DS_LENGTH = net.ReadUInt(32)
+		local CW_DS_DATA = net.ReadData(CW_DS_LENGTH)
 
 		if (CW_DS_NAME and CW_DS_DATA and CW_DS_LENGTH) and Clockwork.datastream.stored[CW_DS_NAME] then
-			local wasSuccess, value = xpcall(Clockwork.kernel.Deserialize, debug.traceback, Clockwork.kernel, CW_DS_DATA);
+			local wasSuccess, value = xpcall(Clockwork.kernel.Deserialize, debug.traceback, Clockwork.kernel, CW_DS_DATA)
 
-			if (wasSuccess) then
-				Clockwork.datastream.stored[CW_DS_NAME](value.data);
-			elseif (value != nil) then
-				MsgC(Color(255, 100, 0, 255), "[Clockwork:Datastream] The '" .. CW_DS_NAME .. "' datastream has failed to run.\n" .. value .. "\nData: " .. tostring(CW_DS_DATA) .. "\n");
-			end;
-		end;
+			if wasSuccess then
+				Clockwork.datastream.stored[CW_DS_NAME](value.data)
+			elseif value ~= nil then
+				MsgC(Color(255, 100, 0, 255), "[Clockwork:Datastream] The '" .. CW_DS_NAME .. "' datastream has failed to run.\n" .. value .. "\nData: " .. tostring(CW_DS_DATA) .. "\n")
+			end
+		end
 
-		CW_DS_NAME, CW_DS_DATA, CW_DS_LENGTH = nil, nil, nil;
-	end);
-end;
+		CW_DS_NAME, CW_DS_DATA, CW_DS_LENGTH = nil, nil, nil
+	end)
+end

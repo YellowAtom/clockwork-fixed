@@ -1,14 +1,15 @@
 
-local Clockwork = Clockwork;
-local type = type;
-local string = string;
-local math = math;
+local Clockwork = Clockwork
+local type = type
+local string = string
+local math = math
 
-Clockwork.animation = Clockwork.kernel:NewLibrary("Animation");
-Clockwork.animation.sequences = Clockwork.animation.sequences or {};
-Clockwork.animation.override = Clockwork.animation.override or {};
-Clockwork.animation.models = Clockwork.animation.models or {};
-Clockwork.animation.stored = Clockwork.animation.stored or {};
+Clockwork.animation = Clockwork.kernel:NewLibrary("Animation")
+Clockwork.animation.sequences = Clockwork.animation.sequences or {}
+Clockwork.animation.override = Clockwork.animation.override or {}
+Clockwork.animation.models = Clockwork.animation.models or {}
+Clockwork.animation.stored = Clockwork.animation.stored or {}
+
 Clockwork.animation.convert = {
 	[ACT_HL2MP_IDLE_CROSSBOW] = "smg",
 	[ACT_HL2MP_IDLE_GRENADE] = "grenade",
@@ -37,7 +38,7 @@ Clockwork.animation.convert = {
 	["ar2"] = "smg",
 	["357"] = "pistol",
 	["rpg"] = "heavy"
-};
+}
 
 Clockwork.animation.holdTypes = {
 	["gmod_tool"] = "pistol",
@@ -53,7 +54,7 @@ Clockwork.animation.holdTypes = {
 	["weapon_crossbow"] = "smg",
 	["weapon_stunstick"] = "blunt",
 	["weapon_physcannon"] = "heavy"
-};
+}
 
 Clockwork.animation.stored.combineOverwatch = {
 	["crouch_grenade_aim_idle"] = ACT_COVER_LOW,
@@ -143,7 +144,7 @@ Clockwork.animation.stored.combineOverwatch = {
 		model = "models/weapons/c_arms_combine.mdl",
 		skin = 0
 	}
-};
+}
 
 Clockwork.animation.stored.civilProtection = {
 	["crouch_grenade_aim_idle"] = ACT_COVER_PISTOL_LOW,
@@ -237,7 +238,7 @@ Clockwork.animation.stored.civilProtection = {
 		model = "models/weapons/c_arms_combine.mdl",
 		skin = 0
 	}
-};
+}
 
 Clockwork.animation.stored.femaleHuman = {
 	["crouch_grenade_aim_idle"] = ACT_COVER_LOW,
@@ -326,7 +327,7 @@ Clockwork.animation.stored.femaleHuman = {
 	["stand_run"] = ACT_RUN,
 	["jump"] = ACT_GLIDE,
 	["sit"] = ACT_BUSY_SIT_CHAIR
-};
+}
 
 Clockwork.animation.stored.maleHuman = {
 	["crouch_grenade_aim_idle"] = ACT_COVER_LOW,
@@ -415,7 +416,7 @@ Clockwork.animation.stored.maleHuman = {
 	["stand_run"] = ACT_RUN,
 	["jump"] = ACT_GLIDE,
 	["sit"] = ACT_BUSY_SIT_CHAIR
-};
+}
 
 Clockwork.animation.stored.zombie = {
 	["crouch_grenade_aim_idle"] = ACT_COVER_LOW,
@@ -504,7 +505,7 @@ Clockwork.animation.stored.zombie = {
 	["stand_run"] = ACT_RUN,
 	["jump"] = ACT_GLIDE,
 	["sit"] = ACT_BUSY_SIT_CHAIR
-};
+}
 
 Clockwork.animation.stored.vortigaunt = {
 	["crouch_grenade_aim_idle"] = "CrouchIdle",
@@ -584,7 +585,7 @@ Clockwork.animation.stored.vortigaunt = {
 	["stand_run"] = ACT_RUN,
 	["jump"] = ACT_BARNACLE_CHOMP,
 	["sit"] = "chess_wait"
-};
+}
 
 Clockwork.animation.stored.player = {
 	["crouch_grenade_aim_idle"] = "cidle_grenade",
@@ -673,7 +674,7 @@ Clockwork.animation.stored.player = {
 	["stand_run"] = ACT_MP_RUN,
 	["jump"] = ACT_MP_JUMP,
 	["sit"] = ACT_BUSY_SIT_CHAIR
-};
+}
 
 --[[
 	@codebase Shared
@@ -683,8 +684,8 @@ Clockwork.animation.stored.player = {
 	@returns {Unknown}
 --]]
 function Clockwork.animation:SetMenuSequence(model, sequence)
-	self.sequences[string.lower(model)] = sequence;
-end;
+	self.sequences[string.lower(model)] = sequence
+end
 
 --[[
 	@codebase Shared
@@ -694,21 +695,21 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.animation:GetMenuSequence(model, bRandom)
-	local lowerModel = string.lower(model);
-	local sequence = self.sequences[lowerModel];
-	
-	if (sequence) then
-		if (type(sequence) == "table") then
-			if (bRandom) then
-				return sequence[math.random(1, #sequence)];
+	local lowerModel = string.lower(model)
+	local sequence = self.sequences[lowerModel]
+
+	if sequence then
+		if type(sequence) == "table" then
+			if bRandom then
+				return sequence[math.random(1, #sequence)]
 			else
-				return sequence;
-			end;
+				return sequence
+			end
 		else
-			return sequence;
-		end;
-	end;
-end;
+			return sequence
+		end
+	end
+end
 
 --[[
 	@codebase Shared
@@ -718,10 +719,11 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.animation:AddModel(class, model)
-	local lowerModel = string.lower(model);
-		self.models[lowerModel] = class;
-	return lowerModel;
-end;
+	local lowerModel = string.lower(model)
+	self.models[lowerModel] = class
+
+	return lowerModel
+end
 
 --[[
 	@codebase Shared
@@ -732,14 +734,14 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.animation:AddOverride(model, key, value)
-	local lowerModel = string.lower(model);
-	
-	if (!self.override[lowerModel]) then
-		self.override[lowerModel] = {};
-	end;
-	
-	self.override[lowerModel][key] = value;
-end;
+	local lowerModel = string.lower(model)
+
+	if not self.override[lowerModel] then
+		self.override[lowerModel] = {}
+	end
+
+	self.override[lowerModel][key] = value
+end
 
 --[[
 	@codebase Shared
@@ -749,23 +751,23 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.animation:GetForModel(model, key)
-	if (!model) then
-		debug.Trace();
-		
-		return false;
-	end;
+	if not model then
+		debug.Trace()
 
-	local lowerModel = string.lower(model);
-	local animTable = self:GetTable(lowerModel);
-	local overrideTable = self.override[lowerModel];
-	local finalAnimation = animTable[key];
-	
-	if (overrideTable and overrideTable[key]) then
-		finalAnimation = overrideTable[key];
-	end;
-	
-	return finalAnimation;
-end;
+		return false
+	end
+
+	local lowerModel = string.lower(model)
+	local animTable = self:GetTable(lowerModel)
+	local overrideTable = self.override[lowerModel]
+	local finalAnimation = animTable[key]
+
+	if overrideTable and overrideTable[key] then
+		finalAnimation = overrideTable[key]
+	end
+
+	return finalAnimation
+end
 
 --[[
 	@codebase Shared
@@ -775,16 +777,14 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.animation:GetModelClass(model, alwaysReal)
-	local modelClass = self.models[string.lower(model)];
-	
-	if (!modelClass) then
-		if (!alwaysReal) then
-			return "maleHuman";
-		end;
+	local modelClass = self.models[string.lower(model)]
+
+	if not modelClass then
+		if not alwaysReal then return "maleHuman" end
 	else
-		return modelClass;
-	end;
-end;
+		return modelClass
+	end
+end
 
 --[[
 	@codebase Shared
@@ -793,8 +793,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.animation:AddVortigauntModel(model)
-	return self:AddModel("vortigaunt", model);
-end;
+	return self:AddModel("vortigaunt", model)
+end
 
 --[[
 	@codebase Shared
@@ -803,8 +803,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.animation:AddCombineOverwatchModel(model)
-	return self:AddModel("combineOverwatch", model);
-end;
+	return self:AddModel("combineOverwatch", model)
+end
 
 --[[
 	@codebase Shared
@@ -813,8 +813,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.animation:AddCivilProtectionModel(model)
-	return self:AddModel("civilProtection", model);
-end;
+	return self:AddModel("civilProtection", model)
+end
 
 --[[
 	@codebase Shared
@@ -823,8 +823,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.animation:AddFemaleHumanModel(model)
-	return self:AddModel("femaleHuman", model);
-end;
+	return self:AddModel("femaleHuman", model)
+end
 
 --[[
 	@codebase Shared
@@ -833,8 +833,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.animation:AddMaleHumanModel(model)
-	return self:AddModel("maleHuman", model);
-end;
+	return self:AddModel("maleHuman", model)
+end
 
 --[[
 	@codebase Shared
@@ -844,25 +844,24 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.animation:GetWeaponHoldType(player, weapon)
-	local class = string.lower(weapon:GetClass());
-	local holdType = "fist";
-	
-	if (self.holdTypes[class]) then
-		holdType = self.holdTypes[class];
-	elseif (IsValid(weapon)) then
-		local _holdType = weapon.HoldType or weapon:GetHoldType();
+	local class = string.lower(weapon:GetClass())
+	local holdType = "fist"
 
-		holdType = self.convert[_holdType] or _holdType;
+	if self.holdTypes[class] then
+		holdType = self.holdTypes[class]
+	elseif IsValid(weapon) then
+		local _holdType = weapon.HoldType or weapon:GetHoldType()
+		holdType = self.convert[_holdType] or _holdType
 	else
-		local act = player:Weapon_TranslateActivity(ACT_HL2MP_IDLE) or -1;
-		
-		if (act != -1 and self.convert[act]) then
-			holdType = self.convert[act];
-		end;
-	end;
-	
-	return string.lower(holdType);
-end;
+		local act = player:Weapon_TranslateActivity(ACT_HL2MP_IDLE) or -1
+
+		if act ~= -1 and self.convert[act] then
+			holdType = self.convert[act]
+		end
+	end
+
+	return string.lower(holdType)
+end
 
 --[[
 	@codebase Shared
@@ -871,22 +870,22 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.animation:GetTable(model)
-	local lowerModel = string.lower(model);
-	local class = self.models[lowerModel];
-	
-	if (class and self.stored[class]) then
-		return self.stored[class];
-	elseif (string.find(lowerModel, "/player/")) then
-		return self.stored.player;
-	elseif (string.find(lowerModel, "female")) then
-		return self.stored.femaleHuman;
-	else
-		return self.stored.maleHuman;
-	end;
-end;
+	local lowerModel = string.lower(model)
+	local class = self.models[lowerModel]
 
-local handsModels = {};
-local blackModels = {};
+	if class and self.stored[class] then
+		return self.stored[class]
+	elseif string.find(lowerModel, "/player/") then
+		return self.stored.player
+	elseif string.find(lowerModel, "female") then
+		return self.stored.femaleHuman
+	else
+		return self.stored.maleHuman
+	end
+end
+
+local handsModels = {}
+local blackModels = {}
 
 --[[
 	@codebase Shared
@@ -896,8 +895,8 @@ local blackModels = {};
 	@returns {Unknown}
 --]]
 function Clockwork.animation:AddHandsModel(model, hands)
-	handsModels[string.lower(model)] = hands;
-end;
+	handsModels[string.lower(model)] = hands
+end
 
 --[[
 	@codebase Shared
@@ -906,8 +905,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.animation:AddBlackModel(model)
-	blackModels[string.lower(model)] = true;
-end;
+	blackModels[string.lower(model)] = true
+end
 
 --[[
 	@codebase Shared
@@ -920,8 +919,8 @@ function Clockwork.animation:AddZombieHands(model)
 		body = 0000000,
 		model = "models/weapons/c_arms_citizen.mdl",
 		skin = 2
-	});
-end;
+	})
+end
 
 --[[
 	@codebase Shared
@@ -934,8 +933,8 @@ function Clockwork.animation:AddHEVHands(model)
 		body = 0000000,
 		model = "models/weapons/c_arms_hev.mdl",
 		skin = 0
-	});
-end;
+	})
+end
 
 --[[
 	@codebase Shared
@@ -948,8 +947,8 @@ function Clockwork.animation:AddCombineHands(model)
 		body = 0000000,
 		model = "models/weapons/c_arms_combine.mdl",
 		skin = 0
-	});
-end;
+	})
+end
 
 --[[
 	@codebase Shared
@@ -962,8 +961,8 @@ function Clockwork.animation:AddCSSHands(model)
 		body = 0000000,
 		model = "models/weapons/c_arms_cstrike.mdl",
 		skin = 0
-	});
-end;
+	})
+end
 
 --[[
 	@codebase Shared
@@ -976,8 +975,8 @@ function Clockwork.animation:AddRefugeeHands(model)
 		body = 01,
 		model = "models/weapons/c_arms_refugee.mdl",
 		skin = 0
-	});
-end;
+	})
+end
 
 --[[
 	@codebase Shared
@@ -990,8 +989,8 @@ function Clockwork.animation:AddZombieRefugeeHands(model)
 		body = 0000000,
 		model = "models/weapons/c_arms_refugee.mdl",
 		skin = 2
-	});
-end;
+	})
+end
 
 --[[
 	@codebase Shared
@@ -1005,20 +1004,19 @@ function Clockwork.animation:CheckHands(model, animTable)
 		body = 0000000,
 		model = "models/weapons/c_arms_citizen.mdl",
 		skin = 0
-	};
+	}
 
 	for k, v in pairs(handsModels) do
-		if (string.find(model, k)) then
-			info = v;
+		if string.find(model, k) then
+			info = v
+			break
+		end
+	end
 
-			break;
-		end;
-	end;
+	self:AdjustHandsInfo(model, info)
 
-	self:AdjustHandsInfo(model, info);
-
-	return info;
-end;
+	return info
+end
 
 --[[
 	@codebase Shared
@@ -1028,21 +1026,19 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.animation:AdjustHandsInfo(model, info)
-	if (info.model == "models/weapons/c_arms_citizen.mdl"
-	or info.model == "models/weapons/c_arms_refugee.mdl") then
+	if info.model == "models/weapons/c_arms_citizen.mdl" or info.model == "models/weapons/c_arms_refugee.mdl" then
 		for k, v in pairs(blackModels) do
-			if (string.find(model, k)) then
-				info.skin = 1;
+			if string.find(model, k) then
+				info.skin = 1
+				break
+			elseif info.skin == 1 then
+				info.skin = 0
+			end
+		end
+	end
 
-				break;
-			elseif (info.skin == 1) then
-				info.skin = 0;
-			end;
-		end;
-	end;
-
-	Clockwork.plugin:Call("AdjustCModelHandsInfo", model, info);
-end;
+	Clockwork.plugin:Call("AdjustCModelHandsInfo", model, info)
+end
 
 --[[
 	@codebase Shared
@@ -1051,26 +1047,21 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.animation:GetHandsInfo(model)
-	local animTable = self:GetTable(model);
+	local animTable = self:GetTable(model)
 
-	return self:CheckHands(string.lower(model), animTable);
-end;
+	return self:CheckHands(string.lower(model), animTable)
+end
 
-Clockwork.animation:AddBlackModel("/male_01.mdl");
-Clockwork.animation:AddBlackModel("/male_03.mdl");
-Clockwork.animation:AddBlackModel("/female_03.mdl");
-
-Clockwork.animation:AddRefugeeHands("/group03/");
-Clockwork.animation:AddRefugeeHands("/group03m/");
-
-Clockwork.animation:AddZombieRefugeeHands("/Zombie/");
-
-Clockwork.animation:AddVortigauntModel("models/vortigaunt.mdl");
-Clockwork.animation:AddVortigauntModel("models/vortigaunt_slave.mdl");
-Clockwork.animation:AddVortigauntModel("models/vortigaunt_doctor.mdl");
-
-Clockwork.animation:AddCombineOverwatchModel("models/combine_soldier_prisonguard.mdl");
-Clockwork.animation:AddCombineOverwatchModel("models/combine_super_soldier.mdl");
-Clockwork.animation:AddCombineOverwatchModel("models/combine_soldier.mdl");
-
-Clockwork.animation:AddCivilProtectionModel("models/police.mdl");
+Clockwork.animation:AddBlackModel("/male_01.mdl")
+Clockwork.animation:AddBlackModel("/male_03.mdl")
+Clockwork.animation:AddBlackModel("/female_03.mdl")
+Clockwork.animation:AddRefugeeHands("/group03/")
+Clockwork.animation:AddRefugeeHands("/group03m/")
+Clockwork.animation:AddZombieRefugeeHands("/Zombie/")
+Clockwork.animation:AddVortigauntModel("models/vortigaunt.mdl")
+Clockwork.animation:AddVortigauntModel("models/vortigaunt_slave.mdl")
+Clockwork.animation:AddVortigauntModel("models/vortigaunt_doctor.mdl")
+Clockwork.animation:AddCombineOverwatchModel("models/combine_soldier_prisonguard.mdl")
+Clockwork.animation:AddCombineOverwatchModel("models/combine_super_soldier.mdl")
+Clockwork.animation:AddCombineOverwatchModel("models/combine_soldier.mdl")
+Clockwork.animation:AddCivilProtectionModel("models/police.mdl")

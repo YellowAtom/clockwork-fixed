@@ -1,22 +1,19 @@
+local Clockwork = Clockwork
+local isnumber = isnumber
+local isvector = isvector
+local isangle = isangle
+local IsColor = IsColor
+local Color = Color
+local Lerp = Lerp
+local MsgC = MsgC
 
-local Clockwork = Clockwork;
-local isnumber = isnumber;
-local isvector = isvector;
-local isangle = isangle;
-local IsColor = IsColor;
-local Color = Color;
-local Lerp = Lerp;
-local MsgC = MsgC;
-
-local colorRed = Color(255, 0, 0);
-
+local colorRed = Color(255, 0, 0)
 --[[
 	@codebase Client
 	@details Provides an easier alternative to using the Lerp functions for linear interpolation provided with GMod.
 --]]
-Clockwork.lerp = Clockwork.kernel:NewLibrary("Lerp");
-
-local stored = {};
+Clockwork.lerp = Clockwork.kernel:NewLibrary("Lerp")
+local stored = {}
 
 --[[
 	@codebase Client
@@ -24,8 +21,8 @@ local stored = {};
 	@returns {Table} The table containing all the current Lerp information.
 --]]
 function Clockwork.lerp:GetStored()
-	return stored;
-end;
+	return stored
+end
 
 --[[
 	@codebase Client
@@ -34,8 +31,8 @@ end;
 	@returns {Table} The Lerp table or stored target value (can be either number, vector, angle, or color) found by its name, if it exists currently.
 --]]
 function Clockwork.lerp:FindByID(uniqueID)
-	return stored[uniqueID];
-end;
+	return stored[uniqueID]
+end
 
 --[[
 	@codebase Client
@@ -43,10 +40,10 @@ end;
 	@params String The name used to remove from the stored table.
 --]]
 function Clockwork.lerp:RemoveByID(uniqueID)
-	if (stored[uniqueID]) then
-		stored[uniqueID] = nil;
-	end;
-end;
+	if stored[uniqueID] then
+		stored[uniqueID] = nil
+	end
+end
 
 --[[
 	@codebase Client
@@ -55,10 +52,10 @@ end;
 	@returns {Bool} Whether the Lerp is finished or not, returns false if it doesn't exist.
 --]]
 function Clockwork.lerp:IsFinished(uniqueID)
-	local lerpObj = stored[uniqueID];
+	local lerpObj = stored[uniqueID]
 
-	return (lerpObj and !istable(lerpObj) or IsColor(lerpObj) or isvector(lerpObj) or isangle(lerpObj));
-end;
+	return lerpObj and not istable(lerpObj) or IsColor(lerpObj) or isvector(lerpObj) or isangle(lerpObj)
+end
 
 --[[
 	@codebase Client
@@ -78,10 +75,10 @@ function Clockwork.lerp:Register(uniqueID, startTime, duration, startValue, targ
 		startValue = startValue,
 		targetValue = targetValue,
 		progress = startValue
-	};
+	}
 
-	return uniqueID;
-end;
+	return uniqueID
+end
 
 --[[
 	@codebase Client
@@ -91,26 +88,25 @@ end;
 	@returns {Number} The current point between the start and target value according to the time progressed and Lerp duration.
 --]]
 function Clockwork.lerp:Run(uniqueID, curTime)
-	local lerpObj = stored[uniqueID];
+	local lerpObj = stored[uniqueID]
 
-	if (!lerpObj) then
-		MsgC(colorRed, "[Clockwork Lerp] "..uniqueID.." doesn't exist!");
+	if not lerpObj then
+		MsgC(colorRed, "[Clockwork Lerp] " .. uniqueID .. " doesn't exist!")
 
-		return nil;
-	elseif (isnumber(lerpObj)) then
-		return lerpObj;
-	end;
+		return nil
+	elseif isnumber(lerpObj) then
+		return lerpObj
+	end
 
-	if (lerpObj.progress != lerpObj.targetValue) then
-		local fraction = (curTime - lerpObj.startTime) / lerpObj.duration;
-
-		lerpObj.progress = Lerp(fraction, lerpObj.startValue, lerpObj.targetValue);
+	if lerpObj.progress ~= lerpObj.targetValue then
+		local fraction = (curTime - lerpObj.startTime) / lerpObj.duration
+		lerpObj.progress = Lerp(fraction, lerpObj.startValue, lerpObj.targetValue)
 	else
-		stored[uniqueID] = lerpObj.targetValue;
-	end;
+		stored[uniqueID] = lerpObj.targetValue
+	end
 
-	return lerpObj.progress;
-end;
+	return lerpObj.progress
+end
 
 --[[
 	@codebase Client
@@ -120,31 +116,25 @@ end;
 	@returns {Color} The current point between the start and target value according to the time progressed and Lerp duration.
 --]]
 function Clockwork.lerp:RunColor(uniqueID, curTime)
-	local lerpObj = stored[uniqueID];
+	local lerpObj = stored[uniqueID]
 
-	if (!lerpObj) then
-		MsgC(colorRed, "[Clockwork Lerp] "..uniqueID.." doesn't exist!");
+	if not lerpObj then
+		MsgC(colorRed, "[Clockwork Lerp] " .. uniqueID .. " doesn't exist!")
 
-		return nil;
-	elseif (IsColor(lerpObj)) then
-		return lerpObj;
-	end;
+		return nil
+	elseif IsColor(lerpObj) then
+		return lerpObj
+	end
 
-	if (lerpObj.progress != lerpObj.targetValue) then
-		local fraction = (curTime - lerpObj.startTime) / lerpObj.duration;
-
-		lerpObj.progress = Color(
-			Lerp(fraction, lerpObj.startValue.r, lerpObj.targetValue.r),
-			Lerp(fraction, lerpObj.startValue.g, lerpObj.targetValue.g),
-			Lerp(fraction, lerpObj.startValue.b, lerpObj.targetValue.b),
-			Lerp(fraction, lerpObj.startValue.a, lerpObj.targetValue.a)
-		);
+	if lerpObj.progress ~= lerpObj.targetValue then
+		local fraction = (curTime - lerpObj.startTime) / lerpObj.duration
+		lerpObj.progress = Color(Lerp(fraction, lerpObj.startValue.r, lerpObj.targetValue.r), Lerp(fraction, lerpObj.startValue.g, lerpObj.targetValue.g), Lerp(fraction, lerpObj.startValue.b, lerpObj.targetValue.b), Lerp(fraction, lerpObj.startValue.a, lerpObj.targetValue.a))
 	else
-		stored[uniqueID] = lerpObj.targetValue;
-	end;
+		stored[uniqueID] = lerpObj.targetValue
+	end
 
-	return lerpObj.progress;
-end;
+	return lerpObj.progress
+end
 
 --[[
 	@codebase Client
@@ -154,26 +144,25 @@ end;
 	@returns {Vector} The current point between the start and target value according to the time progressed and Lerp duration.
 --]]
 function Clockwork.lerp:RunVector(uniqueID, curTime)
-	local lerpObj = stored[uniqueID];
+	local lerpObj = stored[uniqueID]
 
-	if (!lerpObj) then
-		MsgC(colorRed, "[Clockwork Lerp] "..uniqueID.." doesn't exist!");
+	if not lerpObj then
+		MsgC(colorRed, "[Clockwork Lerp] " .. uniqueID .. " doesn't exist!")
 
-		return nil;
-	elseif (isvector(lerpObj)) then
-		return lerpObj;
-	end;
+		return nil
+	elseif isvector(lerpObj) then
+		return lerpObj
+	end
 
-	if (lerpObj.endTime >= curTime) then
-		local fraction = (curTime - lerpObj.startTime) / lerpObj.duration;
-
-		lerpObj.progress = LerpVector(fraction, lerpObj.startValue, lerpObj.targetValue);
+	if lerpObj.endTime >= curTime then
+		local fraction = (curTime - lerpObj.startTime) / lerpObj.duration
+		lerpObj.progress = LerpVector(fraction, lerpObj.startValue, lerpObj.targetValue)
 	else
-		stored[uniqueID] = lerpObj.targetValue;
-	end;
+		stored[uniqueID] = lerpObj.targetValue
+	end
 
-	return lerpObj.progress;
-end;
+	return lerpObj.progress
+end
 
 --[[
 	@codebase Client
@@ -183,23 +172,22 @@ end;
 	@returns {Angle} The current point between the start and target value according to the time progressed and Lerp duration.
 --]]
 function Clockwork.lerp:RunAngle(uniqueID, curTime)
-	local lerpObj = stored[uniqueID];
+	local lerpObj = stored[uniqueID]
 
-	if (!lerpObj) then
-		MsgC(colorRed, "[Clockwork Lerp] "..uniqueID.." doesn't exist!");
+	if not lerpObj then
+		MsgC(colorRed, "[Clockwork Lerp] " .. uniqueID .. " doesn't exist!")
 
-		return nil;
-	elseif (isangle(lerpObj)) then
-		return lerpObj;
-	end;
+		return nil
+	elseif isangle(lerpObj) then
+		return lerpObj
+	end
 
-	if (lerpObj.endTime >= curTime) then
-		local fraction = (curTime - lerpObj.startTime) / lerpObj.duration;
-
-		lerpObj.progress = LerpAngle(fraction, lerpObj.startValue, lerpObj.targetValue);
+	if lerpObj.endTime >= curTime then
+		local fraction = (curTime - lerpObj.startTime) / lerpObj.duration
+		lerpObj.progress = LerpAngle(fraction, lerpObj.startValue, lerpObj.targetValue)
 	else
-		stored[uniqueID] = lerpObj.targetValue;
-	end;
+		stored[uniqueID] = lerpObj.targetValue
+	end
 
-	return lerpObj.progress;
-end;
+	return lerpObj.progress
+end

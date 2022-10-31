@@ -1,8 +1,8 @@
 
-local Clockwork = Clockwork;
-local IsValid = IsValid;
+local Clockwork = Clockwork
+local IsValid = IsValid
 
-Clockwork.storage = Clockwork.kernel:NewLibrary("Storage");
+Clockwork.storage = Clockwork.kernel:NewLibrary("Storage")
 
 --[[
 	@codebase Client
@@ -10,12 +10,9 @@ Clockwork.storage = Clockwork.kernel:NewLibrary("Storage");
 	@returns {Unknown}
 --]]
 function Clockwork.storage:IsStorageOpen()
-	local panel = self:GetPanel();
-	
-	if (IsValid(panel) and panel:IsVisible()) then
-		return true;
-	end;
-end;
+	local panel = self:GetPanel()
+	if IsValid(panel) and panel:IsVisible() then return true end
+end
 
 --[[
 	@codebase Client
@@ -24,25 +21,20 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.storage:CanGiveTo(itemTable)
-	local entity = Clockwork.storage:GetEntity();
-	local isPlayer = (entity and entity:IsPlayer());
-	
-	if (itemTable) then
-		local allowPlayerStorage = (!isPlayer or itemTable("allowPlayerStorage") != false);
-		local allowEntityStorage = (isPlayer or itemTable("allowEntityStorage") != false);
-		local allowPlayerGive = (!isPlayer or itemTable("allowPlayerGive") != false);
-		local allowEntityGive = (isPlayer or itemTable("allowEntityGive") != false);
-		local allowStorage = (itemTable("allowStorage") != false);
-		local isShipment = (entity and entity:GetClass() == "cw_shipment");
-		local allowGive = (itemTable("allowGive") != false);
-		
-		if (isShipment or (allowPlayerStorage and allowPlayerGive
-		and allowEntityStorage and allowStorage and allowGive
-		and allowEntityGive)) then
-			return true;
-		end;
-	end;
-end;
+	local entity = Clockwork.storage:GetEntity()
+	local isPlayer = entity and entity:IsPlayer()
+
+	if itemTable then
+		local allowPlayerStorage = not isPlayer or itemTable("allowPlayerStorage") ~= false
+		local allowEntityStorage = isPlayer or itemTable("allowEntityStorage") ~= false
+		local allowPlayerGive = not isPlayer or itemTable("allowPlayerGive") ~= false
+		local allowEntityGive = isPlayer or itemTable("allowEntityGive") ~= false
+		local allowStorage = itemTable("allowStorage") ~= false
+		local isShipment = entity and entity:GetClass() == "cw_shipment"
+		local allowGive = itemTable("allowGive") ~= false
+		if isShipment or allowPlayerStorage and allowPlayerGive and allowEntityStorage and allowStorage and allowGive and allowEntityGive then return true end
+	end
+end
 
 --[[
 	@codebase Client
@@ -51,25 +43,20 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.storage:CanTakeFrom(itemTable)
-	local entity = Clockwork.storage:GetEntity();
-	local isPlayer = (entity and entity:IsPlayer());
-	
-	if (itemTable) then
-		local allowPlayerStorage = (!isPlayer or itemTable("allowPlayerStorage") != false);
-		local allowEntityStorage = (isPlayer or itemTable("allowEntityStorage") != false);
-		local allowPlayerTake = (!isPlayer or itemTable("allowPlayerTake") != false);
-		local allowEntityTake = (isPlayer or itemTable("allowEntityTake") != false);
-		local allowStorage = (itemTable("allowStorage") != false);
-		local isShipment = (entity and entity:GetClass() == "cw_shipment");
-		local allowTake = (itemTable("allowTake") != false);
-		
-		if (isShipment or (allowPlayerStorage and allowPlayerTake
-		and allowEntityStorage and allowStorage and allowTake
-		and allowEntityTake)) then
-			return true;
-		end;
-	end;
-end;
+	local entity = Clockwork.storage:GetEntity()
+	local isPlayer = entity and entity:IsPlayer()
+
+	if itemTable then
+		local allowPlayerStorage = not isPlayer or itemTable("allowPlayerStorage") ~= false
+		local allowEntityStorage = isPlayer or itemTable("allowEntityStorage") ~= false
+		local allowPlayerTake = not isPlayer or itemTable("allowPlayerTake") ~= false
+		local allowEntityTake = isPlayer or itemTable("allowEntityTake") ~= false
+		local allowStorage = itemTable("allowStorage") ~= false
+		local isShipment = entity and entity:GetClass() == "cw_shipment"
+		local allowTake = itemTable("allowTake") ~= false
+		if isShipment or allowPlayerStorage and allowPlayerTake and allowEntityStorage and allowStorage and allowTake and allowEntityTake then return true end
+	end
+end
 
 --[[
 	@codebase Client
@@ -77,8 +64,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.storage:GetNoCashWeight()
-	return self.noCashWeight;
-end;
+	return self.noCashWeight
+end
 
 --[[
 	@codebase Client
@@ -86,8 +73,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.storage:GetNoCashSpace()
-	return self.noCashSpace;
-end;
+	return self.noCashSpace
+end
 
 --[[
 	@codebase Client
@@ -95,8 +82,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.storage:GetIsOneSided()
-	return self.isOneSided;
-end;
+	return self.isOneSided
+end
 
 --[[
 	@codebase Client
@@ -104,8 +91,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.storage:GetInventory()
-	return self.inventory;
-end;
+	return self.inventory
+end
 
 --[[
 	@codebase Client
@@ -113,12 +100,12 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.storage:GetCash()
-	if (Clockwork.config:Get("cash_enabled"):Get()) then
-		return self.cash;
+	if Clockwork.config:Get("cash_enabled"):Get() then
+		return self.cash
 	else
-		return 0;
-	end;
-end;
+		return 0
+	end
+end
 
 --[[
 	@codebase Client
@@ -126,8 +113,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.storage:GetPanel()
-	return self.panel;
-end;
+	return self.panel
+end
 
 --[[
 	@codebase Client
@@ -135,8 +122,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.storage:GetWeight()
-	return self.weight;
-end;
+	return self.weight
+end
 
 --[[
 	@codebase Client
@@ -144,8 +131,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.storage:GetSpace()
-	return self.space;
-end;
+	return self.space
+end
 
 --[[
 	@codebase Client
@@ -153,8 +140,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.storage:GetEntity()
-	return self.entity;
-end;
+	return self.entity
+end
 
 --[[
 	@codebase Client
@@ -162,5 +149,5 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.storage:GetName()
-	return self.name;
-end;
+	return self.name
+end

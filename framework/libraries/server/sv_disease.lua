@@ -1,10 +1,10 @@
+local Clockwork = Clockwork
 
-local Clockwork = Clockwork;
+Clockwork.disease = Clockwork.kernel:NewLibrary("Disease")
 
-Clockwork.disease = Clockwork.kernel:NewLibrary("Disease");
-Clockwork.disease.stored = Clockwork.disease.stored or {};
-Clockwork.disease.stored.diseases = Clockwork.disease.stored.diseases or {};
-Clockwork.disease.stored.symptoms = Clockwork.disease.stored.symptoms or {};
+Clockwork.disease.stored = Clockwork.disease.stored or {}
+Clockwork.disease.stored.diseases = Clockwork.disease.stored.diseases or {}
+Clockwork.disease.stored.symptoms = Clockwork.disease.stored.symptoms or {}
 
 --[[
 	@codebase Server
@@ -13,16 +13,16 @@ Clockwork.disease.stored.symptoms = Clockwork.disease.stored.symptoms or {};
 	@returns {Unknown}
 --]]
 function Clockwork.disease:New(uniqueID)
-	if (uniqueID) then
-		if (!self:IsValid(uniqueID)) then
-			self.stored.diseases[uniqueID] = {};
+	if uniqueID then
+		if not self:IsValid(uniqueID) then
+			self.stored.diseases[uniqueID] = {}
 		else
-			ErrorNoHalt("Attempting to add already existing disease '"..uniqueID.."'.");
-		end;
+			ErrorNoHalt("Attempting to add already existing disease '" .. uniqueID .. "'.")
+		end
 	else
-		ErrorNoHalt("Attempting to add nil disease.");
-	end;
-end;
+		ErrorNoHalt("Attempting to add nil disease.")
+	end
+end
 
 --[[
 	@codebase Server
@@ -31,16 +31,16 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.disease:Delete(uniqueID)
-	if (uniqueID) then
-		if (self:IsValid(uniqueID)) then
-			self.stored.diseases[uniqueID] = nil;
+	if uniqueID then
+		if self:IsValid(uniqueID) then
+			self.stored.diseases[uniqueID] = nil
 		else
-			ErrorNoHalt("Attempting to delete invalid disease '"..uniqueID.."'.");
-		end;
+			ErrorNoHalt("Attempting to delete invalid disease '" .. uniqueID .. "'.")
+		end
 	else
-		ErrorNoHalt("Attempting to delete nil disease.");
-	end;
-end;
+		ErrorNoHalt("Attempting to delete nil disease.")
+	end
+end
 
 --[[
 	@codebase Server
@@ -50,16 +50,16 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.disease:NewSymptom(uniqueID, callback)
-	if (uniqueID) then
-		if (!self:IsValidSymptom(uniqueID)) then
-			self.stored.symptoms[uniqueID] = callback;
+	if uniqueID then
+		if not self:IsValidSymptom(uniqueID) then
+			self.stored.symptoms[uniqueID] = callback
 		else
-			ErrorNoHalt("Attempting to add already existing symptom '"..uniqueID.."'.");
-		end;
+			ErrorNoHalt("Attempting to add already existing symptom '" .. uniqueID .. "'.")
+		end
 	else
-		ErrorNoHalt("Attempting to add nil symptom.");
-	end;
-end;
+		ErrorNoHalt("Attempting to add nil symptom.")
+	end
+end
 
 --[[
 	@codebase Server
@@ -69,26 +69,26 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.disease:AddSymptom(diseaseID, symptomID)
-	if (diseaseID) then
-		if (self:IsValid(diseaseID)) then
-			if (symptomID) then
-				if (self:IsValidSymptom(symptomID)) then
-					if (!table.HasValue(self.stored.diseases[diseaseID], symptomID)) then
-						table.insert(self.stored.diseases[diseaseID], symptomID);
-					end;
+	if diseaseID then
+		if self:IsValid(diseaseID) then
+			if symptomID then
+				if self:IsValidSymptom(symptomID) then
+					if not table.HasValue(self.stored.diseases[diseaseID], symptomID) then
+						table.insert(self.stored.diseases[diseaseID], symptomID)
+					end
 				else
-					ErrorNoHalt("Attempting to add invalid symptom '"..symptomID.."' to disease '"..diseaseID.."'.");
-				end;
+					ErrorNoHalt("Attempting to add invalid symptom '" .. symptomID .. "' to disease '" .. diseaseID .. "'.")
+				end
 			else
-				ErrorNoHalt("Attempting to add nil symptom to disease '"..diseaseID.."'.");
-			end;
+				ErrorNoHalt("Attempting to add nil symptom to disease '" .. diseaseID .. "'.")
+			end
 		else
-			ErrorNoHalt("Attempting to add symptom to invalid disease '"..diseaseID.."'.");
-		end;
+			ErrorNoHalt("Attempting to add symptom to invalid disease '" .. diseaseID .. "'.")
+		end
 	else
-		ErrorNoHalt("Attempting to add symptom to nil disease.");
-	end;
-end;
+		ErrorNoHalt("Attempting to add symptom to nil disease.")
+	end
+end
 
 --[[
 	@codebase Server
@@ -98,24 +98,24 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.disease:RemoveSymptom(diseaseID, symptomID)
-	if (diseaseID) then
-		if (self:IsValid(diseaseID)) then
-			if (symptomID) then
-				if (self:IsValidSymptom(symptomID)) then
-					table.RemoveByValue(self.stored.diseases[diseaseID], symptomID);
+	if diseaseID then
+		if self:IsValid(diseaseID) then
+			if symptomID then
+				if self:IsValidSymptom(symptomID) then
+					table.RemoveByValue(self.stored.diseases[diseaseID], symptomID)
 				else
-					ErrorNoHalt("Attempting to remove invalid symptom '"..symptomID.."' from disease '"..diseaseID.."'.");
-				end;
+					ErrorNoHalt("Attempting to remove invalid symptom '" .. symptomID .. "' from disease '" .. diseaseID .. "'.")
+				end
 			else
-				ErrorNoHalt("Attempting to remove nil symptom from disease '"..diseaseID.."'.");
-			end;
+				ErrorNoHalt("Attempting to remove nil symptom from disease '" .. diseaseID .. "'.")
+			end
 		else
-			ErrorNoHalt("Attempting to remove symptom from invalid disease '"..diseaseID.."'.");
-		end;
+			ErrorNoHalt("Attempting to remove symptom from invalid disease '" .. diseaseID .. "'.")
+		end
 	else
-		ErrorNoHalt("Attempting to remove symptom from nil disease.");
-	end;
-end;
+		ErrorNoHalt("Attempting to remove symptom from nil disease.")
+	end
+end
 
 --[[
 	@codebase Server
@@ -124,20 +124,20 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.disease:DeleteSymptom(uniqueID)
-	if (uniqueID) then
-		if (self:IsValidSymptom(uniqueID)) then
-			self.stored.symptoms[uniqueID] = nil;
+	if uniqueID then
+		if self:IsValidSymptom(uniqueID) then
+			self.stored.symptoms[uniqueID] = nil
 
 			for k, v in pairs(Clockwork.disease:GetAll()) do
-				table.RemoveByValue(v, uniqueID);
-			end;
+				table.RemoveByValue(v, uniqueID)
+			end
 		else
-			ErrorNoHalt("Attempting to delete invalid symptom '"..uniqueID.."'.");
-		end;
+			ErrorNoHalt("Attempting to delete invalid symptom '" .. uniqueID .. "'.")
+		end
 	else
-		ErrorNoHalt("Attempting to delete nil symptom.");
-	end;
-end;
+		ErrorNoHalt("Attempting to delete nil symptom.")
+	end
+end
 
 --[[
 	@codebase Server
@@ -146,22 +146,22 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.disease:GetSymptoms(diseaseID)
-	if (diseaseID) then
-		if (self:IsValid(diseaseID)) then
-			local symptoms = {};
+	if diseaseID then
+		if self:IsValid(diseaseID) then
+			local symptoms = {}
 
 			for k, v in pairs(self.stored.diseases[diseaseID]) do
-				symptoms[v] = self.stored.symptoms[v];
-			end;
+				symptoms[v] = self.stored.symptoms[v]
+			end
 
-			return symptoms;
+			return symptoms
 		else
-			ErrorNoHalt("Attempting to get symptoms of nonexistant disease '"..diseaseID.."'.");
-		end;
+			ErrorNoHalt("Attempting to get symptoms of nonexistant disease '" .. diseaseID .. "'.")
+		end
 	else
-		ErrorNoHalt("Attempting to get symptoms of nil disease.");
+		ErrorNoHalt("Attempting to get symptoms of nil disease.")
 	end
-end;
+end
 
 --[[
 	@codebase Server
@@ -170,12 +170,12 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.disease:IsValid(diseaseID)
-	if (self.stored.diseases[diseaseID]) then
-		return true;
+	if self.stored.diseases[diseaseID] then
+		return true
 	else
-		return false;
-	end;
-end;
+		return false
+	end
+end
 
 --[[
 	@codebase Server
@@ -184,12 +184,12 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.disease:IsValidSymptom(symptomID)
-	if (self.stored.symptoms[symptomID]) then
-		return true;
+	if self.stored.symptoms[symptomID] then
+		return true
 	else
-		return false;
-	end;
-end;
+		return false
+	end
+end
 
 --[[
 	@codebase Server
@@ -197,8 +197,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.disease:GetAll()
-	return self.stored.diseases;
-end;
+	return self.stored.diseases
+end
 
 --[[
 	@codebase Server
@@ -206,5 +206,5 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.disease:GetAllSymptoms()
-	return self.stored.symptoms;
-end;
+	return self.stored.symptoms
+end

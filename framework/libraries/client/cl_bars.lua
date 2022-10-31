@@ -1,15 +1,15 @@
 
-local Clockwork = Clockwork;
-local pairs = pairs;
-local table = table;
+local Clockwork = Clockwork
+local pairs = pairs
+local table = table
 
-Clockwork.bars = Clockwork.kernel:NewLibrary("Bars");
-Clockwork.bars.x = 0; 
-Clockwork.bars.y = 0;
-Clockwork.bars.width = 0;
-Clockwork.bars.height = 12;
-Clockwork.bars.padding = 14;
-Clockwork.bars.stored = Clockwork.bars.stored or {};
+Clockwork.bars = Clockwork.kernel:NewLibrary("Bars")
+Clockwork.bars.x = 0
+Clockwork.bars.y = 0
+Clockwork.bars.width = 0
+Clockwork.bars.height = 12
+Clockwork.bars.padding = 14
+Clockwork.bars.stored = Clockwork.bars.stored or {}
 
 --[[
 	@codebase Client
@@ -19,10 +19,10 @@ Clockwork.bars.stored = Clockwork.bars.stored or {};
 --]]
 function Clockwork.bars:FindByID(uniqueID)
 	for k, v in pairs(self.stored) do
-		if (v.uniqueID == uniqueID) then return v; end;
-	end;
-end;
-	
+		if v.uniqueID == uniqueID then return v end
+	end
+end
+
 --[[
 	@codebase Client
 	@details A function to add a top bar.
@@ -45,8 +45,8 @@ function Clockwork.bars:Add(uniqueID, color, text, value, maximum, flash, priori
 		value = value,
 		flash = flash,
 		text = text,
-	};
-end;
+	}
+end
 
 --[[
 	@codebase Client
@@ -56,8 +56,8 @@ end;
 --]]
 function Clockwork.bars:Destroy(uniqueID)
 	for k, v in pairs(self.stored) do
-		if (v.uniqueID == uniqueID) then
-			table.remove(self.stored, k);
-		end;
-	end;
-end;
+		if v.uniqueID == uniqueID then
+			table.remove(self.stored, k)
+		end
+	end
+end

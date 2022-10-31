@@ -1,14 +1,17 @@
 
-local Clockwork = Clockwork;
-local pairs = pairs;
-local string = string;
+local Clockwork = Clockwork
+local pairs = pairs
+local string = string
 
-Clockwork.trait = Clockwork.kernel:NewLibrary("Trait");
-Clockwork.trait.stored = Clockwork.trait.stored or {};
-Clockwork.trait.buffer = Clockwork.trait.buffer or {};
+Clockwork.trait = Clockwork.kernel:NewLibrary("Trait")
+
+Clockwork.trait.stored = Clockwork.trait.stored or {}
+Clockwork.trait.buffer = Clockwork.trait.buffer or {}
 
 --[[ Set the __index meta function of the class. --]]
-local CLASS_TABLE = {__index = CLASS_TABLE};
+local CLASS_TABLE = {
+	__index = CLASS_TABLE
+}
 
 --[[
 	@codebase Shared
@@ -16,8 +19,8 @@ local CLASS_TABLE = {__index = CLASS_TABLE};
 	@returns {Unknown}
 --]]
 function CLASS_TABLE:Register()
-	return Clockwork.trait:Register(self);
-end;
+	return Clockwork.trait:Register(self)
+end
 
 --[[
 	@codebase Shared
@@ -26,10 +29,11 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.trait:New(name)
-	local object = Clockwork.kernel:NewMetaTable(CLASS_TABLE);
-		object.name = name or "Unknown";
-	return object;
-end;
+	local object = Clockwork.kernel:NewMetaTable(CLASS_TABLE)
+	object.name = name or "Unknown"
+
+	return object
+end
 
 --[[
 	@codebase Shared
@@ -37,8 +41,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.trait:GetAll()
-	return self.stored;
-end;
+	return self.stored
+end
 
 --[[
 	@codebase Shared
@@ -47,19 +51,17 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.trait:Register(trait)
-	trait.uniqueID = trait.uniqueID or string.lower(string.gsub(trait.name, "%s", "_"));
-	trait.index = Clockwork.kernel:GetShortCRC(trait.name);
-	trait.points = trait.points or 1;
-	
-	self.stored[trait.uniqueID] = trait;
-	self.buffer[trait.index] = trait;
-	
+	trait.uniqueID = trait.uniqueID or string.lower(string.gsub(trait.name, "%s", "_"))
+	trait.index = Clockwork.kernel:GetShortCRC(trait.name)
+	trait.points = trait.points or 1
+	self.stored[trait.uniqueID] = trait
+	self.buffer[trait.index] = trait
 	--[[ if (SERVER and trait.image) then
 		Clockwork.kernel:AddFile("materials/"..trait.image..".png");
 	end; ]]
-	
-	return trait.uniqueID;
-end;
+
+	return trait.uniqueID
+end
 
 --[[
 	@codebase Shared
@@ -68,27 +70,27 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.trait:FindByID(identifier)
-	if (!identifier) then return; end;
-	
-	if (self.buffer[identifier]) then
-		return self.buffer[identifier];
-	elseif (self.stored[identifier]) then
-		return self.stored[identifier];
-	end;
-	
-	local trait = nil;
-	
+	if not identifier then return end
+
+	if self.buffer[identifier] then
+		return self.buffer[identifier]
+	elseif self.stored[identifier] then
+		return self.stored[identifier]
+	end
+
+	local trait = nil
+
 	for k, v in pairs(self.stored) do
-		if (string.find(string.lower(v.name), string.lower(identifier))) then
-			if (trait) then
-				if (string.utf8len(v.name) < string.utf8len(trait.name)) then
-					trait = v;
-				end;
+		if string.find(string.lower(v.name), string.lower(identifier)) then
+			if trait then
+				if string.utf8len(v.name) < string.utf8len(trait.name) then
+					trait = v
+				end
 			else
-				trait = v;
-			end;
-		end;
-	end;
-	
-	return trait;
-end;
+				trait = v
+			end
+		end
+	end
+
+	return trait
+end

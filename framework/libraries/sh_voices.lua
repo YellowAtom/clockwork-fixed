@@ -1,15 +1,9 @@
---[[ 
-    © CloudSixteen.com do not share, re-distribute or modify
-    without permission of its author (kurozael@gmail.com).
 
-    Clockwork was created by Conna Wiles (also known as kurozael.)
-    http://cloudsixteen.com/license/clockwork.html
---]]
+Clockwork.voices = Clockwork.kernel:NewLibrary("CWVoices")
 
-Clockwork.voices = Clockwork.kernel:NewLibrary("CWVoices");
-Clockwork.voices.chatClasses = { "ic", "yell", "whisper" };
+Clockwork.voices.chatClasses = {"ic", "yell", "whisper"}
 
-local groups = {};
+local groups = {}
 
 --[[
 	@codebase Shared
@@ -17,8 +11,8 @@ local groups = {};
 	@returns {Unknown}
 --]]
 function Clockwork.voices:GetAll()
-	return groups;
-end;
+	return groups
+end
 
 --[[
 	@codebase Shared
@@ -27,8 +21,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.voices:FindByID(id)
-	return groups[id];
-end;
+	return groups[id]
+end
 
 --[[
 	@codebase Shared
@@ -37,8 +31,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.voices:GetVoices(id)
-	return groups[id].voices;
-end;
+	return groups[id].voices
+end
 
 --[[
 	@codebase Shared
@@ -49,23 +43,21 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.voices:RegisterGroup(group, gender, callback)
-	if (!gender) then
-		gender = false;
-	end;
+	if not gender then
+		gender = false
+	end
 
 	groups[group] = {
 		gender = gender,
 		IsPlayerMember = callback,
 		voices = {};
-	};
+	}
 
-	if (CLIENT) then
-		Clockwork.directory:AddCategory(group, "HelpCommands");
-		Clockwork.directory:SetCategorySorting(group, function(a, b)
-			return a.sortData < b.sortData;
-		end);
-	end;
-end;
+	if CLIENT then
+		Clockwork.directory:AddCategory(group, "HelpCommands")
+		Clockwork.directory:SetCategorySorting(group, function(a, b) return a.sortData < b.sortData end)
+	end
+end
 
 --[[
 	@codebase Shared
@@ -81,9 +73,9 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.voices:Add(groupName, command, phrase, sound, female, menu, pitch, volume)
-	local group = groups[groupName];
+	local group = groups[groupName]
 
-	if (group) then
+	if group then
 		group.voices[#group.voices + 1] = {
 			command = command,
 			phrase = phrase or "",
@@ -92,9 +84,9 @@ function Clockwork.voices:Add(groupName, command, phrase, sound, female, menu, p
 			menu = menu,
 			pitch = pitch,
 			volume = volume
-		};
+		}
 
-		if (CLIENT) then
+		if CLIENT then
 			Clockwork.directory:AddCode(groupName, [[
 				<div class="cwTitleSeperator">
 					]] .. string.upper(command) .. [[
@@ -102,9 +94,9 @@ function Clockwork.voices:Add(groupName, command, phrase, sound, female, menu, p
 				<div class="cwContentText">
 					<lang>]] .. phrase .. [[</lang>
 				</div>
-			]], nil, command);
-		end;
+			]], nil, command)
+		end
 	else
-		ErrorNoHaltWithStack("Attempted to add voice for invalid group '" .. groupName .. "'.\n");
-	end;
-end;
+		ErrorNoHaltWithStack("Attempted to add voice for invalid group '" .. groupName .. "'.\n")
+	end
+end

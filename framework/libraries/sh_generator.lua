@@ -1,17 +1,10 @@
---[[
-	© CloudSixteen.com do not share, re-distribute or modify
-	without permission of its author (kurozael@gmail.com).
 
-	Clockwork was created by Conna Wiles (also known as kurozael.)
-	http://cloudsixteen.com/license/clockwork.html
---]]
+local Clockwork = Clockwork
+local pairs = pairs
+local string = string
 
-local Clockwork = Clockwork;
-local pairs = pairs;
-local string = string;
-
-Clockwork.generator = Clockwork.kernel:NewLibrary("Generator");
-Clockwork.generator.stored = Clockwork.generator.stored or {};
+Clockwork.generator = Clockwork.kernel:NewLibrary("Generator")
+Clockwork.generator.stored = Clockwork.generator.stored or {}
 
 --[[
 	@codebase Shared
@@ -36,8 +29,8 @@ function Clockwork.generator:Register(name, power, health, maximum, cash, unique
 		power = power or 2,
 		cash = cash or 100,
 		name = name
-	};
-end;
+	}
+end
 
 --[[
 	@codebase Shared
@@ -45,8 +38,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.generator:GetAll()
-	return self.stored;
-end;
+	return self.stored
+end
 
 --[[
 	@codebase Shared
@@ -55,19 +48,19 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.generator:FindByID(identifier)
-	if (!self.stored[identifier]) then
-		local tGeneratorTab = nil;
-		
+	if not self.stored[identifier] then
+		local tGeneratorTab = nil
+
 		for k, v in pairs(self.stored) do
-			if (string.find(string.lower(v.name), string.lower(identifier))) then
-				if (!tGeneratorTab or string.utf8len(v.name) < string.utf8len(tGeneratorTab.name)) then
-					tGeneratorTab = v;
-				end;
-			end;
-		end;
-		
-		return tGeneratorTab;
+			if string.find(string.lower(v.name), string.lower(identifier)) then
+				if not tGeneratorTab or string.utf8len(v.name) < string.utf8len(tGeneratorTab.name) then
+					tGeneratorTab = v
+				end
+			end
+		end
+
+		return tGeneratorTab
 	else
-		return self.stored[identifier];
-	end;
-end;
+		return self.stored[identifier]
+	end
+end

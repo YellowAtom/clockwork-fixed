@@ -1,12 +1,11 @@
-
-local Clockwork = Clockwork;
-local fileio = fileio;
-
+local Clockwork = Clockwork
+local fileio = fileio
 --[[
 	@codebase Server
 	@details Provides an interface to the file library. 
 --]]
-Clockwork.file = Clockwork.kernel:NewLibrary("File");
+
+Clockwork.file = Clockwork.kernel:NewLibrary("File")
 
 --[[
 	@codebase Server
@@ -15,8 +14,8 @@ Clockwork.file = Clockwork.kernel:NewLibrary("File");
 	@returns {String} The contents of the file.
 --]]
 function Clockwork.file:Read(filePath)
-	return fileio.Read(filePath);
-end;
+	return fileio.Read(filePath)
+end
 
 --[[
 	@codebase Server
@@ -25,8 +24,8 @@ end;
 	@param {String} The data to write to the file.
 --]]
 function Clockwork.file:Write(filePath, fileData)
-	return fileio.Write(filePath, fileData);
-end;
+	return fileio.Write(filePath, fileData)
+end
 
 --[[
 	@codebase Server
@@ -34,8 +33,8 @@ end;
 	@param {String} The file path.
 --]]
 function Clockwork.file:Delete(filePath)
-	return fileio.Delete(filePath);
-end;
+	return fileio.Delete(filePath)
+end
 
 --[[
 	@codebase Server
@@ -43,8 +42,8 @@ end;
 	@param {String} The directory to make.
 --]]
 function Clockwork.file:MakeDirectory(directory)
-	return fileio.MakeDirectory(directory);
-end;
+	return fileio.MakeDirectory(directory)
+end
 
 --[[
 	@codebase Server
@@ -53,8 +52,8 @@ end;
 	@param {String} The data to write to the file.
 --]]
 function Clockwork.file:Append(filePath, fileData)
-	return fileio.Append(filePath, fileData);
-end;
+	return fileio.Append(filePath, fileData)
+end
 
 --[[
 	@codebase Server
@@ -62,5 +61,5 @@ end;
 	@param {String} The file path.
 --]]
 function Clockwork.file:Exists(filePath)
-	return file.Exists(filePath, "GAME");
-end;
+	return file.Exists(filePath, "GAME")
+end

@@ -1,27 +1,17 @@
---[[
-	© CloudSixteen.com do not share, re-distribute or modify
-	without permission of its author (kurozael@gmail.com).
+local COMMAND = Clockwork.command:New("StorageClose")
 
-	Clockwork was created by Conna Wiles (also known as kurozael.)
-	http://cloudsixteen.com/license/clockwork.html
---]]
-
-local Clockwork = Clockwork;
-
-local COMMAND = Clockwork.command:New("StorageClose");
-
-COMMAND.tip = "CmdStorageClose";
-COMMAND.flags = CMD_DEFAULT;
+COMMAND.tip = "CmdStorageClose"
+COMMAND.flags = CMD_DEFAULT
 
 -- Called when the command has been run.
 function COMMAND:OnRun(player, arguments)
-	local storageTable = player:GetStorageTable();
-	
-	if (storageTable) then
-		Clockwork.storage:Close(player, true);
-	else
-		Clockwork.player:Notify(player, {"YouHaveNoStorageOpen"});
-	end;
-end;
+	local storageTable = player:GetStorageTable()
 
-COMMAND:Register();
+	if storageTable then
+		Clockwork.storage:Close(player, true)
+	else
+		Clockwork.player:Notify(player, {"YouHaveNoStorageOpen"})
+	end
+end
+
+COMMAND:Register()

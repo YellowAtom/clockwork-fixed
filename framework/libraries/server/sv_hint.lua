@@ -1,15 +1,14 @@
-
-local Clockwork = Clockwork;
-local pairs = pairs;
-local math = math;
+local Clockwork = Clockwork
+local pairs = pairs
+local math = math
 
 --[[
 	@codebase Server
 	@details Provides an interface to the hints system.
 	@field stored A table containing a list of stored hints.
 --]]
-Clockwork.hint = Clockwork.kernel:NewLibrary("Hint");
-Clockwork.hint.stored = Clockwork.hint.stored or {};
+Clockwork.hint = Clockwork.kernel:NewLibrary("Hint")
+Clockwork.hint.stored = Clockwork.hint.stored or {}
 
 --[[
 	@codebase Server
@@ -22,8 +21,8 @@ function Clockwork.hint:Add(name, text, Callback)
 	self.stored[name] = {
 		Callback = Callback,
 		text = text
-	};
-end;
+	}
+end
 
 --[[
 	@codebase Server
@@ -31,8 +30,8 @@ end;
 	@param {String} A unique identifier.
 --]]
 function Clockwork.hint:Remove(name)
-	self.stored[name] = nil;
-end;
+	self.stored[name] = nil
+end
 
 --[[
 	@codebase Server
@@ -41,28 +40,26 @@ end;
 	@returns {Table} The hint table matching the identifier.
 --]]
 function Clockwork.hint:Find(name)
-	return self.stored[name];
-end;
+	return self.stored[name]
+end
 
 --[[
 	@codebase Server
 	@details Distribute a hint to each player.
 --]]
 function Clockwork.hint:Distribute()
-	local hintText, Callback = self:Get();
-	local hintInterval = Clockwork.config:Get("hint_interval"):Get();
-	
-	if (!hintText) then return; end;
-	
+	local hintText, Callback = self:Get()
+--	local hintInterval = Clockwork.config:Get("hint_interval"):Get()
+	if not hintText then return end
+
 	for k, v in pairs(cwPlayer.GetAll()) do
-		if (v:HasInitialized() and v:GetInfoNum("cwShowHints", 1) == 1
-		and !v:IsViewingStarterHints()) then
-			if (!Callback or Callback(v) != false) then
-				self:Send(v, hintText, 6, nil, true);
-			end;
-		end;
-	end;
-end;
+		if v:HasInitialized() and v:GetInfoNum("cwShowHints", 1) == 1 and not v:IsViewingStarterHints() then
+			if not Callback or Callback(v) ~= false then
+				self:Send(v, hintText, 6, nil, true)
+			end
+		end
+	end
+end
 
 --[[
 	@codebase Server
@@ -82,8 +79,8 @@ function Clockwork.hint:SendCenter(player, text, delay, color, noSound, showDupl
 		center = true,
 		noSound = noSound,
 		showDuplicates = showDuplicated
-	});
-end;
+	})
+end
 
 --[[
 	@codebase Server
@@ -94,11 +91,11 @@ end;
 --]]
 function Clockwork.hint:SendCenterAll(text, delay, color)
 	for k, v in pairs(cwPlayer.GetAll()) do
-		if (v:HasInitialized()) then
-			self:SendCenter(v, text, delay, color);
-		end;
-	end;
-end;
+		if v:HasInitialized() then
+			self:SendCenter(v, text, delay, color)
+		end
+	end
+end
 
 --[[
 	@codebase Server
@@ -116,10 +113,9 @@ function Clockwork.hint:Send(player, text, delay, color, noSound, showDuplicated
 		delay = delay,
 		color = color,
 		noSound = noSound,
-		showDuplicates =
-		showDuplicated
-	});
-end;
+		showDuplicates = showDuplicated
+	})
+end
 
 --[[
 	@codebase Server
@@ -130,11 +126,11 @@ end;
 --]]
 function Clockwork.hint:SendAll(text, delay, color)
 	for k, v in pairs(cwPlayer.GetAll()) do
-		if (v:HasInitialized()) then
-			self:Send(v, text, delay, color);
-		end;
-	end;
-end;
+		if v:HasInitialized() then
+			self:Send(v, text, delay, color)
+		end
+	end
+end
 
 --[[
 	@codebase Server
@@ -143,47 +139,31 @@ end;
 	@returns {Function} The random hint callback.
 --]]
 function Clockwork.hint:Get()
-	local hints = {};
-	
+	local hints = {}
+
 	for k, v in pairs(self.stored) do
-		if (!v.Callback or v.Callback() != false) then
-			hints[#hints + 1] = v;
-		end;
-	end;
-	
-	if (#hints > 0) then
-		local hint = hints[math.random(1, #hints)];
-		
-		if (hint) then
-			return hint.text, hint.Callback;
-		end;
-	end;
-end;
+		if not v.Callback or v.Callback() ~= false then
+			hints[#hints + 1] = v
+		end
+	end
 
-Clockwork.hint:Add("OOC", "HintOOC");
-Clockwork.hint:Add("LOOC", "HintLOOC");
-Clockwork.hint:Add("Ducking", "HintDucking");
-Clockwork.hint:Add("Jogging", "HintJogging");
-Clockwork.hint:Add("Directory", "HintDirectory");
-Clockwork.hint:Add("HotkeyF1", "HintHotkeyF1");
-Clockwork.hint:Add("HotkeyF2", "HintHotkeyF2");
-Clockwork.hint:Add("HotkeyTab", "HintHotkeyTab");
+	if #hints > 0 then
+		local hint = hints[math.random(1, #hints)]
+		if hint then return hint.text, hint.Callback end
+	end
+end
 
-Clockwork.hint:Add("ContextMenu", "HintContextMenu", function(player)
-	return !Clockwork.config:Get("use_opens_entity_menus"):Get();
-end);
-Clockwork.hint:Add("EntityMenu", "HintEntityMenu", function(player)
-	return Clockwork.config:Get("use_opens_entity_menus"):Get();
-end);
-Clockwork.hint:Add("PhysDesc", "HintPhysDesc", function(player)
-	return Clockwork.command:FindByID("CharPhysDesc") != nil;
-end);
-Clockwork.hint:Add("GiveName", "HintGiveName", function(player)
-	return Clockwork.config:Get("recognise_system"):Get();
-end);
-Clockwork.hint:Add("RaiseWeapon", "HintRaiseWeapon", function(player)
-	return Clockwork.config:Get("raised_weapon_system"):Get();
-end);
-Clockwork.hint:Add("TargetRecognises", "HintTargetRecognises", function(player)
-	return Clockwork.config:Get("recognise_system"):Get();
-end);
+Clockwork.hint:Add("OOC", "HintOOC")
+Clockwork.hint:Add("LOOC", "HintLOOC")
+Clockwork.hint:Add("Ducking", "HintDucking")
+Clockwork.hint:Add("Jogging", "HintJogging")
+Clockwork.hint:Add("Directory", "HintDirectory")
+Clockwork.hint:Add("HotkeyF1", "HintHotkeyF1")
+Clockwork.hint:Add("HotkeyF2", "HintHotkeyF2")
+Clockwork.hint:Add("HotkeyTab", "HintHotkeyTab")
+Clockwork.hint:Add("ContextMenu", "HintContextMenu", function(player) return not Clockwork.config:Get("use_opens_entity_menus"):Get() end)
+Clockwork.hint:Add("EntityMenu", "HintEntityMenu", function(player) return Clockwork.config:Get("use_opens_entity_menus"):Get() end)
+Clockwork.hint:Add("PhysDesc", "HintPhysDesc", function(player) return Clockwork.command:FindByID("CharPhysDesc") ~= nil end)
+Clockwork.hint:Add("GiveName", "HintGiveName", function(player) return Clockwork.config:Get("recognise_system"):Get() end)
+Clockwork.hint:Add("RaiseWeapon", "HintRaiseWeapon", function(player) return Clockwork.config:Get("raised_weapon_system"):Get() end)
+Clockwork.hint:Add("TargetRecognises", "HintTargetRecognises", function(player) return Clockwork.config:Get("recognise_system"):Get() end)

@@ -1,8 +1,8 @@
 
-local Clockwork = Clockwork;
-local IsValid = IsValid;
+local Clockwork = Clockwork
+local IsValid = IsValid
 
-Clockwork.door = Clockwork.kernel:NewLibrary("Door");
+Clockwork.door = Clockwork.kernel:NewLibrary("Door")
 
 --[[
 	@codebase Client
@@ -10,12 +10,9 @@ Clockwork.door = Clockwork.kernel:NewLibrary("Door");
 	@returns {Unknown}
 --]]
 function Clockwork.door:IsDoorPanelOpen()
-	local panel = self:GetPanel();
-	
-	if (IsValid(panel)) then
-		return true;
-	end;
-end;
+	local panel = self:GetPanel()
+	if IsValid(panel) then return true end
+end
 
 --[[
 	@codebase Client
@@ -23,8 +20,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.door:HasSharedText()
-	return self.cwDoorSharedTxt;
-end;
+	return self.cwDoorSharedTxt
+end
 
 --[[
 	@codebase Client
@@ -32,8 +29,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.door:HasSharedAccess()
-	return self.cwDoorSharedAxs;
-end;
+	return self.cwDoorSharedAxs
+end
 
 --[[
 	@codebase Client
@@ -41,8 +38,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.door:IsParent()
-	return self.isParent;
-end;
+	return self.isParent
+end
 
 --[[
 	@codebase Client
@@ -50,8 +47,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.door:IsUnsellable()
-	return self.unsellable;
-end;
+	return self.unsellable
+end
 
 --[[
 	@codebase Client
@@ -59,8 +56,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.door:GetAccessList()
-	return self.accessList;
-end;
+	return self.accessList
+end
 
 --[[
 	@codebase Client
@@ -68,8 +65,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.door:GetName()
-	return self.name;
-end;
+	return self.name
+end
 
 --[[
 	@codebase Client
@@ -77,10 +74,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.door:GetPanel()
-	if (IsValid(self.panel)) then
-		return self.panel;
-	end;
-end;
+	if IsValid(self.panel) then return self.panel end
+end
 
 --[[
 	@codebase Client
@@ -88,10 +83,8 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.door:GetOwner()
-	if (IsValid(self.owner)) then
-		return self.owner;
-	end;
-end;
+	if IsValid(self.owner) then return self.owner end
+end
 
 --[[
 	@codebase Client
@@ -99,5 +92,5 @@ end;
 	@returns {Unknown}
 --]]
 function Clockwork.door:GetEntity()
-	return self.entity;
-end;
+	return self.entity
+end
