@@ -2744,15 +2744,15 @@ else
 				surface.SetDrawColor(colorWhite.r, colorWhite.g, colorWhite.b, alpha)
 				surface.DrawRect(barInfo.x + 2, barInfo.y + 2, barInfo.width - 4, barInfo.height - 4)
 			end
-		end
 
-		if not Clockwork.plugin:Call("PostDrawBar", barInfo) then
 			if barInfo.text and barInfo.text ~= "" then
 				self:OverrideMainFont(Clockwork.option:GetFont("bar_text"))
 				self:DrawSimpleText(barInfo.text, barInfo.x + barInfo.width / 2, barInfo.y + barInfo.height / 2, Color(colorWhite.r, colorWhite.g, colorWhite.b, 255), 1, 1)
 				self:OverrideMainFont(false)
 			end
 		end
+
+		Clockwork.plugin:Call("PostDrawBar", barInfo)
 
 		return barInfo.y
 	end
