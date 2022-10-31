@@ -1,5 +1,5 @@
 --[[
-	© 2015 CloudSixteen.com do not share, re-distribute or modify
+	© CloudSixteen.com do not share, re-distribute or modify
 	without permission of its author (kurozael@gmail.com).
 
 	Clockwork was created by Conna Wiles (also known as kurozael.)
@@ -12,6 +12,6 @@
 --]]
 PLUGIN:SetGlobalAlias("cwAnimatedLegs");
 
---[[ You don't have to do this either, but I prefer to seperate the functions. --]]
+--[[ You don't have to do this either, but I prefer to separate the functions. --]]
 Clockwork.kernel:IncludePrefixed("cl_plugin.lua");
 Clockwork.kernel:IncludePrefixed("cl_hooks.lua");

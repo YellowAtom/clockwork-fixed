@@ -1,5 +1,5 @@
 --[[
-	© 2015 CloudSixteen.com do not share, re-distribute or modify
+	© CloudSixteen.com do not share, re-distribute or modify
 	without permission of its author (kurozael@gmail.com).
 
 	Clockwork was created by Conna Wiles (also known as kurozael.)
@@ -97,9 +97,9 @@ cwAnimatedLegs.RadAngle = nil;
 
 -- A function to get whether the legs should be drawn.
 function cwAnimatedLegs:ShouldDrawLegs()
-   return IsValid(self.LegsEntity) and Clockwork.Client:Alive()
-   and self:CheckDrawVehicle() and GetViewEntity() == Clockwork.Client
-   and !Clockwork.Client:ShouldDrawLocalPlayer() and !IsValid(Clockwork.Client:GetObserverTarget());
+	return IsValid(self.LegsEntity) and Clockwork.Client:Alive()
+	and self:CheckDrawVehicle() and GetViewEntity() == Clockwork.Client
+	and !Clockwork.Client:ShouldDrawLocalPlayer() and !IsValid(Clockwork.Client:GetObserverTarget());
 end;
 
 -- A function to check if a vehicle should be drawn.
@@ -126,14 +126,14 @@ function cwAnimatedLegs:WeaponChanged(weapon)
 		else
 			self.HoldType = "none";
 		end;
-		
+
 		for i = 0, self.LegsEntity:GetBoneCount() do
 			self.LegsEntity:ManipulateBoneScale(i, Vector(1, 1, 1));
 			self.LegsEntity:ManipulateBonePosition(i, vector_origin);
 		end;
-		
+
 		self.BonesToRemove = {"ValveBiped.Bip01_Head1"};
-			
+
 		if (!Clockwork.Client:InVehicle()) then
 			if ((self.HoldType != "fist" or !Clockwork.player:GetWeaponRaised(Clockwork.Client))
 			and self.BoneHoldTypes[self.HoldType]) then
@@ -146,10 +146,10 @@ function cwAnimatedLegs:WeaponChanged(weapon)
 		else
 			self.BonesToRemove = self.BoneHoldTypes["chair"];
 		end;
-		
+
 		for k, v in pairs(self.BonesToRemove) do
 			local bone = self.LegsEntity:LookupBone(v);
-			
+
 			if (bone) then
 				self.LegsEntity:ManipulateBoneScale(bone, vector_origin);
 				self.LegsEntity:ManipulateBonePosition(bone, Vector(-10,-10,0));
@@ -161,17 +161,17 @@ end;
 -- Called every frame for the legs.
 function cwAnimatedLegs:LegsThink(maxSeqGroundSpeed)
 	local curTime = CurTime();
-	
+
 	if (IsValid(self.LegsEntity)) then
 		if (Clockwork.Client:GetActiveWeapon() != self.OldWeapon) then
 			self.OldWeapon = Clockwork.Client:GetActiveWeapon();
 			self:WeaponChanged(self.OldWeapon);
 		end;
-		
+
 		if (self.LegsEntity:GetModel() != Clockwork.Client:GetModel()) then
 			self.LegsEntity:SetModel(Clockwork.Client:GetModel());
 		end
-		
+
 		self.LegsEntity:SetMaterial(Clockwork.Client:GetMaterial());
 		self.LegsEntity:SetSkin(Clockwork.Client:GetSkin());
 		self.Velocity = Clockwork.Client:GetVelocity():Length2D();
@@ -185,30 +185,34 @@ function cwAnimatedLegs:LegsThink(maxSeqGroundSpeed)
 				self.PlaybackRate = math.Clamp(self.PlaybackRate, 0.01, 10);
 			end
 		end
-		
+
 		self.LegsEntity:SetPlaybackRate(self.PlaybackRate);
 		self.Sequence = Clockwork.Client:GetSequence();
-		
+
 		if (self.LegsEntity.Anim != self.Sequence) then
 			self.LegsEntity.Anim = self.Sequence;
 			self.LegsEntity:ResetSequence(self.Sequence);
 		end;
-		
+
 		self.LegsEntity:FrameAdvance(curTime - self.LegsEntity.LastTick);
 		self.LegsEntity.LastTick = curTime;
-		
+
 		if (self.NextBreath <= curTime) then
 			self.NextBreath = curTime + 1.95 / self.BreathScale;
 			self.LegsEntity:SetPoseParameter("breathing", self.BreathScale);
 		end
-		
+
 		self.LegsEntity:SetPoseParameter("move_yaw", (Clockwork.Client:GetPoseParameter("move_yaw") * 360) - 180);
 		self.LegsEntity:SetPoseParameter("body_yaw", (Clockwork.Client:GetPoseParameter("body_yaw") * 180) - 90);
 		self.LegsEntity:SetPoseParameter("spine_yaw", (Clockwork.Client:GetPoseParameter("spine_yaw") * 180) - 90);
-		
+
 		if (Clockwork.Client:InVehicle()) then
 			self.LegsEntity:SetColor(color_transparent);
 			self.LegsEntity:SetPoseParameter("vehicle_steer", (Clockwork.Client:GetVehicle():GetPoseParameter("vehicle_steer") * 2) - 1);
+		end;
+
+		for iBodygroupIndex = 0, Clockwork.Client:GetNumBodyGroups() - 1 do
+			self.LegsEntity:SetBodygroup(iBodygroupIndex, Clockwork.Client:GetBodygroup(iBodygroupIndex));
 		end;
 	end;
 end;
