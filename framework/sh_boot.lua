@@ -12,20 +12,21 @@ else
 	CurrentGM = nil
 end
 
-local AddCSLuaFile, pairs = AddCSLuaFile, pairs;
-
 Clockwork.ClockworkFolder = Clockwork.ClockworkFolder or GM.Folder
 Clockwork.SchemaFolder = Clockwork.SchemaFolder or engine.ActiveGamemode()
+
 Clockwork.Name = "Clockwork"
-Clockwork.KernelVersion = "0.102"
-Clockwork.KernelBuild = "UG"
-Clockwork.DeveloperVersion = true
-Clockwork.Website = "https://undeterminedgaming.com"
-Clockwork.Author = "Undetermined Gaming"
-Clockwork.Email = ""
+Clockwork.Author = "kurozael"
+Clockwork.Website = "http://kurozael.com"
+Clockwork.Email = "kurozael@gmail.com"
+Clockwork.KernelVersion = "0.101"
+Clockwork.KernelBuild = ""
+
+Clockwork.KernalBranch = "UG"
+Clockwork.KernalBranchVersion = "0.1"
 
 function Clockwork:GetGameDescription()
-	return "CW: " .. Clockwork.kernel:GetSchemaGamemodeName()
+	return Clockwork.kernel:GetSchemaGamemodeName()
 end
 
 AddCSLuaFile("cl_kernel.lua")

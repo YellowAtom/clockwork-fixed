@@ -203,15 +203,35 @@ end
 
 --[[
 	@codebase Shared
+	@details A function to get the kernel branch.
+	@returns {String} The kernel branch.
+--]]
+function Clockwork.kernel:GetBranch()
+	return Clockwork.KernalBranch
+end
+
+--[[
+	@codebase Shared
+	@details A function to get the kernel branch version.
+	@returns {String} The kernel branch version.
+--]]
+function Clockwork.kernel:GetBranchVersion()
+	return Clockwork.KernalBranchVersion
+end
+
+--[[
+	@codebase Shared
 	@details A function to get the kernel version and build.
 	@returns {String} The kernel version and build concatenated.
 --]]
 function Clockwork.kernel:GetVersionBuild()
-	if not clockwork.KernalBuild or clockwork.KernalBuild == "" then
-		return Clockwork.KernelVersion
+	local branch = ""
+
+	if Clockwork.KernalBranch then
+		branch = " (" .. (Clockwork.KernalBranch .. (Clockwork.KernalBranchVersion and " " .. Clockwork.KernalBranchVersion or "")) .. ")"
 	end
 
-	return Clockwork.KernelVersion .. " - " .. Clockwork.KernelBuild
+	return Clockwork.KernelVersion .. ((Clockwork.KernelBuild and Clockwork.KernelBuild ~= "") and "-" .. Clockwork.KernelBuild or "") .. branch
 end
 
 --[[

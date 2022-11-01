@@ -1,6 +1,8 @@
 CloudAuthX = CWUtil
 CloudAuthX.kernel = {}
 
+CLOUDAUTHX_VERSION = -1
+
 function CloudAuthX.GetVersion()
 	return CLOUDAUTHX_VERSION
 end

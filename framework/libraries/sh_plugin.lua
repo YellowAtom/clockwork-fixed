@@ -381,25 +381,42 @@ end
 	@codebase Shared
 	@details A function to determine whether the framework supports a particular plugin.
 	@param {Unknown} Missing description for compatibility.
-	@param {Unknown} Missing description for name.
-	@param {Unknown} Missing description for version.
-	@param {Unknown} Missing description for build.
+	@param {Unknown} Missing description for branch.
 	@returns {Unknown}
 --]]
-function Clockwork.plugin:CompareVersion(compatibility, name, version, build)
-	if tostring(compatibility) == Clockwork.kernel:GetVersionBuild() then return false end
-	local exploded = string.Explode("-", compatibility)
+function Clockwork.plugin:CompareVersion(compatibility, branch)
+	-- Clockwork Branch and Version Check.
+	if branch then
+		local clockworkBranch = Clockwork.kernel:GetBranch()
+		local clockworkBranchVersion = tonumber(Clockwork.kernel:GetBranchVersion())
 
-	local pluginVersion = exploded[1] or {compatibility}
+		local branchExplode = string.Explode("-", branch)
 
-	local pluginBuild = exploded[2]
+		local pluginBranch = branchExplode[1] or branch
+		local pluginBranchVersion = tonumber(branchExplode[2])
 
-	if pluginVersion > version then
-		return true
-	elseif pluginVersion == version then
-		if pluginBuild and build then
-			if pluginBuild > build then return true end
-		elseif not pluginBuild then
+		if pluginBranch ~= clockworkBranch then
+			return true
+		elseif pluginBranchVersion and pluginBranchVersion > clockworkBranchVersion then
+			return true
+		end
+	end
+
+	-- Clockwork Version and Build Check.
+	if compatibility then
+		local clockworkVersion = tonumber(Clockwork.kernel:GetVersion())
+		local clockworkBuild = tonumber(Clockwork.kernel:GetBuild())
+
+		local compatibilityExplode = string.Explode("-", compatibility)
+
+		local pluginVersion = tonumber(compatibilityExplode[1] or compatibility)
+		local pluginBuild = tonumber(compatibilityExplode[2])
+
+		if pluginVersion and (pluginVersion < 0.9 or pluginVersion > clockworkVersion) then
+			return true
+		end
+
+		if (pluginBuild and clockworkBuild) and (pluginBuild > clockworkBuild) then
 			return true
 		end
 	end
@@ -454,24 +471,26 @@ function Clockwork.plugin:Include(directory, isSchema)
 				if iniTable["Plugin"] then
 					iniTable = iniTable["Plugin"]
 					iniTable.isUnloaded = self:IsUnloaded(PLUGIN_FOLDERNAME, true)
+
 					table.Merge(PLUGIN, iniTable)
 					CW_PLUGIN_SHARED.iniTables[pathCRC] = iniTable
 				end
-				--[[ if (iniTable["compatibility"]) then
-					local compatibility = iniTable["compatibility"];
-					local versionBuild = Clockwork.kernel:GetVersionBuild();
-					local version = Clockwork.kernel:GetVersion();
-					local build = Clockwork.kernel:GetBuild();
-					local name = iniTable["name"] or PLUGIN_FOLDERNAME;
 
-					if (self:CompareVersion(compatibility, name, version, build)) then
-						MsgC(Color(255, 165, 0), "[Clockwork:Plugin] The " .. name .. " plugin [" .. compatibility .. "] may not be compatible with Clockwork " .. versionBuild .. "!\nYou might need to update your framework!\n");
-					end;
-				else
-					MsgC(Color(255,165,0),"[Clockwork:Plugin] The " .. PLUGIN_FOLDERNAME .. " plugin has no compatibility value set!\n");
-				end ]]
+				local compatibility -- = iniTable["compatibility"] -- This no longer works as KUROZAEL made the newest version of clockwork numerically lower than 0.9 
+				local branch = iniTable["branch"]
+				local name = iniTable["name"] or PLUGIN_FOLDERNAME
+
+				if (compatibility or branch) then
+					if (self:CompareVersion(compatibility, branch)) then
+						local version = string.format("%s%s%s", compatibility or "", (compatibility and branch) and " | " or "", branch or "")
+
+						MsgC(Color(255, 165, 0), string.format("[Clockwork:Plugin] The \"%s\" plugin [%s] may not be compatible the Clockwork %s!\n", name, version, Clockwork.kernel:GetVersionBuild()))
+					end
+--				else
+--					MsgC(Color(255, 165, 0),"[Clockwork:Plugin] The \"" .. name .. "\"" plugin has no compatibility value set!\n")
+				end
 			else
-				MsgC(Color(255, 255, 50, 255), "[Clockwork:Plugin] The " .. PLUGIN_FOLDERNAME .. " plugin has no plugin.ini!\n")
+				MsgC(Color(255, 165, 0), "[Clockwork:Plugin] The \"" .. PLUGIN_FOLDERNAME .. "\" plugin has no plugin.ini!\n")
 			end
 		else
 			local iniTable = CW_PLUGIN_SHARED.iniTables[pathCRC]
@@ -482,8 +501,6 @@ function Clockwork.plugin:Include(directory, isSchema)
 				if iniTable.isUnloaded then
 					unloaded[PLUGIN_FOLDERNAME] = true
 				end
-			else
-				MsgC(Color(255, 100, 0, 255), "[Clockwork:Plugin] The " .. PLUGIN_FOLDERNAME .. " plugin has no plugin.ini!\n")
 			end
 		end
 

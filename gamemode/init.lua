@@ -7,8 +7,6 @@ else
 	MsgC(Color(0, 255, 100, 255), "[Clockwork] The framework is initializing...\n")
 end
 
-CLOUDAUTHX_VERSION = -1
-
 require("cwutil")
 
 if system.IsLinux() then
@@ -30,8 +28,7 @@ include("clockwork/framework/sv_kernel.lua")
 if Clockwork and cwBootComplete then
 	MsgC(Color(0, 255, 100, 255), "[Clockwork] Auto-refresh handled server-side in " .. math.Round(os.clock() - startTime, 3) .. " second(s)!\n")
 else
-	local version = Clockwork.kernel:GetVersionBuild()
-	MsgC(Color(0, 255, 100, 255), "[Clockwork] Successfully loaded Clockwork version " .. version .. " in " .. math.Round(os.clock() - startTime, 3) .. " second(s).\n")
+	MsgC(Color(0, 255, 100, 255), "[Clockwork] Successfully loaded Clockwork version " .. Clockwork.kernel:GetVersionBuild() .. " in " .. math.Round(os.clock() - startTime, 3) .. " second(s).\n")
 end
 
 cwBootComplete = true
