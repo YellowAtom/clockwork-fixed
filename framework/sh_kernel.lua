@@ -207,7 +207,11 @@ end
 	@returns {String} The kernel version and build concatenated.
 --]]
 function Clockwork.kernel:GetVersionBuild()
-	return Clockwork.KernelVersion .. (Clockwork.KernelBuild and " - " .. Clockwork.KernelBuild or "")
+	if not clockwork.KernalBuild or clockwork.KernalBuild == "" then
+		return Clockwork.KernelVersion
+	end
+
+	return Clockwork.KernelVersion .. " - " .. Clockwork.KernelBuild
 end
 
 --[[
