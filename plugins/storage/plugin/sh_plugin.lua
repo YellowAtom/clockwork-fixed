@@ -1,22 +1,10 @@
---[[
-	© 2015 CloudSixteen.com do not share, re-distribute or modify
-	without permission of its author (kurozael@gmail.com).
 
-	Clockwork was created by Conna Wiles (also known as kurozael.)
-	http://cloudsixteen.com/license/clockwork.html
---]]
+PLUGIN:SetGlobalAlias("cwStorage")
 
---[[
-	You don't have to do this, but I think it's nicer.
-	Alternatively, you can simply use the PLUGIN variable.
---]]
-PLUGIN:SetGlobalAlias("cwStorage");
-
---[[ You don't have to do this either, but I prefer to seperate the functions. --]]
-Clockwork.kernel:IncludePrefixed("cl_plugin.lua");
-Clockwork.kernel:IncludePrefixed("sv_plugin.lua");
-Clockwork.kernel:IncludePrefixed("sv_hooks.lua");
-Clockwork.kernel:IncludePrefixed("cl_hooks.lua");
+Clockwork.kernel:IncludePrefixed("cl_plugin.lua")
+Clockwork.kernel:IncludePrefixed("sv_plugin.lua")
+Clockwork.kernel:IncludePrefixed("sv_hooks.lua")
+Clockwork.kernel:IncludePrefixed("cl_hooks.lua")
 
 cwStorage.containerList = {
 	["models/props_wasteland/controlroom_storagecloset001a.mdl"] = {8, "Closet"},
@@ -45,4 +33,4 @@ cwStorage.containerList = {
 	["models/props_c17/oildrum001.mdl"] = {8, "Oildrum"},
 	["models/items/ammocrate_smg1.mdl"] = {15, "Ammo Crate"},
 	["models/items/ammocrate_ar2.mdl"] = {15, "Ammo Crate"}
-};
+}

@@ -1,3 +1,4 @@
-local Clockwork = Clockwork;
 
-Clockwork.kernel:IncludePrefixed("sv_hooks.lua");
+PLUGIN.Register = function() end
+
+Clockwork.kernel:IncludePrefixed("sv_hooks.lua")
