@@ -6,13 +6,14 @@
 --]]
 
 Clockwork.config:Add("mysql_bans_table", "bans", nil, nil, true, true, true)
-Clockwork.config:Add("mysql_characters_table", "characters", nil, nil, true, true, true)
-Clockwork.config:Add("mysql_players_table", "players", nil, nil, true, true, true)
+Clockwork.config:Add("mysql_adapter", "sqlite", nil, nil, true, true, true)
+Clockwork.config:Add("mysql_host", "", nil, nil, true, true, true)
 Clockwork.config:Add("mysql_username", "", nil, nil, true, true, true)
 Clockwork.config:Add("mysql_password", "", nil, nil, true, true, true)
-Clockwork.config:Add("mysql_database", "", nil, nil, true, true, true)
-Clockwork.config:Add("mysql_host", "", nil, nil, true, true, true)
+Clockwork.config:Add("mysql_database", "clockwork", nil, nil, true, true, true)
 Clockwork.config:Add("mysql_port", 3306, nil, nil, true, true, true)
+Clockwork.config:Add("mysql_characters_table", "characters", nil, nil, true, true, true)
+Clockwork.config:Add("mysql_players_table", "players", nil, nil, true, true, true)
 Clockwork.config:Add("scale_attribute_progress", 1)
 Clockwork.config:Add("messages_must_see_player", false, true)
 Clockwork.config:Add("bash_in_door_enabled", false)
