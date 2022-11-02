@@ -2,6 +2,8 @@
 An extensive edit to Clockwork 0.101 with CloudAuthX competely removed, a visual style closer to 0.93 with derma fixes, general optimizations, proper code formatting, new features such as single file entities and a more modern approch to internal solutions. The framework files and default plugins are all modified.
 
 ## Installation
+>Support for modern versions of tmysql4 is currently broken! Use the version [here](https://github.com/CloudSixteen/Clockwork/tree/master/upload/garrysmod/lua/bin) or use mysqloo.
+
 Unlike regular Clockwork the installation procedure is a lot cleaner. 
 - Place this repository as a gamemode named clockwork in `garrysmod/gamemodes` and do the same for a schema gamemode (e.g HL2 RP). The schema gamemode is the one that actually gets loaded.
 - At `garrysmod/lua/bin` place the .dll of either [mysqloo](https://github.com/FredyH/MySQLOO/releases) or [tmysql4](https://github.com/SuperiorServers/gm_tmysql4/releases) as well as [cwutils](https://www.dropbox.com/sh/dpdvc2ax04zghh1/AADAobyoYcEjjQ1ynoNzlrqFa?dl=0).
