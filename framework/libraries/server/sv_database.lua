@@ -514,7 +514,8 @@ function Clockwork.database:OnConnected()
 end
 
 function Clockwork.database:OnConnectionFailed(errText)
-	ErrorNoHalt("Clockwork::Database - " .. errText .. "\n")
+	MsgC(Color(255, 50,50 ), "[Clockwork:Database] Database connection failed: " .. errText .. "!\n")
+
 	Clockwork.NoMySQL = errText
 	Clockwork.plugin:Call("ClockworkDatabaseConnectionFailed", errText)
 end
@@ -554,6 +555,13 @@ function Clockwork.database:Connect(adapter, host, username, password, database,
 		local bSuccess, _ = xpcall(require, debug.traceback, "tmysql4")
 
 		if bSuccess then
+			if tmysql.Version then
+				MsgC(Color(255, 50, 50), "[Clockwork:Database] Clockwork does not support modern tmysql4!\n")
+				return
+			end
+
+			MsgC(Color(50, 255, 255), "[Clockwork:Database] Connecting to database using tmysql4...\n")
+
 			local _, databaseConnection, errText = xpcall(tmysql.initialize, debug.traceback, host, username, password, database, port)
 
 			if databaseConnection then
@@ -569,7 +577,10 @@ function Clockwork.database:Connect(adapter, host, username, password, database,
 	end
 
 	if adapter == "sqlite" then
+		MsgC(Color(50, 255, 255), "[Clockwork:Database] Connecting to internal sqlite database...\n")
+
 		self.liteSql = true
+
 		self:OnConnected()
 	end
 end
