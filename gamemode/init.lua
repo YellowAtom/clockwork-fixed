@@ -9,12 +9,6 @@ end
 
 require("cwutil")
 
-if system.IsLinux() then
-	require("mysqloo")
-else
-	require("tmysql4")
-end
-
 AddCSLuaFile("external/utf8.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("external/von.lua")

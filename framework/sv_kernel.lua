@@ -156,20 +156,26 @@ end
 --]]
 function Clockwork:Initialize()
 	cwItem:Initialize()
+
 	cwConfig:Import("gamemodes/clockwork/clockwork.cfg")
 	cwPlugin:Call("ClockworkKernelLoaded")
+
 	local useLocalMachineDate = cwConfig:Get("use_local_machine_date"):Get()
 	local useLocalMachineTime = cwConfig:Get("use_local_machine_time"):Get()
+
 	local defaultDate = cwOption:GetKey("default_date")
 	local defaultTime = cwOption:GetKey("default_time")
 	local defaultDays = cwOption:GetKey("default_days")
+	local dateInfo = os.date("*t")
+
+	local adapter = cwConfig:Get("mysql_adapter"):Get()
+	local host = string.gsub(cwConfig:Get("mysql_host"):Get(), "^http[s]?://", "", 1) -- Matches at beginning of string, matches http:// or https://, no need to check twice
 	local username = cwConfig:Get("mysql_username"):Get()
 	local password = cwConfig:Get("mysql_password"):Get()
 	local database = cwConfig:Get("mysql_database"):Get()
-	local dateInfo = os.date("*t")
-	local host = string.gsub(cwConfig:Get("mysql_host"):Get(), "^http[s]?://", "", 1) -- Matches at beginning of string, matches http:// or https://, no need to check twice
 	local port = cwConfig:Get("mysql_port"):Get()
-	cwDatabase:Connect(host, username, password, database, port)
+
+	cwDatabase:Connect(adapter, host, username, password, database, port)
 
 	if useLocalMachineTime then
 		cwConfig:Get("minute_time"):Set(60)

@@ -244,6 +244,10 @@ function MYSQL_DELETE_CLASS:Push()
 	end
 end
 
+function Clockwork.database:IsSQLite()
+	return self.liteSql or Clockwork.config:Get("mysql_adapter"):Get() == "sqlite"
+end
+
 function Clockwork.database:Update(tableName)
 	local object = Clockwork.kernel:NewMetaTable(MYSQL_UPDATE_CLASS)
 	object.updateVars = {}
@@ -284,7 +288,7 @@ end
 
 function Clockwork.database:Query(query, Callback, flag, bRawQuery)
 	if Clockwork.NoMySQL then
-		MsgN("[Clockwork] Cannot run a database query with no connection!")
+		MsgN("[Clockwork:Database] Cannot run a database query with no connection!")
 
 		return
 	end
@@ -339,7 +343,7 @@ function Clockwork.database:Query(query, Callback, flag, bRawQuery)
 			end
 		else
 			tmysql.query(query, function(result, status, text, other)
-				--MsgN("[Clockwork] Result: " .. tostring(result) .. " Status: " .. tostring(status) .. " Text: " .. tostring(text) .. " Other: " .. tostring(other));
+				--MsgN("[Clockwork:Database] Result: " .. tostring(result) .. " Status: " .. tostring(status) .. " Text: " .. tostring(text) .. " Other: " .. tostring(other));
 				if Callback then
 					Callback(result, status, text)
 				end
@@ -354,7 +358,7 @@ function Clockwork.database:Query(query, Callback, flag, bRawQuery)
 		end
 	else
 		tmysql.query(query, function(result, status, text, other)
-			--MsgN("[Clockwork] Result: " .. tostring(result) .. " Status: " .. tostring(status) .. " Text: " .. tostring(text) .. " Other: " .. tostring(other));
+			--MsgN("[Clockwork:Database] Result: " .. tostring(result) .. " Status: " .. tostring(status) .. " Text: " .. tostring(text) .. " Other: " .. tostring(other));
 		end)
 	end
 end
@@ -384,6 +388,8 @@ function Clockwork.database:Escape(text)
 end
 
 function Clockwork.database:OnConnected()
+	MsgC(Color(50, 255, 50), "[Clockwork:Database] Database connection established!\n")
+
 	local BANS_TABLE_QUERY = [[
 	CREATE TABLE IF NOT EXISTS `]] .. Clockwork.config:Get("mysql_bans_table"):Get() .. [[` (
 		`_Key` int(11) NOT NULL AUTO_INCREMENT,
@@ -513,43 +519,58 @@ function Clockwork.database:OnConnectionFailed(errText)
 	Clockwork.plugin:Call("ClockworkDatabaseConnectionFailed", errText)
 end
 
-function Clockwork.database:Connect(host, username, password, database, port)
-	if host == "example.com" then
-		MsgC(Color(50, 255, 255), "[Clockwork] No MySQL details found. Connecting to database using SQLite...\n")
-		self.liteSql = true
-		self:OnConnected()
-
-		return
-	end
-
+function Clockwork.database:Connect(adapter, host, username, password, database, port)
 	if host == "localhost" then
 		host = "127.0.0.1"
+	elseif host == "example.com" then
+		MsgC(Color(50, 255, 255), "[Clockwork:Database] No MySQL details found. Connecting to database using SQLite...\n")
+		adapter = "sqlite"
 	end
 
-	if system.IsLinux() and mysqloo then
-		self.MDB = mysqloo.connect(host, username, password, database, port)
-		MsgC(Color(50, 255, 255), "[Clockwork] Connecting to database using MySQLOO...\n")
+	if adapter == "mysqloo" then
+		local bSuccess, _ = xpcall(require, debug.traceback, "mysqloo")
 
-		function self.MDB.onConnected(db)
-			Clockwork.database:OnConnected()
+		if bSuccess then
+			self.MDB = mysqloo.connect(host, username, password, database, port)
+			MsgC(Color(50, 255, 255), "[Clockwork:Database] Connecting to database using MySQLOO...\n")
+
+			function self.MDB.onConnected(db)
+				Clockwork.database:OnConnected()
+			end
+
+			function self.MDB.onConnectionFailed(db, errText)
+				Clockwork.database:OnConnectionFailed(errText)
+			end
+
+			self.MDB:connect()
+
+			return
+		else
+			MsgC(Color(255, 50, 50), "[Clockwork:Database] MySQLOO module not found!\n")
 		end
-
-		function self.MDB.onConnectionFailed(db, errText)
-			Clockwork.database:OnConnectionFailed(errText)
-		end
-
-		self.MDB:connect()
-
-		return
 	end
 
-	local _, databaseConnection, errText = xpcall(tmysql.initialize, debug.traceback, host, username, password, database, port)
+	if adapter == "tmysql4" then
+		local bSuccess, _ = xpcall(require, debug.traceback, "tmysql4")
 
-	if databaseConnection then
+		if bSuccess then
+			local _, databaseConnection, errText = xpcall(tmysql.initialize, debug.traceback, host, username, password, database, port)
+
+			if databaseConnection then
+				self:OnConnected()
+			else
+				self:OnConnectionFailed(errText)
+			end
+
+			return
+		else
+			MsgC(Color(255, 50, 50), "[Clockwork:Database] tmysql4 module not found!\n")
+		end
+	end
+
+	if adapter == "sqlite" then
+		self.liteSql = true
 		self:OnConnected()
-		MsgC(Color(50, 255, 50), "[Clockwork] Database connection established through tmysql4!\n")
-	else
-		self:OnConnectionFailed(errText)
 	end
 end
 
