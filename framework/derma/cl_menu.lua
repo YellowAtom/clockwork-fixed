@@ -1,5 +1,5 @@
-
 local Clockwork = Clockwork
+
 local SysTime = SysTime
 local IsValid = IsValid
 local pairs = pairs
@@ -9,7 +9,6 @@ local table = table
 local vgui = vgui
 local math = math
 
---local GRADIENT = surface.GetTextureID("gui/gradient")
 local PANEL = {}
 
 -- Called when the panel is initialized.
@@ -20,9 +19,12 @@ function PANEL:Init()
 		self:SetPaintBackground(false)
 		self:SetMouseInputEnabled(true)
 		self:SetKeyboardInputEnabled(true)
+
 		Clockwork.kernel:SetNoticePanel(self)
+
 		self.CreateTime = SysTime()
 		self.activePanel = nil
+
 		Clockwork.theme:Call("PostMainMenuInit", self)
 		self:Rebuild()
 	end
@@ -37,6 +39,8 @@ function PANEL:ReturnToMainMenu(bPerformCheck)
 
 		return
 	end
+
+	Clockwork.option:PlaySound("rollover")
 
 	if CW_CONVAR_FADEPANEL:GetInt() == 1 then
 		if IsValid(self.activePanel) and self.activePanel:IsVisible() then
@@ -59,39 +63,43 @@ function PANEL:Rebuild(change)
 	if not Clockwork.theme:Call("PreMainMenuRebuild", self) then
 		self.tabX = cvars.Number("cwTabPosX") or 0
 		self.tabY = cvars.Number("cwTabPosY") or 0
+
 		local activePanel = Clockwork.menu:GetActivePanel()
 		local smallTextFont = Clockwork.option:GetFont("menu_text_small")
---		local tinyTextFont = Clockwork.option:GetFont("menu_text_tiny")
+
 		local scrW = ScrW()
 		local scrH = ScrH()
+
+		Clockwork.option:PlaySound("click_release")
 
 		if IsValid(self.closeMenu) then
 			self.closeMenu:Remove()
 			self.characterMenu:Remove()
 		end
 
-		self.closeMenu = vgui.Create("cwLabelButton", self)
+		self.closeMenu = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("cwLabelButton", self))
 		self.closeMenu:SetFont(smallTextFont)
-		self.closeMenu:SetText(CW_CONVAR_CLOSESTRING:GetString() or "CLOSE MENU")
+		self.closeMenu:SetText(L("TabMenuClose"))
 
 		self.closeMenu:SetCallback(function(button)
 			self:SetOpen(false)
 		end)
 
-		self.closeMenu:SetTooltip("Click here to close the menu.")
+		--self.closeMenu:SetTooltip(L("TabMenuCloseDesc"))
 		self.closeMenu:SizeToContents()
 		self.closeMenu:SetMouseInputEnabled(true)
 		self.closeMenu:SetPos(self.tabX, self.tabY)
-		self.characterMenu = vgui.Create("cwLabelButton", self)
+
+		self.characterMenu = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("cwLabelButton", self))
 		self.characterMenu:SetFont(smallTextFont)
-		self.characterMenu:SetText(CW_CONVAR_CHARSTRING:GetString() or "CHARACTERS")
+		self.characterMenu:SetText(L("TabMenuCharacters"))
 
 		self.characterMenu:SetCallback(function(button)
 			self:SetOpen(false)
 			Clockwork.character:SetPanelOpen(true)
 		end)
 
-		self.characterMenu:SetTooltip("Click here to view the character menu.")
+		--self.characterMenu:SetTooltip(L("TabMenuCharactersDesc"))
 		self.characterMenu:SizeToContents()
 		self.characterMenu:SetMouseInputEnabled(true)
 		self.characterMenu:SetPos(self.closeMenu.x, self.closeMenu.y + self.closeMenu:GetTall() + 8)
@@ -107,7 +115,6 @@ function PANEL:Rebuild(change)
 			self:MoveTo(self.tabX, self.tabY, 0.4, 0, 4)
 		end
 
---		local bIsVisible = false
 		local width = self.characterMenu:GetWide()
 		local scrH = ScrH()
 		local scrW = ScrW()
@@ -122,12 +129,14 @@ function PANEL:Rebuild(change)
 			end
 		end
 
-		Clockwork.menuitems.stored = {}
-		Clockwork.plugin:Call("MenuItemsAdd", Clockwork.menuitems)
-		Clockwork.plugin:Call("MenuItemsDestroy", Clockwork.menuitems)
-		table.sort(Clockwork.menuitems.stored, function(a, b) return a.text < b.text end)
+		Clockwork.MenuItems.stored = {}
 
-		for k, v in pairs(Clockwork.menuitems.stored) do
+		Clockwork.plugin:Call("MenuItemsAdd", Clockwork.MenuItems)
+		Clockwork.plugin:Call("MenuItemsDestroy", Clockwork.MenuItems)
+
+		table.sort(Clockwork.MenuItems.stored, function(a, b) return a.text < b.text end)
+
+		for k, v in pairs(Clockwork.MenuItems.stored) do
 			local button, panel = nil, nil
 
 			if Clockwork.menu.stored[v.panel] then
@@ -149,7 +158,6 @@ function PANEL:Rebuild(change)
 				button:SetupLabel(v, panel, x, y)
 				button:SetPos(x, y)
 				y = y + button:GetTall()
-				bIsVisible = true
 
 				if button:GetWide() > width then
 					width = button:GetWide()
@@ -184,7 +192,6 @@ end
 -- A function to open a panel.
 function PANEL:OpenPanel(panelToOpen)
 	if not Clockwork.theme:Call("PreMainMenuOpenPanel", self, panelToOpen) then
---		local height = Clockwork.menu:GetHeight()
 		local width = Clockwork.menu:GetWidth()
 		local scrW = ScrW()
 		local scrH = ScrH()
@@ -211,11 +218,10 @@ function PANEL:OpenPanel(panelToOpen)
 		self.activePanel = panelToOpen
 		self.activePanel:SetSize(width, self.activePanel:GetTall())
 		self.activePanel:MakePopup()
-		self.activePanel:SetPos(ScrW() + 400, scrH * 0.1)
+		self.activePanel:SetPos(scrW - width - scrW * 0.04, scrH * 0.1)
 		self.activePanel.GetPanelName = function(panel) return panel.Name end
 
 		if CW_CONVAR_FADEPANEL:GetInt() == 1 then
-			self.activePanel:SetPos(scrW - width - scrW * 0.04, scrH * 0.1)
 			self.activePanel:SetAlpha(0)
 
 			self:FadeIn(0.5, self.activePanel, function()
@@ -230,7 +236,6 @@ function PANEL:OpenPanel(panelToOpen)
 		else
 			self.activePanel:SetAlpha(255)
 			self.activePanel:SetVisible(true)
-			self.activePanel:MoveTo(scrW - width - scrW * 0.04, scrH * 0.1, 0.4, 0, 4)
 		end
 
 		Clockwork.theme:Call("PostMainMenuOpenPanel", self, panelToOpen)
@@ -239,11 +244,6 @@ end
 
 -- A function to make a panel fade out.
 function PANEL:FadeOut(speed, panel, Callback)
---	local height = Clockwork.menu:GetHeight()
---	local width = Clockwork.menu:GetWidth()
---	local scrW = ScrW()
---	local scrH = ScrH()
-
 	if panel:GetAlpha() > 0 and (not self.fadeOutAnimation or not self.fadeOutAnimation:Active()) then
 		self.fadeOutAnimation = Derma_Anim("Fade Panel", panel, function(panel, animation, delta, data)
 			panel:SetAlpha(255 - delta * 255)
@@ -261,8 +261,6 @@ function PANEL:FadeOut(speed, panel, Callback)
 		if self.fadeOutAnimation then
 			self.fadeOutAnimation:Start(speed)
 		end
-
-		Clockwork.option:PlaySound("rollover")
 	else
 		panel:SetVisible(false)
 		panel:SetAlpha(0)
@@ -277,11 +275,6 @@ end
 function PANEL:FadeIn(speed, panel, Callback)
 	if panel:GetAlpha() == 0 and (not self.fadeInAnimation or not self.fadeInAnimation:Active()) then
 		self.fadeInAnimation = Derma_Anim("Fade Panel", panel, function(panel, animation, delta, data)
---			local height = Clockwork.menu:GetHeight()
---			local width = Clockwork.menu:GetWidth()
---			local scrW = ScrW()
---			local scrH = ScrH()
-
 			panel:SetVisible(true)
 			panel:SetAlpha(delta * 255)
 
@@ -297,8 +290,6 @@ function PANEL:FadeIn(speed, panel, Callback)
 		if self.fadeInAnimation then
 			self.fadeInAnimation:Start(speed)
 		end
-
-		Clockwork.option:PlaySound("click_release")
 	else
 		panel:SetVisible(true)
 		panel:SetAlpha(255)
@@ -313,20 +304,12 @@ end
 function PANEL:Paint(w, h)
 	if not Clockwork.theme:Call("PreMainMenuPaint", self) then
 		derma.SkinHook("Paint", "Panel", self)
+
 		Clockwork.theme:Call("PostMainMenuPaint", self)
 	end
 
-	local x, y = self.tabX - cvars.Number("cwBackX"), self.tabY - cvars.Number("cwBackY")
-	local w, h = cvars.Number("cwBackW"), cvars.Number("cwBackH")
---	local scrW, scrH = ScrW(), ScrH()
-
 	if CW_CONVAR_SHOWGRADIENT:GetInt() == 1 then
-		Clockwork.kernel:DrawSimpleGradientBox(0, x, y, w, h, Color(cvars.Number("cwBackColorR"), cvars.Number("cwBackColorG"), cvars.Number("cwBackColorB"), cvars.Number("cwBackColorA")))
-	elseif CW_CONVAR_SHOWMATERIAL:GetInt() == 1 then
-		local material = Material(CW_CONVAR_MATERIAL:GetString())
-		surface.SetDrawColor(cvars.Number("cwBackColorR"), cvars.Number("cwBackColorG"), cvars.Number("cwBackColorB"), cvars.Number("cwBackColorA"))
-		surface.SetMaterial(material)
-		surface.DrawTexturedRect(x, y, w, h)
+		Clockwork.kernel:DrawSimpleGradientBox(0, 0, 0, ScrW(), ScrH(), Color(0, 0, 0, 200))
 	end
 
 	return true
@@ -343,14 +326,6 @@ function PANEL:Think()
 			self.tabX = cvars.Number("cwTabPosX")
 			self.tabY = cvars.Number("cwTabPosY")
 			self:Rebuild(true)
-		end
-
-		if self.closeMenu:GetText() and self.closeMenu:GetText() ~= CW_CONVAR_CLOSESTRING:GetString() then
-			self.closeMenu:SetText(CW_CONVAR_CLOSESTRING:GetString())
-		end
-
-		if self.characterMenu:GetText() and self.characterMenu:GetText() ~= CW_CONVAR_CHARSTRING:GetString() then
-			self.characterMenu:SetText(CW_CONVAR_CHARSTRING:GetString())
 		end
 
 		Clockwork.menu.height = ScrH() * 0.75
@@ -385,16 +360,27 @@ end
 function PANEL:SetOpen(bIsOpen)
 	self:SetVisible(bIsOpen)
 	self:ReturnToMainMenu(true)
+
 	Clockwork.menu.bIsOpen = bIsOpen
+
 	gui.EnableScreenClicker(bIsOpen)
 
 	if bIsOpen then
 		self:Rebuild()
 		self.CreateTime = SysTime()
 		Clockwork.kernel:SetNoticePanel(self)
+
 		Clockwork.plugin:Call("MenuOpened")
 	else
 		Clockwork.plugin:Call("MenuClosed")
+	end
+end
+
+function PANEL:OnKeyCodePressed(key)
+	if (key == KEY_TAB) then
+		Clockwork.option:PlaySound("rollover")
+
+		self:SetOpen(false)
 	end
 end
 

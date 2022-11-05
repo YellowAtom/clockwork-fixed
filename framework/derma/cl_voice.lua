@@ -1,5 +1,5 @@
-
 local Clockwork = Clockwork
+
 local IsValid = IsValid
 local surface = surface
 local string = string

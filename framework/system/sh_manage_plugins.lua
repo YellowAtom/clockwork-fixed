@@ -1,8 +1,10 @@
 local Clockwork = Clockwork
 
 if CLIENT then
-	local SYSTEM = Clockwork.system:New("Manage Plugins")
-	SYSTEM.toolTip = "You can load and unload plugins from here."
+	local SYSTEM = Clockwork.system:New("ManagePlugins")
+
+	SYSTEM.toolTip = "ManagePluginsHelp"
+	SYSTEM.image = "clockwork/system/plugins"
 	SYSTEM.doesCreateForm = false
 
 	-- Called to get whether the local player has access to the system.
@@ -20,14 +22,19 @@ if CLIENT then
 	-- Called when the system should be displayed.
 	function SYSTEM:OnDisplay(systemPanel, systemForm)
 		self.pluginButtons = {}
---		local donePlugins = {}
 		local categories = {}
 		local mainPlugins = {}
 
 		for k, v in pairs(Clockwork.plugin:GetStored()) do
 			if v ~= Schema then
-				categories[v.author] = categories[v.author] or {}
-				categories[v.author][#categories[v.author] + 1] = v
+				local category = v.author
+
+				if string.find(category, "<font") then
+					category = L("InvalidPluginAuthor")
+				end
+
+				categories[category] = categories[category] or {}
+				categories[category][#categories[category] + 1] = v
 			end
 		end
 
@@ -45,20 +52,21 @@ if CLIENT then
 
 		if #mainPlugins > 0 then
 			local label = vgui.Create("cwInfoText", systemPanel)
-			label:SetText("Red plugins are unloaded, green ones are loaded, and orange are disabled.")
+			label:SetText(L("SystemPluginsHelpText"))
 			label:SetInfoColor("blue")
 			label:DockMargin(0, 0, 0, 8)
 			systemPanel.panelList:AddItem(label)
 
 			for k, v in pairs(mainPlugins) do
-				local pluginForm = vgui.Create("DForm", systemPanel)
+				local pluginForm = vgui.Create("cwBasicForm", systemPanel)
 				local panelList = vgui.Create("DPanelList", systemPanel)
 
 				for k2, v2 in pairs(v.plugins) do
 					self.pluginButtons[v2.name] = vgui.Create("cwInfoText", systemPanel)
-					self.pluginButtons[v2.name]:SetText(v2.name)
+					self.pluginButtons[v2.name]:SetText(L(v2.name))
 					self.pluginButtons[v2.name]:SetButton(true)
-					self.pluginButtons[v2.name]:SetTooltip(v2.description)
+					self.pluginButtons[v2.name]:SetTooltip(L(v2.description))
+
 					panelList:AddItem(self.pluginButtons[v2.name])
 
 					if Clockwork.plugin:IsDisabled(v2.name) then
@@ -84,15 +92,17 @@ if CLIENT then
 
 				systemPanel.panelList:AddItem(pluginForm)
 				panelList:SetAutoSize(true)
-				panelList:SetPadding(4)
+				panelList:SetPadding(8)
 				panelList:SetSpacing(4)
-				pluginForm:SetName(v.category)
+
+				pluginForm:SetText(v.category)
 				pluginForm:AddItem(panelList)
-				pluginForm:SetPadding(4)
+				pluginForm:SetPadding(8)
+				pluginForm:SetAutoSize(true)
 			end
 		else
 			local label = vgui.Create("cwInfoText", systemPanel)
-			label:SetText("There are no plugins installed on the server.")
+			label:SetText(L("SystemPluginsNoneInstalled"))
 			label:SetInfoColor("red")
 			systemPanel.panelList:AddItem(label)
 		end
@@ -117,7 +127,7 @@ if CLIENT then
 	SYSTEM:Register()
 
 	Clockwork.datastream:Hook("SystemPluginGet", function(data)
-		local systemTable = Clockwork.system:FindByID("Manage Plugins")
+		local systemTable = Clockwork.system:FindByID("ManagePlugins")
 		local unloaded = data
 
 		for k, v in pairs(Clockwork.plugin:GetStored()) do
@@ -134,7 +144,7 @@ if CLIENT then
 	end)
 
 	Clockwork.datastream:Hook("SystemPluginSet", function(data)
-		local systemTable = Clockwork.system:FindByID("Manage Plugins")
+		local systemTable = Clockwork.system:FindByID("ManagePlugins")
 		local plugin = Clockwork.plugin:FindByID(data[1])
 
 		if plugin then
@@ -165,20 +175,20 @@ else
 		local plugin = Clockwork.plugin:FindByID(data[1])
 
 		if not plugin then
-			Clockwork.player:Notify(player, "This plugin is not valid!")
+			Clockwork.player:Notify(player, {"PluginNotValid"})
 
 			return
 		end
 
 		if not Clockwork.plugin:IsDisabled(plugin.name) then
-			local bSuccess = Clockwork.plugin:SetUnloaded(plugin.name, data[2])
+			local wasSuccess = Clockwork.plugin:SetUnloaded(plugin.name, data[2])
 			local recipients = {}
 
-			if bSuccess then
+			if wasSuccess then
 				if data[2] then
-					Clockwork.player:NotifyAll(player:Name() .. " has unloaded the " .. plugin.name .. " plugin for the next restart.")
+					Clockwork.player:NotifyAll({"PlayerUnloadedPlugin", player:Name(), plugin.name})
 				else
-					Clockwork.player:NotifyAll(player:Name() .. " has loaded the " .. plugin.name .. " plugin for the next restart.")
+					Clockwork.player:NotifyAll({"PlayerLoadedPlugin", player:Name(), plugin.name})
 				end
 
 				for k, v in pairs(cwPlayer.GetAll()) do
@@ -193,12 +203,12 @@ else
 					Clockwork.datastream:Start(recipients, "SystemPluginSet", {plugin.name, data[2]})
 				end
 			elseif data[2] then
-				Clockwork.player:Notify(player, "This plugin could not be unloaded!")
+				Clockwork.player:Notify(player, {"PluginCouldNotBeUnloaded"})
 			else
-				Clockwork.player:Notify(player, "This plugin could not be loaded!")
+				Clockwork.player:Notify(player, {"PluginCouldNotBeLoaded"})
 			end
 		else
-			Clockwork.player:Notify(player, "This plugin depends on another plugin!")
+			Clockwork.player:Notify(player, {"PluginDependsOnAnother"})
 		end
 	end)
 end

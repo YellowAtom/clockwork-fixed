@@ -820,21 +820,9 @@ function Clockwork:Initialize()
 	CW_CONVAR_TEXTCOLORG = cwKernel:CreateClientConVar("cwTextColorG", 200, true, true)
 	CW_CONVAR_TEXTCOLORB = cwKernel:CreateClientConVar("cwTextColorB", 0, true, true)
 	CW_CONVAR_TEXTCOLORA = cwKernel:CreateClientConVar("cwTextColorA", 255, true, true)
-	CW_CONVAR_BACKCOLORR = cwKernel:CreateClientConVar("cwBackColorR", 40, true, true)
-	CW_CONVAR_BACKCOLORG = cwKernel:CreateClientConVar("cwBackColorG", 40, true, true)
-	CW_CONVAR_BACKCOLORB = cwKernel:CreateClientConVar("cwBackColorB", 40, true, true)
-	CW_CONVAR_BACKCOLORA = cwKernel:CreateClientConVar("cwBackColorA", 255, true, true)
 	CW_CONVAR_TABX = cwKernel:CreateClientConVar("cwTabPosX", 56, true, true)
 	CW_CONVAR_TABY = cwKernel:CreateClientConVar("cwTabPosY", 112, true, true)
-	CW_CONVAR_FADEPANEL = cwKernel:CreateClientConVar("cwFadePanels", 1, true, true)
-	CW_CONVAR_CHARSTRING = cwKernel:CreateClientConVar("cwCharString", "CHARACTERS", true, true)
-	CW_CONVAR_CLOSESTRING = cwKernel:CreateClientConVar("cwCloseString", "CLOSE MENU", true, true)
-	CW_CONVAR_MATERIAL = cwKernel:CreateClientConVar("cwMaterial", "hunter/myplastic", true, true)
-	CW_CONVAR_BACKX = cwKernel:CreateClientConVar("cwBackX", 61, true, true)
-	CW_CONVAR_BACKY = cwKernel:CreateClientConVar("cwBackY", 109, true, true)
-	CW_CONVAR_BACKW = cwKernel:CreateClientConVar("cwBackW", 321, true, true)
-	CW_CONVAR_BACKH = cwKernel:CreateClientConVar("cwBackH", 109, true, true)
-	CW_CONVAR_SHOWMATERIAL = cwKernel:CreateClientConVar("cwShowMaterial", 0, true, true)
+	CW_CONVAR_FADEPANEL = cwKernel:CreateClientConVar("cwFadePanels", 0, true, true)
 	CW_CONVAR_SHOWGRADIENT = cwKernel:CreateClientConVar("cwShowGradient", 0, true, true)
 
 	if not cwChatBox.panel then
@@ -1446,31 +1434,23 @@ end
 	@returns {Unknown}
 --]]
 function Clockwork:MenuItemsAdd(menuItems)
-	local attributesName = cwOption:Translate("name_attributes")
-	local systemName = cwOption:Translate("name_system")
-	local scoreboardName = cwOption:Translate("name_scoreboard")
-	local directoryName = cwOption:Translate("name_directory")
-	local inventoryName = cwOption:Translate("name_inventory")
-	local donationsName = cwOption:Translate("name_donations")
-	local settingsName = cwOption:Translate("name_settings")
-	local classesName = cwOption:Translate("name_classes")
-	menuItems:Add(classesName, "cwClasses", cwOption:Translate("description_classes"), cwOption:GetKey("icon_data_classes"))
-	menuItems:Add(settingsName, "cwSettings", cwOption:Translate("description_settings"), cwOption:GetKey("icon_data_settings"))
-	menuItems:Add(donationsName, "cwDonations", cwOption:Translate("description_donations"), cwOption:GetKey("icon_data_donations"))
-	menuItems:Add(systemName, "cwSystem", cwOption:Translate("description_system"), cwOption:GetKey("icon_data_system"))
-	menuItems:Add(scoreboardName, "cwScoreboard", cwOption:Translate("name_scoreboard"), cwOption:GetKey("icon_data_scoreboard"))
-	menuItems:Add(inventoryName, "cwInventory", cwOption:Translate("description_inventory"), cwOption:GetKey("icon_data_inventory"))
-	menuItems:Add(directoryName, "cwDirectory", cwOption:Translate("description_directory"), cwOption:GetKey("icon_data_directory"))
-	menuItems:Add(attributesName, "cwAttributes", cwOption:Translate("description_attributes"), cwOption:GetKey("icon_data_attributes"))
+
+	menuItems:Add(cwOption:Translate("name_attributes"), "cwAttributes", cwOption:Translate("description_attributes"), cwOption:GetKey("icon_data_attributes"))
+	menuItems:Add(cwOption:Translate("name_scoreboard"), "cwScoreboard", cwOption:Translate("description_scoreboard"), cwOption:GetKey("icon_data_scoreboard"))
+	menuItems:Add(cwOption:Translate("name_inventory"), "cwInventory", cwOption:Translate("description_inventory"), cwOption:GetKey("icon_data_inventory"))
+	menuItems:Add(cwOption:Translate("name_directory"), "cwDirectory", cwOption:Translate("description_directory"), cwOption:GetKey("icon_data_directory"))
+	menuItems:Add(cwOption:Translate("name_settings"), "cwSettings", cwOption:Translate("description_settings"), cwOption:GetKey("icon_data_settings"))
+	menuItems:Add(cwOption:Translate("name_system"), "cwSystem", cwOption:Translate("description_system"), cwOption:GetKey("icon_data_system"))
+
+	menuItems:Add(cwOption:Translate("name_donations"), "cwDonations", cwOption:Translate("description_donations"), cwOption:GetKey("icon_data_donations"))
+	menuItems:Add(cwOption:Translate("name_classes"), "cwClasses", cwOption:Translate("description_classes"), cwOption:GetKey("icon_data_classes"))
 
 	if cwConfig:Get("show_business"):GetBoolean() then
-		local businessName = cwOption:Translate("name_business")
-		menuItems:Add(businessName, "cwBusiness", cwOption:Translate("description_business"), cwOption:GetKey("icon_data_business"))
+		menuItems:Add(cwOption:Translate("name_business"), "cwBusiness", cwOption:Translate("description_business"), cwOption:GetKey("icon_data_business"))
 	end
 
 	if cwConfig:Get("crafting_menu_enabled"):GetBoolean() then
-		local craftingName = cwOption:Translate("name_crafting")
-		menuItems:Add(craftingName, "cwCrafting", cwOption:Translate("description_crafting"))
+		menuItems:Add(cwOption:Translate("name_crafting"), "cwCrafting", cwOption:Translate("description_crafting"), cwOption:GetKey("icon_data_crafting"))
 	end
 end
 
@@ -1622,7 +1602,7 @@ function Clockwork:Tick()
 
 	if menuMusic ~= "" then
 		if IsValid(cwClient) and cwCharacter:IsPanelOpen() then
-			if not self.MusicSound then
+			if not self.MusicSound or not self.MusicSound:IsPlaying() then
 				self.MusicSound = CreateSound(cwClient, menuMusic)
 				self.MusicSound:PlayEx(0.3, 100)
 				self.MusicFading = false
@@ -3992,8 +3972,7 @@ end
 function Clockwork:ScoreboardShow()
 	if cwClient:HasInitialized() then
 		if cwPlugin:Call("CanShowTabMenu") then
-			cwMenu:Create()
-			cwMenu:SetOpen(true)
+			cwMenu:Create(true)
 			cwMenu.holdTime = UnPredictedCurTime() + 0.5
 		end
 	end
@@ -4007,9 +3986,7 @@ end
 function Clockwork:ScoreboardHide()
 	if cwClient:HasInitialized() and cwMenu.holdTime then
 		if UnPredictedCurTime() >= cwMenu.holdTime then
-			if cwPlugin:Call("CanShowTabMenu") then
-				cwMenu:SetOpen(false)
-			end
+			cwMenu:SetOpen(false)
 		end
 	end
 end

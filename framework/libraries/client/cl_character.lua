@@ -169,6 +169,7 @@ function Clockwork.character:OpenNextCreationPanel()
 	local nextPanel = self:GetNextCreationPanel()
 	local panel = self:GetPanel()
 	local info = self:GetCreationInfo()
+
 	if info.index > 0 and activePanel and activePanel.OnNext and activePanel:OnNext() == false then return end
 
 	if not nextPanel then

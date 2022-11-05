@@ -1,17 +1,19 @@
-
 local PANEL = {}
 
 -- A function to set the panel's system table.
 function PANEL:SetSystemTable(systemTable)
 	self:NoClipping(false)
+
 	self.backgroundButton:SetTooltip(L(systemTable.toolTip))
 	self.backgroundButton:SetImage(systemTable.image .. ".png")
 	self.backgroundButton:SetSize(128, 128)
+
 	self.titleLabel:SetText(L(systemTable.name))
 	self.titleLabel:SizeToContents()
 	self.titleLabel.x = self.backgroundButton:GetWide() / 2 - self.titleLabel:GetWide() / 2
 	self.titleLabel.y = self.backgroundButton.y + self.backgroundButton:GetTall() + 8
 	self.titleLabel:NoClipping(false)
+
 	self:SetSize(128, self.titleLabel.y + self.titleLabel:GetTall())
 end
 
@@ -24,9 +26,11 @@ end
 function PANEL:Init()
 	local informationColor = Clockwork.option:GetColor("information")
 	local fontName = Clockwork.fonts:GetSize(Clockwork.option:GetFont("menu_text_tiny"), 22)
+
 	self.titleLabel = vgui.Create("DLabel", self)
 	self.titleLabel:SetFont(fontName)
 	self.titleLabel:SetTextColor(Clockwork.option:GetColor("information"))
+
 	self.backgroundButton = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("cwImageButtonBorder", self))
 	self.backgroundButton:SetHoverColor(informationColor)
 

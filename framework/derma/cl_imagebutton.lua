@@ -1,5 +1,5 @@
-
 local Clockwork = Clockwork
+
 local vgui = vgui
 
 local PANEL = {}
@@ -86,8 +86,6 @@ function PANEL:FadeOut(speed, Callback)
 	if self.animation then
 		self.animation:Start(speed)
 	end
-
-	Clockwork.option:PlaySound("rollover")
 end
 
 -- A function to make the panel fade in.
@@ -108,7 +106,6 @@ function PANEL:FadeIn(speed, Callback)
 		self.animation:Start(speed)
 	end
 
-	Clockwork.option:PlaySound("click_release")
 	self:SetVisible(true)
 end
 

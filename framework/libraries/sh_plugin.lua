@@ -435,6 +435,7 @@ function Clockwork.plugin:Include(directory, isSchema)
 	local explodeDir = string.Explode("/", directory)
 	local folderName = explodeDir[#explodeDir - 1]
 	local pathCRC = util.CRC(directory)
+
 	PLUGIN_BASE_DIR = directory
 	PLUGIN_FOLDERNAME = folderName
 
@@ -447,8 +448,7 @@ function Clockwork.plugin:Include(directory, isSchema)
 			table.Merge(Schema, schemaInfo)
 			CW_PLUGIN_SHARED.schemaInfo = schemaInfo
 		elseif Clockwork.plugin.schemaData then
-			table.Merge(Schema, CW_PLUGIN_SHARED.schemaInfo) -- This doesn't appear to be working.
-			Print("The schema author is " .. Schema.Author)
+			table.Merge(Schema, CW_PLUGIN_SHARED.schemaInfo)
 		end
 
 		if cwFile.Exists(directory .. "/sh_schema.lua", "LUA") then

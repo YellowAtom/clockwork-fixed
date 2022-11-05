@@ -1,5 +1,5 @@
-
 local Clockwork = Clockwork
+
 local CurTime = CurTime
 local surface = surface
 local vgui = vgui

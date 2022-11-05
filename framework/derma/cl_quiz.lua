@@ -33,7 +33,7 @@ function PANEL:Init()
 
 	self.disconnectButton = vgui.Create("cwLabelButton", self)
 	self.disconnectButton:SetFont(smallTextFont)
-	self.disconnectButton:SetText("DISCONNECT")
+	self.disconnectButton:SetText(L("MenuDisconnect"))
 	self.disconnectButton:FadeIn(0.5)
 
 	self.disconnectButton:SetCallback(function(panel)
@@ -45,7 +45,7 @@ function PANEL:Init()
 	self.disconnectButton:SetPos(scrW * 0.2 - self.disconnectButton:GetWide() / 2, scrH * 0.9)
 	self.continueButton = vgui.Create("cwLabelButton", self)
 	self.continueButton:SetFont(smallTextFont)
-	self.continueButton:SetText("CONTINUE")
+	self.continueButton:SetText(L("MenuContinue"))
 	self.continueButton:FadeIn(0.5)
 
 	self.continueButton:SetCallback(function(panel)
@@ -73,12 +73,12 @@ function PANEL:Populate()
 --	local scrH, scrW = ScrH(), ScrW()
 
 	self.questionsForm = vgui.Create("DForm")
-	self.questionsForm:SetName(Clockwork.quiz:GetName())
+	self.questionsForm:SetName(L(Clockwork.quiz:GetName()))
 	self.questionsForm:SetPadding(4)
 	self.panelList:Clear(true)
 
 	local label = vgui.Create("cwInfoText", self)
-	label:SetText("If any answers are incorrect, you may be kicked from the server.")
+	label:SetText(L("MenuQuizHelp"))
 	label:SetInfoColor("orange")
 	self.panelList:AddItem(label)
 
@@ -114,7 +114,7 @@ function PANEL:Populate()
 		local question = vgui.Create("DLabel", self.questionsForm)
 		local key = v[1]
 		self.questionsForm:AddItem(question)
-		question:SetText(v[2].question)
+		question:SetText(L(v[2].question))
 		question:SetDark(true)
 		question:SizeToContents()
 
@@ -124,7 +124,7 @@ function PANEL:Populate()
 		end
 
 		for k2, v2 in pairs(v[2].possibleAnswers) do
-			panel:AddChoice(v2)
+			panel:AddChoice(L(v2))
 		end
 
 		self.questionsForm:AddItem(panel)

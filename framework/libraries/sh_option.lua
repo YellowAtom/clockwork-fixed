@@ -16,7 +16,7 @@ end
 
 -- A function to get a schema key translated.
 function Clockwork.option:Translate(key)
-	local value = T(self.keys[key])
+	local value = L(self.keys[key])
 
 	if lowerValue and type(value) == "string" then
 		return string.lower(value)
@@ -193,6 +193,11 @@ if CLIENT then
 	})
 
 	Clockwork.option:SetKey("icon_data_business", {
+		path = "",
+		size = nil
+	})
+
+	Clockwork.option:SetKey("icon_data_crafting", {
 		path = "",
 		size = nil
 	})

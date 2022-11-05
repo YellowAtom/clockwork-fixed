@@ -83,8 +83,9 @@ function Clockwork.menu:Create(setOpen)
 		self.panel = vgui.Create("cwMenu")
 
 		if IsValid(self.panel) then
-			self.panel:SetOpen(setOpen)
 			self.panel:MakePopup()
 		end
 	end
+
+	self.panel:SetOpen(setOpen)
 end

@@ -26,12 +26,14 @@ function PANEL:EnableVerticalScrollbar()
 end
 
 function PANEL:AddItem(item, bottomMargin)
-	bottomMargin = bottomMargin or self.defaultSpacing or 8
 	local padding = self:GetPadding()
+	bottomMargin = bottomMargin or self.defaultSpacing or 8
+
 	item:Dock(TOP)
 	item:DockMargin(padding, padding, padding, bottomMargin)
+
 	DCategoryList.AddItem(self, item)
-	-- TODO: Maybe not have this.
+
 	self:InvalidateLayout(true)
 end
 

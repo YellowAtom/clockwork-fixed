@@ -3695,8 +3695,14 @@ else
 			return pan.MarkupToolTip
 		end
 
-		function panel.SetToolTip(pan, toolTip)
+		function panel.SetTooltip(pan, toolTip)
+			if not toolTip then return end
+
 			pan:SetMarkupToolTip(toolTip)
+		end
+
+		function panel.SetToolTip(pan, toolTip)
+			return self:SetTooltip(toolTip)
 		end
 
 		return panel

@@ -1,12 +1,12 @@
 local Clockwork = Clockwork
 
-local ACCESS_FLAG = "a"
-
 if CLIENT then
-	local SYSTEM = Clockwork.system:New("Color Modify")
-	SYSTEM.access = ACCESS_FLAG
-	SYSTEM.toolTip = "Edit the schema's global color to suit your needs."
+	local SYSTEM = Clockwork.system:New("ColorModify")
+
+	SYSTEM.image = "clockwork/system/colormodify"
+	SYSTEM.toolTip = "ColorModifyHelp"
 	SYSTEM.doesCreateForm = false
+	SYSTEM.access = "a"
 
 	Clockwork.OverrideColorMod = Clockwork.kernel:RestoreSchemaData("color", false)
 
@@ -86,19 +86,24 @@ if CLIENT then
 	-- Called when the system should be displayed.
 	function SYSTEM:OnDisplay(systemPanel, systemForm)
 		local infoText = vgui.Create("cwInfoText", systemPanel)
-		infoText:SetText("Changing these values will affect the color for all players.")
+		infoText:SetText(L("SystemColorModHelpText"))
 		infoText:SetInfoColor("blue")
 		infoText:DockMargin(0, 0, 0, 8)
 		systemPanel.panelList:AddItem(infoText)
+
 		local infoText = vgui.Create("cwInfoText", systemPanel)
-		infoText:SetText("Please note that this is for advanced users only.")
+		infoText:SetText(L("SystemColorModAdvOnly"))
 		infoText:SetInfoColor("orange")
 		infoText:DockMargin(0, 0, 0, 8)
 		systemPanel.panelList:AddItem(infoText)
-		self.colorModForm = vgui.Create("DForm", systemPanel)
-		self.colorModForm:SetName("Color")
-		self.colorModForm:SetPadding(4)
+
+		self.colorModForm = vgui.Create("cwBasicForm", systemPanel)
+		self.colorModForm:SetText(L("Color"))
+		self.colorModForm:SetPadding(8)
+		self.colorModForm:SetSpacing(8)
+		self.colorModForm:SetAutoSize(true)
 		systemPanel.panelList:AddItem(self.colorModForm)
+
 		local checkBox = self.colorModForm:CheckBox("Enabled")
 
 		checkBox.OnChange = function(checkBox, value)
@@ -144,7 +149,8 @@ if CLIENT then
 	Clockwork.datastream:Hook("SystemColSet", function(data)
 		Clockwork.OverrideColorMod[data.key] = data.value
 		Clockwork.kernel:SaveSchemaData("color", Clockwork.OverrideColorMod)
-		local systemTable = Clockwork.system:FindByID("Color Modify")
+
+		local systemTable = Clockwork.system:FindByID("ColorModify")
 
 		if systemTable then
 			systemTable:Rebuild()

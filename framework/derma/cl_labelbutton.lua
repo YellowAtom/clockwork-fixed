@@ -1,5 +1,5 @@
-
 local Clockwork = Clockwork
+
 local Color = Color
 local vgui = vgui
 local math = math

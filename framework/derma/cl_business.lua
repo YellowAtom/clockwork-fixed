@@ -1,5 +1,5 @@
-
 local Clockwork = Clockwork
+
 local pairs = pairs
 local table = table
 local vgui = vgui
@@ -44,9 +44,12 @@ function PANEL:Rebuild()
 
 	if #categories == 0 then
 		local label = vgui.Create("cwInfoText", self)
-		label:SetText("You do not have access to the " .. Clockwork.option:GetKey("name_business", true) .. " menu!")
+
+		label:SetText(L("NoAccessToMenu", Clockwork.option:Translate("name_business", true)))
 		label:SetInfoColor("red")
+
 		self.panelList:AddItem(label)
+
 		Clockwork.plugin:Call("PlayerBusinessRebuilt", self, categories)
 	else
 		Clockwork.plugin:Call("PlayerBusinessRebuilt", self, categories)
@@ -118,7 +121,7 @@ local PANEL = {}
 
 -- Called when the panel is initialized.
 function PANEL:Init()
-	self:SetSize(self:GetParent():GetWide(), 40)
+	self:SetSize(self:GetParent():GetWide(), 56)
 	local customData = self:GetParent().customData or {}
 	local toolTip = nil
 
@@ -127,25 +130,32 @@ function PANEL:Init()
 			if customData.information ~= 0 then
 				customData.information = Clockwork.kernel:FormatCash(customData.information)
 			else
-				customData.information = "Free"
+				customData.information = L("Priceless")
 			end
 		end
 	end
 
 	if customData.description then
-		toolTip = Clockwork.config:Parse(customData.description)
+		toolTip = Clockwork.config:Parse(L(customData.description))
 	end
 
+	local nameFont = Clockwork.fonts:GetSize(Clockwork.option:GetFont("menu_text_tiny"), 25)
+	local infoFont = Clockwork.fonts:GetSize(Clockwork.option:GetFont("menu_text_tiny"), 18)
+
 	self.nameLabel = vgui.Create("DLabel", self)
-	self.nameLabel:SetPos(48, 6)
-	self.nameLabel:SetDark(true)
-	self.nameLabel:SetText(customData.name)
+	self.nameLabel:SetPos(56, 6)
+	self.nameLabel:SetFont(nameFont)
+	self.nameLabel:SetText(L(customData.name))
+	self.nameLabel:SetTextColor(Clockwork.option:GetColor("basic_form_color"))
 	self.nameLabel:SizeToContents()
+
 	self.infoLabel = vgui.Create("DLabel", self)
-	self.infoLabel:SetPos(48, 6)
-	self.infoLabel:SetDark(true)
-	self.infoLabel:SetText(customData.information)
+	self.infoLabel:SetPos(56, 6)
+	self.infoLabel:SetFont(infoFont)
+	self.infoLabel:SetText(L(customData.information))
+	self.infoLabel:SetTextColor(Clockwork.option:GetColor("basic_form_color_help"))
 	self.infoLabel:SizeToContents()
+
 	self.spawnIcon = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("cwSpawnIcon", self))
 	self.spawnIcon:SetColor(customData.spawnIconColor)
 
@@ -162,19 +172,19 @@ function PANEL:Init()
 
 	self.spawnIcon:SetModel(customData.model, customData.skin)
 	self.spawnIcon:SetTooltip(toolTip)
-	self.spawnIcon:SetSize(40, 40)
-	self.spawnIcon:SetPos(0, 0)
+	self.spawnIcon:SetSize(48, 48)
+	self.spawnIcon:SetPos(4, 4)
 end
 
 function PANEL:Paint(width, height)
-	INFOTEXT_SLICED:Draw(0, 0, width, height, 8, Color(255, 255, 255, 150))
+	CUSTOM_BUSINESS_ITEM_BG:Draw(0, 0, width, height, 8, Color(255, 255, 255, 255))
 
 	return true
 end
 
 -- Called each frame.
 function PANEL:Think()
-	self.infoLabel:SetPos(self.infoLabel.x, 34 - self.infoLabel:GetTall())
+	self.infoLabel:SetPos(self.infoLabel.x, self:GetTall() - self.infoLabel:GetTall() - 6)
 end
 
 vgui.Register("cwBusinessCustom", PANEL, "DPanel")
@@ -186,7 +196,7 @@ function PANEL:Init()
 	local CLASS = Clockwork.class:FindByID(Clockwork.Client:Team())
 	local costScale = CLASS.costScale or FACTION.costScale or 1
 	local itemData = self:GetParent().itemData
-	self:SetSize(48, 48)
+	self:SetSize(52, 52)
 	self.itemTable = itemData.itemTable
 	Clockwork.plugin:Call("PlayerAdjustBusinessItemTable", self.itemTable)
 
@@ -211,8 +221,8 @@ function PANEL:Init()
 	end
 
 	self.spawnIcon:SetModel(model, skin)
-	self.spawnIcon:SetTooltip("")
-	self.spawnIcon:SetSize(48, 48)
+	self.spawnIcon:SetTooltip(false)
+	self.spawnIcon:SetSize(52, 52)
 end
 
 -- Called each frame.

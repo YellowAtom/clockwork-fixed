@@ -1,5 +1,5 @@
-
 local Clockwork = Clockwork
+
 local pairs = pairs
 local surface = surface
 local table = table
@@ -16,10 +16,12 @@ function PANEL:Init()
 	self.panelList:SetSpacing(8)
 	self.panelList:StretchToParent(4, 4, 4, 4)
 	self.panelList:HideBackground()
+
 	Clockwork.attributes.panel = self
 	Clockwork.attributes.panel.boosts = {}
 	Clockwork.attributes.panel.progress = {}
 	Clockwork.attributes.panel.attributes = {}
+
 	self:Rebuild()
 end
 
@@ -112,7 +114,7 @@ function PANEL:Rebuild()
 		end
 	else
 		local label = vgui.Create("cwInfoText", self)
-		label:SetText("You do not have access to any " .. Clockwork.option:GetKey("name_attributes", true) .. "!")
+		label:SetText(L("NoAccessToAttributes", Clockwork.option:Translate("name_attributes", true)))
 		label:SetInfoColor("red")
 		self.panelList:AddItem(label)
 	end
@@ -151,13 +153,17 @@ local PANEL = {}
 -- Called when the panel is initialized.
 function PANEL:Init()
 	self.attribute = Clockwork.attribute:FindByID(self:GetParent().currentAttribute)
+
 	self:SetBackgroundColor(Color(80, 70, 60, 255))
-	self:SetTooltip(self.attribute.description)
 	self:SetSize(self:GetParent():GetWide() - 8, 32)
-	self.baseBar = vgui.Create("DPanel", self)
+
+	self.baseBar = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("DPanel", self))
 	self.baseBar:SetSize(self:GetWide() - 4, 20)
+	self.baseBar:SetTooltip(self.attribute.description)
+
 	self.progressBar = vgui.Create("DPanel", self)
 	self.progressBar:SetSize(self:GetWide() - 4, 8)
+
 	self.percentageText = vgui.Create("DLabel", self)
 	self.percentageText:SetText("0%")
 	self.percentageText:SetTextColor(Clockwork.option:GetColor("white"))
@@ -173,7 +179,6 @@ function PANEL:Init()
 		local mainColor = Clockwork.option:GetColor("attribute_main_color")
 		local frameTime = FrameTime() * 10
 		local uniqueID = self.attribute.uniqueID
---		local curTime = CurTime()
 		local default = Clockwork.attributes.stored[uniqueID]
 		local boosts = Clockwork.attributes.panel.boosts
 		local boost = 0
@@ -227,8 +232,10 @@ function PANEL:Init()
 			if attributes[uniqueID] - boostData.boost >= 0 then
 				boostData.width = math.min(boostData.width, width)
 				barLineWidth = math.max(width - boostData.width, 0)
+
 				surface.SetDrawColor(Clockwork.kernel:UnpackColor(mainColor))
 				surface.DrawRect(0, 0, barLineWidth, baseBar:GetTall())
+
 				local hinderX = math.max(width - boostData.width, 0)
 				surface.SetDrawColor(Clockwork.kernel:UnpackColor(hinderColor))
 				surface.DrawRect(hinderX, 0, boostData.width, baseBar:GetTall())
@@ -248,6 +255,7 @@ function PANEL:Init()
 		else
 			surface.SetDrawColor(Clockwork.kernel:UnpackColor(mainColor))
 			surface.DrawRect(0, 0, width, baseBar:GetTall())
+
 			local boostWidth = math.min(boostData.width, baseBar:GetWide())
 			surface.SetDrawColor(Clockwork.kernel:UnpackColor(boostColor))
 			surface.DrawRect(width, 0, boostWidth, baseBar:GetTall())
@@ -290,6 +298,7 @@ function PANEL:Init()
 
 		local width = math.ceil((progressBar:GetWide() / 100) * progress[uniqueID])
 		local color = Color(100, 100, 100, 255)
+
 		surface.SetDrawColor(Clockwork.kernel:UnpackColor(color))
 		surface.DrawRect(0, 0, progressBar:GetWide(), progressBar:GetTall(), color)
 		surface.SetDrawColor(Clockwork.kernel:UnpackColor(progressColor))
@@ -302,10 +311,11 @@ function PANEL:Init()
 	end
 
 	if self.attribute.image then
-		self.spawnIcon = vgui.Create("DImageButton", self)
+		self.spawnIcon = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("DImageButton", self))
 		self.spawnIcon:SetTooltip(self.attribute.description)
 		self.spawnIcon:SetImage(self.attribute.image .. ".png")
 		self.spawnIcon:SetSize(32, 32)
+
 		self.baseBar:SetPos(32, 2)
 		self.progressBar:SetPos(32, 22)
 	else
@@ -317,6 +327,7 @@ end
 -- A function to set the panel's percentage text.
 function PANEL:SetPercentageText(maximum, default, boost)
 	local percentage = math.Clamp(math.Round((100 / maximum) * (default + boost)), -100, 100)
+
 	self.percentageText:SetText(percentage .. "%")
 	self.percentageText:SizeToContents()
 	self.percentageText:SetPos(self:GetWide() - self.percentageText:GetWide() - 16, self.baseBar.y + self.baseBar:GetTall() / 2 - self.percentageText:GetTall() / 2)

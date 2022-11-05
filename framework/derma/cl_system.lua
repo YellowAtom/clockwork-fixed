@@ -23,11 +23,12 @@ function PANEL:Rebuild()
 	if self.system then
 		self.navigationForm = vgui.Create("DForm", self)
 		self.navigationForm:SetPadding(4)
-		self.navigationForm:SetName("Navigation")
+		self.navigationForm:SetName(L("SystemMenuNavigation"))
 		self.navigationForm:SetTall(100)
 		self.panelList:AddItem(self.navigationForm)
+
 		local backButton = vgui.Create("DButton", self)
-		backButton:SetText("Back to Navigation")
+		backButton:SetText(L("SystemMenuBackToNavigation"))
 		backButton:SetWide(self:GetParent():GetWide())
 
 		-- Called when the button is clicked.
@@ -52,29 +53,30 @@ function PANEL:Rebuild()
 		end
 	else
 		local label = vgui.Create("cwInfoText", self)
-		label:SetText("The " .. Clockwork.option:GetKey("name_system") .. " provides you with various Clockwork administrative tools.")
+		label:SetText("This menu provides you with various Clockwork administrative tools.")
 		label:SetInfoColor("blue")
 		self.panelList:AddItem(label)
-
---		local totalY = 0
 
 		for k, v in pairs(Clockwork.system:GetAll()) do
 			self.systemCategoryForm = vgui.Create("DForm", self)
 			self.systemCategoryForm:SetPadding(4)
-			self.systemCategoryForm:SetName(v.name)
+			self.systemCategoryForm:SetName(L(v.name))
 			self.systemCategoryForm:SetTall(100)
+
 			self.panelList:AddItem(self.systemCategoryForm)
-			local tooltip = self.systemCategoryForm:Help(v.toolTip)
+
+			local tooltip = self.systemCategoryForm:Help(L(v.toolTip))
 			tooltip:SetFont(Clockwork.fonts:GetSize(Clockwork.option:GetFont("menu_text_tiny"), 18))
 			tooltip:SetTextColor(Clockwork.option:GetColor("basic_form_color"))
+
 			local systemButton = vgui.Create("cwInfoText", systemPanel)
-			systemButton:SetText("Open")
+			systemButton:SetText(L("Open"))
 			systemButton:SetTextToLeft(true)
 
 			if v:HasAccess() then
 				systemButton:SetButton(true)
 				systemButton:SetInfoColor("green")
-				systemButton:SetTooltip("Click here to open this System panel.")
+				systemButton:SetTooltip(L("ClickToOpenSystemPanel"))
 
 				-- Called when the button is clicked.
 				function systemButton.DoClick(button)
@@ -83,7 +85,7 @@ function PANEL:Rebuild()
 				end
 			else
 				systemButton:SetInfoColor("red")
-				systemButton:SetTooltip("You do not have access to this System panel.")
+				systemButton:SetTooltip(L("SystemMenuNoAccess"))
 			end
 
 			systemButton:SetShowIcon(false)

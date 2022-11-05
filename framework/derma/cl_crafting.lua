@@ -10,7 +10,7 @@ local PANEL = {}
 function PANEL:Init()
 	self:SetSize(Clockwork.menu:GetWidth(), Clockwork.menu:GetHeight())
 	self.panelList = vgui.Create("cwPanelList", self)
-	self.panelList:SetPadding(2)
+	self.panelList:SetPadding(4)
 	self.panelList:SetSpacing(2)
 	self.panelList:SizeToContents()
 	self.panelList:EnableVerticalScrollbar()
@@ -42,7 +42,7 @@ function PANEL:Rebuild()
 
 	if #categories == 0 then
 		local label = vgui.Create("cwInfoText", self)
-		label:SetText("There are no blueprints for the " .. Clockwork.option:GetKey("crafting_name") .. " menu!")
+		label:SetText(L("NoBlueprintsForCraftingMenu"))
 		label:SetInfoColor("red")
 		self.panelList:AddItem(label)
 	else
@@ -118,7 +118,7 @@ local PANEL = {}
 -- Called when the panel is initialized.
 function PANEL:Init()
 	local itemData = self:GetParent().blueprintData
-	self:SetSize(48, 48)
+	self:SetSize(52, 52)
 	self.blueprintTable = itemData.blueprintTable
 	self.spawnIcon = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("cwSpawnIcon", self))
 
@@ -133,8 +133,8 @@ function PANEL:Init()
 
 	local model, skin = Clockwork.crafting:GetIconInfo(self.blueprintTable)
 	self.spawnIcon:SetModel(model, skin)
-	self.spawnIcon:SetTooltip("")
-	self.spawnIcon:SetSize(48, 48)
+	self.spawnIcon:SetTooltip(false)
+	self.spawnIcon:SetSize(52, 52)
 end
 
 -- Called each frame.

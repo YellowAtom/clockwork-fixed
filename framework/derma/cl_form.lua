@@ -5,8 +5,10 @@ local PANEL = {}
 function PANEL:TextEntry(strLabel)
 	local labelPanel = vgui.Create("DLabel", self)
 	self:AddItem(labelPanel)
+
 	labelPanel:SetText(strLabel)
 	labelPanel:SetDark(true)
+
 	local textEntryPanel = vgui.Create("DTextEntry", self)
 	self:AddItem(textEntryPanel)
 

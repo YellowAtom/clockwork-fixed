@@ -1,7 +1,9 @@
 local Clockwork = Clockwork
 
-local SYSTEM = Clockwork.system:New("Manage Players")
-SYSTEM.toolTip = "Contains a set of useful commands to use players."
+local SYSTEM = Clockwork.system:New("ManagePlayers")
+
+SYSTEM.image = "clockwork/system/players"
+SYSTEM.toolTip = "ManagePlayersHelp"
 SYSTEM.doesCreateForm = false
 
 -- Called to get whether the local player has access to the system.
@@ -43,20 +45,20 @@ function SYSTEM:OnDisplay(systemPanel, systemForm)
 
 	if table.Count(classes) > 0 then
 		local label = vgui.Create("cwInfoText", systemPanel)
-		label:SetText("Clicking on a player will bring up all available commands.")
+		label:SetText(L("ManagePlayersCommands"))
 		label:SetInfoColor("blue")
 		label:DockMargin(0, 0, 0, 8)
 		systemPanel.panelList:AddItem(label)
 
 		for k, v in pairs(classes) do
-			local characterForm = vgui.Create("DForm", systemPanel)
+			local characterForm = vgui.Create("cwBasicForm", systemPanel)
 			local panelList = vgui.Create("DPanelList", systemPanel)
 
 			for k2, v2 in pairs(v.players) do
 				local label = vgui.Create("cwInfoText", systemPanel)
 				label:SetText(v2:Name())
 				label:SetButton(true)
-				label:SetTooltip("This player's name is " .. v2:SteamName() .. ".\nThis player's Steam ID is " .. v2:SteamID() .. ".")
+				label:SetTooltip(L("PlayerNameAndSteamID", v2:SteamName(), v2:SteamID()))
 				label:SetInfoColor(cwTeam.GetColor(v2:Team()))
 				panelList:AddItem(label)
 
@@ -72,15 +74,17 @@ function SYSTEM:OnDisplay(systemPanel, systemForm)
 
 			systemPanel.panelList:AddItem(characterForm)
 			panelList:SetAutoSize(true)
-			panelList:SetPadding(4)
+			panelList:SetPadding(8)
 			panelList:SetSpacing(4)
-			characterForm:SetName(v.name)
+
+			characterForm:SetText(v.name)
 			characterForm:AddItem(panelList)
-			characterForm:SetPadding(4)
+			characterForm:SetPadding(8)
+			characterForm:SetAutoSize(true)
 		end
 	else
 		local label = vgui.Create("cwInfoText", systemPanel)
-		label:SetText("There are no players to display.")
+		label:SetText(L("ManagePlayersNoPlayers"))
 		label:SetInfoColor("orange")
 		systemPanel.panelList:AddItem(label)
 	end

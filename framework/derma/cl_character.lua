@@ -1,8 +1,6 @@
-
 local Clockwork = Clockwork
+
 local pairs = pairs
-local RunConsoleCommand = RunConsoleCommand
-local SysTime = SysTime
 local ScrH = ScrH
 local ScrW = ScrW
 local table = table
@@ -18,23 +16,29 @@ function PANEL:Init()
 		local smallTextFont = Clockwork.option:GetFont("menu_text_small")
 		local tinyTextFont = Clockwork.option:GetFont("menu_text_tiny")
 		local hugeTextFont = Clockwork.option:GetFont("menu_text_huge")
+
 		local scrH = ScrH()
 		local scrW = ScrW()
+
 		self:SetPos(0, 0)
 		self:SetSize(scrW, scrH)
 		self:SetDrawOnTop(false)
 		self:SetFocusTopLevel(true)
 		self:SetPaintBackground(false)
 		self:SetMouseInputEnabled(true)
+
 		self.titleLabel = vgui.Create("cwLabelButton", self)
 		self.titleLabel:SetDisabled(true)
 		self.titleLabel:SetFont(hugeTextFont)
+
 		self.subLabel = vgui.Create("cwLabelButton", self)
 		self.subLabel:SetDisabled(true)
 		self.subLabel:SetFont(smallTextFont)
+
 		self.authorLabel = vgui.Create("cwLabelButton", self)
 		self.authorLabel:SetDisabled(true)
 		self.authorLabel:SetFont(tinyTextFont)
+
 		self.createButton = vgui.Create("cwLabelButton", self)
 		self.createButton:SetFont(smallTextFont)
 		self.createButton:FadeIn(0.5)
@@ -114,10 +118,13 @@ function PANEL:Init()
 		end)
 
 		self.cancelButton:SetMouseInputEnabled(true)
+
 		local modelSize = math.min(ScrW() * 0.5, ScrH() * 0.75)
+
 		self.characterModel = vgui.Create("cwCharacterModel", self)
 		self.characterModel:SetSize(modelSize, modelSize)
 		self.characterModel:SetAlpha(0)
+
 		self.characterModel:SetModel("models/error.mdl")
 		self.createTime = SysTime()
 		Clockwork.theme:Call("PostCharacterMenuInit", self)
@@ -133,9 +140,11 @@ end
 function PANEL:ResetTextAndPositions()
 	local scrH = ScrH()
 	local scrW = ScrW()
+
 	self.titleLabel:SetText(string.upper(Schema:GetName()))
 	self.subLabel:SetText(L(string.upper(Schema:GetDescription())))
 	self.subLabel:SizeToContents()
+
 	local schemaLogo = Clockwork.option:GetKey("schema_logo")
 
 	if schemaLogo == "" then
@@ -153,21 +162,27 @@ function PANEL:ResetTextAndPositions()
 	self.authorLabel:SetText(L("DevelopedBy", string.upper(Schema:GetAuthor())))
 	self.authorLabel:SizeToContents()
 	self.authorLabel:SetPos(self.subLabel.x + (self.subLabel:GetWide() - self.authorLabel:GetWide()), self.subLabel.y + self.subLabel:GetTall() + 4)
+
 	self.createButton:SetText(L("CharacterMenuNew"))
 	self.createButton:SizeToContents()
 	self.createButton:SetPos(scrW * 0.25, 16)
+
 	self.loadButton:SetText(L("CharacterMenuLoad"))
 	self.loadButton:SizeToContents()
 	self.loadButton:SetPos(scrW * 0.75, 16)
+
 	self.disconnectButton:SetText(L("CharacterMenuLeave"))
 	self.disconnectButton:SizeToContents()
 	self.disconnectButton:SetPos(scrW / 2 - self.disconnectButton:GetWide() / 2, 16)
+
 	self.previousButton:SetText(L("CharacterMenuPrevious"))
 	self.previousButton:SizeToContents()
 	self.previousButton:SetPos(scrW * 0.2 - self.previousButton:GetWide() / 2, scrH * 0.9)
+
 	self.nextButton:SetText(L("CharacterMenuNext"))
 	self.nextButton:SizeToContents()
 	self.nextButton:SetPos(scrW * 0.8 - self.nextButton:GetWide() / 2, scrH * 0.9)
+
 	self.cancelButton:SetText(L("CharacterMenuCancel"))
 	self.cancelButton:SizeToContents()
 	self.cancelButton:SetPos(scrW * 0.5 - self.cancelButton:GetWide() / 2, scrH * 0.9)
@@ -227,16 +242,17 @@ function PANEL:ReturnToMainMenu()
 	local panel = Clockwork.character:GetActivePanel()
 
 	if panel then
-		--	if (CW_CONVAR_FADEPANEL:GetInt() == 1) then
-		panel:FadeOut(0.5, function()
+		if CW_CONVAR_FADEPANEL:GetInt() == 1 then
+			panel:FadeOut(0.5, function()
+				Clockwork.character.activePanel = nil
+				panel:Remove()
+				self:FadeInTitle()
+			end)
+		else
 			Clockwork.character.activePanel = nil
 			panel:Remove()
 			self:FadeInTitle()
-		end)
-		--		else
-		--			Clockwork.character.activePanel = nil;
-		--		panel:Remove();
-		--		end;
+		end
 	else
 		self:FadeInTitle()
 	end
@@ -355,12 +371,13 @@ function PANEL:Paint(w, h)
 		local backgroundColor = Clockwork.option:GetColor("background")
 		local foregroundColor = Clockwork.option:GetColor("foreground")
 		local colorTargetID = Clockwork.option:GetColor("target_id")
---		local tinyTextFont = Clockwork.option:GetFont("menu_text_tiny")
 		local colorWhite = Clockwork.option:GetColor("white")
-		local scrW, _ = ScrW(), ScrH()
+		local scrW = ScrW()
 		local height = self.createButton.y * 2 + self.createButton:GetTall()
 		local y = 0
+
 		Clockwork.kernel:DrawSimpleGradientBox(0, 0, y, scrW, height, Color(backgroundColor.r, backgroundColor.g, backgroundColor.b, 100))
+
 		surface.SetDrawColor(foregroundColor.r, foregroundColor.g, foregroundColor.b, 200)
 		surface.DrawRect(0, y + height, scrW, 1)
 
@@ -373,6 +390,7 @@ function PANEL:Paint(w, h)
 			local progressHeight = mainTextH + 16
 			local progressY = y + height + 1
 			local boxColor = Color(math.min(backgroundColor.r + 50, 255), math.min(backgroundColor.g + 50, 255), math.min(backgroundColor.b + 50, 255), 100)
+
 			Clockwork.kernel:DrawSimpleGradientBox(0, 0, progressY, scrW, progressHeight, boxColor)
 
 			for i = 1, numCreationPanels do
@@ -411,7 +429,6 @@ function PANEL:Think()
 		local bIsLoading = Clockwork.character:IsPanelLoading()
 		local schemaLogo = Clockwork.option:GetKey("schema_logo")
 		local activePanel = Clockwork.character:GetActivePanel()
---		local fault = Clockwork.character:GetFault()
 
 		if Clockwork.plugin:Call("ShouldDrawCharacterBackgroundBlur") then
 			Clockwork.kernel:RegisterBackgroundBlur(self, self.createTime)
@@ -507,6 +524,7 @@ function PANEL:Init()
 	self.selectedIdx = 1
 	self.characterPanels = {}
 	self.isCharacterList = true
+
 	CHAR_LIST = self
 	Clockwork.character:FadeInNavigation()
 end
@@ -517,23 +535,60 @@ end
 
 -- A function to make the panel fade out.
 function PANEL:FadeOut(speed, Callback)
-	Clockwork.option:PlaySound("rollover")
-	self:SetVisible(false)
-	self:SetAlpha(0)
+	if self:GetAlpha() > 0 and CW_CONVAR_FADEPANEL:GetInt() == 1 and (not self.animation or not self.animation:Active()) then
+		self.animation = Derma_Anim("Fade Panel", self, function(panel, animation, delta, data)
+			panel:SetAlpha(255 - delta * 255)
 
-	if Callback then
-		Callback()
+			if animation.Finished then
+				panel:SetVisible(false)
+			end
+
+			if animation.Finished and Callback then
+				Callback()
+			end
+		end)
+
+		if self.animation then
+			self.animation:Start(speed)
+		end
+	else
+		self:SetVisible(false)
+		self:SetAlpha(0)
+
+		if Callback then
+			Callback()
+		end
 	end
 end
 
 -- A function to make the panel fade in.
 function PANEL:FadeIn(speed, Callback)
-	Clockwork.option:PlaySound("click_release")
-	self:SetVisible(true)
-	self:SetAlpha(255)
+	if self:GetAlpha() == 0 and CW_CONVAR_FADEPANEL:GetInt() == 1 and (not self.animation or not self.animation:Active()) then
+		self.animation = Derma_Anim("Fade Panel", self, function(panel, animation, delta, data)
+			panel:SetVisible(true)
+			panel:SetAlpha(delta * 255)
 
-	if Callback then
-		Callback()
+			if animation.Finished then
+				self.animation = nil
+			end
+
+			if animation.Finished and Callback then
+				Callback()
+			end
+		end)
+
+		if self.animation then
+			self.animation:Start(speed)
+		end
+
+		Clockwork.option:PlaySound("click_release")
+	else
+		self:SetVisible(true)
+		self:SetAlpha(255)
+
+		if Callback then
+			Callback()
+		end
 	end
 end
 
@@ -584,6 +639,7 @@ function PANEL:ManageTargets(panel, position, alpha)
 	local interval = 64 * math.EaseInOut(self.easingValue, 0.2, 0.2)
 	panel.TargetPosition = math.Approach(panel.TargetPosition, position, interval)
 	panel.TargetAlpha = math.Approach(panel.TargetAlpha, alpha, interval)
+
 	panel:SetAlpha(panel.TargetAlpha)
 	panel:SetPos(panel.TargetPosition, 0)
 end
@@ -633,7 +689,9 @@ function PANEL:Think()
 	if self.characterPanels[self.selectedIdx] then
 		local centerPanel = self.characterPanels[self.selectedIdx]
 		centerPanel:SetActive(true)
+
 		self:ManageTargets(centerPanel, self:GetWide() / 2 - centerPanel:GetWide() / 2, 255)
+
 		local rightX = centerPanel.x + centerPanel:GetWide() + 32
 		local leftX = centerPanel.x - 32
 
@@ -671,26 +729,31 @@ function PANEL:Init()
 	local smallTextFont = Clockwork.option:GetFont("menu_text_small")
 	local tinyTextFont = Clockwork.option:GetFont("menu_text_tiny")
 	local buttonsList = {}
---	local colorWhite = Clockwork.option:GetColor("white")
 	local buttonX = 20
 	local buttonY = 0
 	local labels = {}
+
 	self.customData = self:GetParent().customData
 	self.buttonPanels = {}
+
 	self:SetPaintBackground(false)
+
 	Clockwork.plugin:Call("GetCharacterPanelLabels", labels, self.customData)
+
 	self.nameLabel = vgui.Create("cwLabelButton", self)
 	self.nameLabel:SetDisabled(true)
 	self.nameLabel:SetFont(smallTextFont)
 	self.nameLabel:SetText(string.upper(self.customData.name))
 	self.nameLabel:SizeToContents()
 	self.nameLabel:SetPos(0, 80)
+
 	self.factionLabel = vgui.Create("cwLabelButton", self)
 	self.factionLabel:SetDisabled(true)
 	self.factionLabel:SetFont(tinyTextFont)
 	self.factionLabel:SetText(string.upper(self.customData.faction))
 	self.factionLabel:SizeToContents()
 	self.factionLabel:SetPos(0, self.nameLabel.y + self.nameLabel:GetTall() + 4)
+
 	local color = Color(255, 255, 255, 255)
 	local factionTable = Clockwork.faction:FindByID(self.customData.faction)
 
@@ -705,13 +768,16 @@ function PANEL:Init()
 	end
 
 	self.factionLabel:OverrideTextColor(color)
+
 	local modelSize = math.min(ScrW() * 0.4, ScrH() * 0.65)
 	self.characterModel = vgui.Create("cwCharacterModel", self)
 	self.characterModel:SetModel(self.customData.model)
 	self.characterModel:SetSize(modelSize, modelSize)
 	self.characterModel:SetMouseInputEnabled(true)
+
 	buttonY = self.factionLabel.y + self.factionLabel:GetTall() + 4
 	self.characterModel:SetPos(0, buttonY - self.characterModel:GetTall() * 0.1)
+
 	local modelPanel = self.characterModel
 	local sequence = Clockwork.plugin:Call("GetCharacterPanelSequence", modelPanel.Entity, self.customData.charTable)
 
@@ -725,12 +791,14 @@ function PANEL:Init()
 	self.useButton:SetSize(16, 16)
 	self.useButton:SetPos(0, buttonY)
 	self.useButton:SetMouseInputEnabled(true)
+
 	self.deleteButton = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("DImageButton", self))
 	self.deleteButton:SetTooltip(L("DeleteThisCharacter"))
 	self.deleteButton:SetImage("icon16/cross.png")
 	self.deleteButton:SetSize(16, 16)
 	self.deleteButton:SetPos(20, buttonY)
 	self.deleteButton:SetMouseInputEnabled(true)
+
 	Clockwork.plugin:Call("GetCustomCharacterButtons", self.customData.charTable, buttonsList)
 
 	for k, v in pairs(buttonsList) do
@@ -741,6 +809,7 @@ function PANEL:Init()
 		button:SetSize(16, 16)
 		button:SetPos(buttonX, buttonY)
 		button:SetMouseInputEnabled(true)
+
 		self.buttonPanels[#self.buttonPanels + 1] = button
 
 		-- Called when the button is clicked.
@@ -787,7 +856,6 @@ function PANEL:Init()
 
 		if activePanel:GetSelectedModel() == self then
 			local options = {}
---			local panel = Clockwork.character:GetPanel()
 
 			options["Use"] = function()
 				Clockwork.datastream:Start("InteractCharacter", {
@@ -845,13 +913,16 @@ function PANEL:Init()
 		label:OverrideTextColor(v.color)
 		label:SizeToContents()
 		label:SetPos(maxWidth / 2 - label:GetWide() / 2, labelY)
+
 		labelY = labelY + label:GetTall() + 4
 	end
 
 	self.characterModel.x = maxWidth / 2 - self.characterModel:GetWide() / 2
 	self.nameLabel:SetPos(maxWidth / 2 - self.nameLabel:GetWide() / 2, self.nameLabel.y)
 	self.factionLabel:SetPos(maxWidth / 2 - self.factionLabel:GetWide() / 2, self.factionLabel.y)
+
 	self:SetSize(maxWidth, ScrH())
+
 	local buttonAddX = (maxWidth / 2 - buttonX / 2) - 10
 	self.useButton:SetPos(self.useButton.x + buttonAddX, self.useButton.y)
 	self.deleteButton:SetPos(self.deleteButton.x + buttonAddX, self.deleteButton.y)
@@ -905,23 +976,63 @@ end
 
 -- A function to make the panel fade out.
 function PANEL:FadeOut(speed, Callback)
-	Clockwork.option:PlaySound("rollover")
-	self:SetVisible(false)
-	self:SetAlpha(0)
+	if self:GetAlpha() > 0 and CW_CONVAR_FADEPANEL:GetInt() == 1 and (not self.animation or not self.animation:Active()) then
+		self.animation = Derma_Anim("Fade Panel", self, function(panel, animation, delta, data)
+			panel:SetAlpha(255 - delta * 255)
 
-	if Callback then
-		Callback()
+			if animation.Finished then
+				panel:SetVisible(false)
+			end
+
+			if animation.Finished and Callback then
+				Callback()
+			end
+		end)
+
+		if self.animation then
+			self.animation:Start(speed)
+		end
+
+		return true
+	else
+		self:SetAlpha(0)
+		self:SetVisible(false)
+
+		if Callback then
+			Callback()
+		end
 	end
 end
 
 -- A function to make the panel fade in.
 function PANEL:FadeIn(speed, Callback)
-	Clockwork.option:PlaySound("click_release")
-	self:SetVisible(true)
-	self:SetAlpha(255)
+	if self:GetAlpha() == 0 and CW_CONVAR_FADEPANEL:GetInt() == 1 and (not self.animation or not self.animation:Active()) then
+		self.animation = Derma_Anim("Fade Panel", self, function(panel, animation, delta, data)
+			panel:SetAlpha(delta * 255)
 
-	if Callback then
-		Callback()
+			if animation.Finished then
+				self.animation = nil
+			end
+
+			if animation.Finished and Callback then
+				Callback()
+			end
+		end)
+
+		if self.animation then
+			self.animation:Start(speed)
+		end
+
+		self:SetVisible(true)
+
+		return true
+	else
+		self:SetVisible(true)
+		self:SetAlpha(255)
+
+		if Callback then
+			Callback()
+		end
 	end
 end
 
@@ -940,8 +1051,6 @@ end
 
 -- Called each frame.
 function PANEL:Think()
---	local entity = self.Entity
-
 	if self.animation then
 		self.animation:Run()
 	end
@@ -949,8 +1058,6 @@ function PANEL:Think()
 	if self.forceX then
 		self.x = self.forceX
 	end
-	--entity:ClearPoseParameters();
-	--self:InvalidateLayout(true);
 end
 
 -- A function to set the model details.
@@ -985,8 +1092,11 @@ end
 
 local function setModelAndSequence(panel, model)
 	panel:ClockworkSetModel(model)
+
 	local entity = panel.Entity
+
 	if not IsValid(entity) then return end
+
 	local sequence = entity:LookupSequence("idle")
 	local menuSequence = Clockwork.animation:GetMenuSequence(model, true)
 
@@ -1031,10 +1141,12 @@ function PANEL:LayoutEntity()
 	local entity = self.Entity
 	local x, _ = self:LocalToScreen(self:GetWide() / 2)
 	local fx = x / screenW
+
 	entity:SetPoseParameter("head_pitch", fractionMY * 80 - 30)
 	entity:SetPoseParameter("head_yaw", (fractionMX - fx) * 70)
 	entity:SetAngles(Angle(0, 45, 0))
 	entity:SetIK(false)
+
 	self:RunAnimation()
 end
 
@@ -1042,6 +1154,7 @@ function PANEL:Init()
 	self:SetCursor("none")
 	self.ClockworkSetModel = self.SetModel
 	self.SetModel = setModelAndSequence
+
 	Clockwork.kernel:CreateMarkupToolTip(self)
 end
 
@@ -1052,26 +1165,30 @@ local PANEL = {}
 function PANEL:Init()
 	local colorWhite = Clockwork.option:GetColor("white")
 	local colorTargetID = Clockwork.option:GetColor("target_id")
-	local font = Clockwork.fonts:GetSize(Clockwork.option:GetFont("info_text_font"), 16)
-	self:SetSize(self:GetWide(), 32)
+
+	self:SetSize(self:GetWide(), 16)
+
 	self.totalPoints = 0
 	self.maximumPoints = 0
 	self.attributeTable = nil
 	self.attributePanels = {}
+
 	self:SetPaintBackground(false)
+
 	Clockwork.kernel:CreateMarkupToolTip(self)
-	self.addButton = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("DImageButton", self))
-	self.addButton:SetMaterial("clockwork/increase.png")
-	self.addButton:SetSize(32, 32)
+
+	self.addButton = vgui.Create("DImageButton", self)
+	self.addButton:SetMaterial("icon16/add.png")
+	self.addButton:SizeToContents()
 
 	-- Called when the button is clicked.
 	function self.addButton.DoClick(imageButton)
 		self:AddPoint()
 	end
 
-	self.removeButton = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("DImageButton", self))
-	self.removeButton:SetMaterial("clockwork/decrease.png")
-	self.removeButton:SetSize(32, 32)
+	self.removeButton = vgui.Create("DImageButton", self)
+	self.removeButton:SetMaterial("icon16/exclamation.png")
+	self.removeButton:SizeToContents()
 
 	-- Called when the button is clicked.
 	function self.removeButton.DoClick(imageButton)
@@ -1079,46 +1196,52 @@ function PANEL:Init()
 	end
 
 	self.pointsUsed = vgui.Create("DPanel", self)
+	self.pointsUsed:SetPos(self.addButton:GetWide() + 8, 0)
 	Clockwork.kernel:CreateMarkupToolTip(self.pointsUsed)
+
 	self.pointsLabel = vgui.Create("DLabel", self)
-	self.pointsLabel:SetText("")
-	self.pointsLabel:SetFont(font)
+	self.pointsLabel:SetText("N/A")
 	self.pointsLabel:SetTextColor(colorWhite)
+	self.pointsLabel:SizeToContents()
 	self.pointsLabel:SetExpensiveShadow(1, Color(0, 0, 0, 150))
 	Clockwork.kernel:CreateMarkupToolTip(self.pointsLabel)
 
 	-- Called when the panel should be painted.
 	function self.pointsUsed.Paint(pointsUsed)
-		local color = Color(150, 150, 150, 255)
+		local color = Color(100, 100, 100, 255)
 		local width = math.Clamp((pointsUsed:GetWide() / self.attributeTable.maximum) * self.totalPoints, 0, pointsUsed:GetWide())
-		Clockwork.kernel:DrawSimpleGradientBox(0, 0, 0, pointsUsed:GetWide(), pointsUsed:GetTall(), color)
+
+		if color then
+			color.r = math.min(color.r - 25, 255)
+			color.g = math.min(color.g - 25, 255)
+			color.b = math.min(color.b - 25, 255)
+		end
+
+		Clockwork.kernel:DrawSimpleGradientBox(2, 0, 0, pointsUsed:GetWide(), pointsUsed:GetTall(), color)
 
 		if self.totalPoints > 0 and self.totalPoints < self.attributeTable.maximum then
-			Clockwork.kernel:DrawSimpleGradientBox(0, 0, 0, width, pointsUsed:GetTall(), colorTargetID)
+			Clockwork.kernel:DrawSimpleGradientBox(0, 2, 2, width - 4, pointsUsed:GetTall() - 4, colorTargetID)
+			surface.SetDrawColor(255, 255, 255, 200)
+			surface.DrawRect(width, 0, 1, pointsUsed:GetTall())
 		end
 	end
 end
 
 -- Called each frame.
 function PANEL:Think()
-	self.removeButton.x = 0
-
-	if self.spawnIcon then
-		self.removeButton.x = self.spawnIcon.x + self.spawnIcon:GetWide() + 8
-	end
-
-	self.pointsUsed:SetPos(self.removeButton.x + self.removeButton:GetWide() + 8, 0)
-	self.pointsUsed:SetSize(self:GetWide() - self.pointsUsed.x - self.addButton:GetWide() - 8, 32)
-	self.pointsLabel:SetText(L(self.attributeTable.name))
-	self.pointsLabel:SetPos(self.pointsUsed.x + (self.pointsUsed:GetWide() / 2 - self.pointsLabel:GetWide() / 2), self:GetTall() / 2 - self.pointsLabel:GetTall() / 2)
+	self.pointsUsed:SetSize(self:GetWide() - self.pointsUsed.x * 2, 16)
+	self.pointsLabel:SetText(self.attributeTable.name)
+	self.pointsLabel:SetPos(self:GetWide() / 2 - self.pointsLabel:GetWide() / 2, self:GetTall() / 2 - self.pointsLabel:GetTall() / 2)
 	self.pointsLabel:SizeToContents()
-	self.addButton:SetPos(self.pointsUsed.x + self.pointsUsed:GetWide() + 8, self.pointsUsed.y + self.pointsUsed:GetTall() / 2 - self.addButton:GetTall() / 2)
-	self.removeButton.y = self.addButton.y
+	self.addButton:SetPos(self.pointsUsed.x + self.pointsUsed:GetWide() + 8, 0)
+
 	local markupObject = Clockwork.theme:GetMarkupObject()
-	local attributeName = L(self.attributeTable.name)
+	local attributeName = self.attributeTable.name
 	local attributeMax = self.totalPoints .. "/" .. self.attributeTable.maximum
-	markupObject:Title(attributeName .. " (" .. attributeMax .. ")")
-	markupObject:Add(L(self.attributeTable.description))
+
+	markupObject:Title(attributeName .. ", " .. attributeMax)
+	markupObject:Add(self.attributeTable.description)
+
 	self:SetMarkupToolTip(markupObject:GetText())
 	self.pointsUsed:SetMarkupToolTip(markupObject:GetText())
 	self.pointsLabel:SetMarkupToolTip(markupObject:GetText())
@@ -1167,14 +1290,6 @@ end
 -- A function to set the panel's attribute table.
 function PANEL:SetAttributeTable(attributeTable)
 	self.attributeTable = attributeTable
-
-	if attributeTable.image then
-		self.spawnIcon = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("DImageButton", self))
-		self.spawnIcon:SetTooltip(L(attributeTable.description))
-		self.spawnIcon:SetImage(attributeTable.image .. ".png")
-		self.spawnIcon:SetSize(32, 32)
-		self.spawnIcon:SetPos(0, 0)
-	end
 end
 
 -- A function to set the panel's maximum points.
@@ -1189,7 +1304,6 @@ local PANEL = {}
 function PANEL:Init()
 	self.info = Clockwork.character:GetCreationInfo()
 	local maximumPoints = Clockwork.config:Get("default_attribute_points"):Get()
---	local smallTextFont = Clockwork.option:GetFont("menu_text_small")
 	local factionTable = Clockwork.faction:FindByID(self.info.faction)
 	local attributes = {}
 
@@ -1206,6 +1320,7 @@ function PANEL:Init()
 	self.attributesForm:SetText(Clockwork.option:Translate("name_attributes"))
 	self.attributesForm:SetPadding(8)
 	self.attributesForm:SetSpacing(12)
+
 	self.categoryList = vgui.Create("cwPanelList", self)
 	self.categoryList:SetPadding(8)
 	self.categoryList:SetSpacing(8)
@@ -1217,6 +1332,7 @@ function PANEL:Init()
 	end
 
 	table.sort(attributes, function(a, b) return a.name < b.name end)
+
 	self.attributePanels = {}
 	self.info.attributes = {}
 	self.helpText = self.attributesForm:Help(L("YouCanSpendMorePoints", maximumPoints))
@@ -1227,7 +1343,9 @@ function PANEL:Init()
 			characterAttribute:SetAttributeTable(v)
 			characterAttribute:SetMaximumPoints(maximumPoints)
 			characterAttribute:SetAttributePanels(self.attributePanels)
+
 			self.attributesForm:AddItem(characterAttribute)
+
 			self.attributePanels[#self.attributePanels + 1] = characterAttribute
 		end
 	end
@@ -1249,23 +1367,58 @@ end
 
 -- A function to make the panel fade out.
 function PANEL:FadeOut(speed, Callback)
-	Clockwork.option:PlaySound("rollover")
-	self:SetVisible(false)
-	self:SetAlpha(0)
+	if self:GetAlpha() > 0 and CW_CONVAR_FADEPANEL:GetInt() == 1 and (not self.animation or not self.animation:Active()) then
+		self.animation = Derma_Anim("Fade Panel", self, function(panel, animation, delta, data)
+			panel:SetAlpha(255 - delta * 255)
 
-	if Callback then
-		Callback()
+			if animation.Finished then
+				panel:SetVisible(false)
+			end
+
+			if animation.Finished and Callback then
+				Callback()
+			end
+		end)
+
+		if self.animation then
+			self.animation:Start(speed)
+		end
+	else
+		self:SetVisible(false)
+		self:SetAlpha(0)
+
+		if Callback then
+			Callback()
+		end
 	end
 end
 
 -- A function to make the panel fade in.
 function PANEL:FadeIn(speed, Callback)
-	Clockwork.option:PlaySound("click_release")
-	self:SetVisible(true)
-	self:SetAlpha(255)
+	if self:GetAlpha() == 0 and CW_CONVAR_FADEPANEL:GetInt() == 1 and (not self.animation or not self.animation:Active()) then
+		self.animation = Derma_Anim("Fade Panel", self, function(panel, animation, delta, data)
+			panel:SetVisible(true)
+			panel:SetAlpha(delta * 255)
 
-	if Callback then
-		Callback()
+			if animation.Finished then
+				self.animation = nil
+			end
+
+			if animation.Finished and Callback then
+				Callback()
+			end
+		end)
+
+		if self.animation then
+			self.animation:Start(speed)
+		end
+	else
+		self:SetVisible(true)
+		self:SetAlpha(255)
+
+		if Callback then
+			Callback()
+		end
 	end
 end
 
@@ -1300,9 +1453,11 @@ local PANEL = {}
 -- Called when the panel is initialized.
 function PANEL:Init()
 	self.info = Clockwork.character:GetCreationInfo()
+
 	self.classesForm = vgui.Create("DForm")
 	self.classesForm:SetName(L("MenuNameClasses"))
 	self.classesForm:SetPadding(4)
+
 	self.categoryList = vgui.Create("cwPanelList", self)
 	self.categoryList:SetPadding(8)
 	self.categoryList:SetSpacing(8)
@@ -1332,23 +1487,58 @@ end
 
 -- A function to make the panel fade out.
 function PANEL:FadeOut(speed, Callback)
-	Clockwork.option:PlaySound("rollover")
-	self:SetVisible(false)
-	self:SetAlpha(0)
+	if self:GetAlpha() > 0 and CW_CONVAR_FADEPANEL:GetInt() == 1 and (not self.animation or not self.animation:Active()) then
+		self.animation = Derma_Anim("Fade Panel", self, function(panel, animation, delta, data)
+			panel:SetAlpha(255 - delta * 255)
 
-	if Callback then
-		Callback()
+			if animation.Finished then
+				panel:SetVisible(false)
+			end
+
+			if animation.Finished and Callback then
+				Callback()
+			end
+		end)
+
+		if self.animation then
+			self.animation:Start(speed)
+		end
+	else
+		self:SetVisible(false)
+		self:SetAlpha(0)
+
+		if Callback then
+			Callback()
+		end
 	end
 end
 
 -- A function to make the panel fade in.
 function PANEL:FadeIn(speed, Callback)
-	Clockwork.option:PlaySound("click_release")
-	self:SetVisible(true)
-	self:SetAlpha(255)
+	if self:GetAlpha() == 0 and CW_CONVAR_FADEPANEL:GetInt() == 1 and (not self.animation or not self.animation:Active()) then
+		self.animation = Derma_Anim("Fade Panel", self, function(panel, animation, delta, data)
+			panel:SetVisible(true)
+			panel:SetAlpha(delta * 255)
 
-	if Callback then
-		Callback()
+			if animation.Finished then
+				self.animation = nil
+			end
+
+			if animation.Finished and Callback then
+				Callback()
+			end
+		end)
+
+		if self.animation then
+			self.animation:Start(speed)
+		end
+	else
+		self:SetVisible(true)
+		self:SetAlpha(255)
+
+		if Callback then
+			Callback()
+		end
 	end
 end
 
@@ -1381,12 +1571,13 @@ local PANEL = {}
 
 -- Called when the panel is initialized.
 function PANEL:Init()
---	local smallTextFont = Clockwork.option:GetFont("menu_text_small")
 	local panel = Clockwork.character:GetPanel()
+
 	self.categoryList = vgui.Create("cwPanelList", self)
-	self.categoryList:SetPadding(8)
-	self.categoryList:SetSpacing(8)
+	self.categoryList:SetPadding(4)
+	self.categoryList:SetSpacing(0)
 	self.categoryList:SizeToContents()
+
 	self.overrideModel = nil
 	self.hasSelectedModel = nil
 	self.hasPhysDesc = Clockwork.command:FindByID("CharPhysDesc") ~= nil
@@ -1410,8 +1601,8 @@ function PANEL:Init()
 	if not Clockwork.faction.stored[self.info.faction].GetName then
 		self.nameForm = vgui.Create("cwBasicForm", self)
 		self.nameForm:SetAutoSize(true)
-		self.nameForm:SetPadding(8)
-		self.nameForm:SetSpacing(8)
+		self.nameForm:SetPadding(2)
+		self.nameForm:SetSpacing(0)
 		self.nameForm:SetText(L("Name"))
 
 		if Clockwork.faction.stored[self.info.faction].useFullName then
@@ -1429,8 +1620,9 @@ function PANEL:Init()
 		if self.hasPhysDesc then
 			self.physDescForm = vgui.Create("cwBasicForm")
 			self.physDescForm:SetAutoSize(true)
-			self.physDescForm:SetPadding(8)
-			self.physDescForm:SetSpacing(8)
+			self.physDescForm:SetPadding(4)
+			self.physDescForm:SetSpacing(4)
+
 			self.physDescForm:SetText(L("CharacterMenuPhysDesc"))
 			self.physDescForm:Help(L("CharacterMenuPhysDescHelp"))
 			self.physDescTextEntry = self.physDescForm:TextEntry()
@@ -1440,16 +1632,18 @@ function PANEL:Init()
 		if self.hasSelectedModel then
 			self.appearanceForm = vgui.Create("cwBasicForm")
 			self.appearanceForm:SetAutoSize(true)
-			self.appearanceForm:SetPadding(8)
-			self.appearanceForm:SetSpacing(8)
+			self.appearanceForm:SetPadding(4)
+			self.appearanceForm:SetSpacing(0)
 			self.appearanceForm:SetText(L("CharacterMenuAppearance"))
 			self.appearanceForm:Help(L("CharacterMenuModelHelp"))
+
 			self.modelItemsList = vgui.Create("DPanelList", self)
 			self.modelItemsList:SetPadding(4)
 			self.modelItemsList:SetSpacing(16)
 			self.modelItemsList:SetAutoSize(true)
 			self.modelItemsList:EnableHorizontal(true)
 			self.modelItemsList:EnableVerticalScrollbar(true)
+
 			self.appearanceForm:AddItem(self.modelItemsList)
 		end
 	end
@@ -1476,6 +1670,7 @@ function PANEL:Init()
 				for k2, v2 in pairs(v.models[lowerGender]) do
 					spawnIcon = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("cwSpawnIcon", self))
 					spawnIcon:SetModel(v2)
+					spawnIcon:SetTooltip(false)
 
 					-- Called when the spawn icon is clicked.
 					function spawnIcon.DoClick(spawnIcon)
@@ -1582,12 +1777,29 @@ end
 
 -- A function to make the panel fade out.
 function PANEL:FadeOut(speed, Callback)
-	Clockwork.option:PlaySound("rollover")
-	self:SetVisible(false)
-	self:SetAlpha(0)
+	if self:GetAlpha() > 0 and CW_CONVAR_FADEPANEL:GetInt() == 1 and (not self.animation or not self.animation:Active()) then
+		self.animation = Derma_Anim("Fade Panel", self, function(panel, animation, delta, data)
+			panel:SetAlpha(255 - delta * 255)
 
-	if Callback then
-		Callback()
+			if animation.Finished then
+				panel:SetVisible(false)
+			end
+
+			if animation.Finished and Callback then
+				Callback()
+			end
+		end)
+
+		if self.animation then
+			self.animation:Start(speed)
+		end
+	else
+		self:SetVisible(false)
+		self:SetAlpha(0)
+
+		if Callback then
+			Callback()
+		end
 	end
 end
 
@@ -1610,8 +1822,6 @@ function PANEL:FadeIn(speed, Callback)
 		if self.animation then
 			self.animation:Start(speed)
 		end
-
-		Clockwork.option:PlaySound("click_release")
 	else
 		self:SetVisible(true)
 		self:SetAlpha(255)
@@ -1642,7 +1852,6 @@ local PANEL = {}
 
 -- Called when the panel is initialized.
 function PANEL:Init()
---	local smallTextFont = Clockwork.option:GetFont("menu_text_small")
 	local factions = {}
 
 	for k, v in pairs(Clockwork.faction.stored) do
@@ -1654,17 +1863,20 @@ function PANEL:Init()
 	end
 
 	table.sort(factions, function(a, b) return a < b end)
+
 	self.forcedFaction = nil
 	self.info = Clockwork.character:GetCreationInfo()
+
 	self.categoryList = vgui.Create("cwPanelList", self)
-	self.categoryList:SetPadding(8)
-	self.categoryList:SetSpacing(8)
+	self.categoryList:SetPadding(2)
+	self.categoryList:SetSpacing(0)
 	self.categoryList:SizeToContents()
+
 	self.settingsForm = vgui.Create("cwBasicForm")
 	self.settingsForm:SetAutoSize(true)
 	self.settingsForm:SetText(L("CreateCharacterStage1"))
-	self.settingsForm:SetPadding(8)
-	self.settingsForm:SetSpacing(8)
+	self.settingsForm:SetPadding(4)
+	self.settingsForm:SetSpacing(4)
 
 	if #factions > 1 then
 		self.settingsForm:Help(L("CharacterMenuFactionHelp"))
@@ -1723,6 +1935,7 @@ function PANEL:Init()
 	end
 
 	self.customChoices = {}
+
 	Clockwork.plugin:Call("GetPersuasionChoices", self.customChoices)
 
 	if self.customChoices then
@@ -1820,23 +2033,58 @@ end
 
 -- A function to make the panel fade out.
 function PANEL:FadeOut(speed, Callback)
-	Clockwork.option:PlaySound("rollover")
-	self:SetVisible(false)
-	self:SetAlpha(0)
+	if self:GetAlpha() > 0 and CW_CONVAR_FADEPANEL:GetInt() == 1 and (not self.animation or not self.animation:Active()) then
+		self.animation = Derma_Anim("Fade Panel", self, function(panel, animation, delta, data)
+			panel:SetAlpha(255 - delta * 255)
 
-	if Callback then
-		Callback()
+			if animation.Finished then
+				panel:SetVisible(false)
+			end
+
+			if animation.Finished and Callback then
+				Callback()
+			end
+		end)
+
+		if self.animation then
+			self.animation:Start(speed)
+		end
+	else
+		self:SetVisible(false)
+		self:SetAlpha(0)
+
+		if Callback then
+			Callback()
+		end
 	end
 end
 
 -- A function to make the panel fade in.
 function PANEL:FadeIn(speed, Callback)
-	Clockwork.option:PlaySound("click_release")
-	self:SetVisible(true)
-	self:SetAlpha(255)
+	if self:GetAlpha() == 0 and CW_CONVAR_FADEPANEL:GetInt() == 1 and (not self.animation or not self.animation:Active()) then
+		self.animation = Derma_Anim("Fade Panel", self, function(panel, animation, delta, data)
+			panel:SetVisible(true)
+			panel:SetAlpha(delta * 255)
 
-	if Callback then
-		Callback()
+			if animation.Finished then
+				self.animation = nil
+			end
+
+			if animation.Finished and Callback then
+				Callback()
+			end
+		end)
+
+		if self.animation then
+			self.animation:Start(speed)
+		end
+	else
+		self:SetVisible(true)
+		self:SetAlpha(255)
+
+		if Callback then
+			Callback()
+		end
 	end
 end
 
@@ -1860,22 +2108,24 @@ local PANEL = {}
 
 -- Called when the panel is initialized.
 function PANEL:Init()
---	local smallTextFont = Clockwork.option:GetFont("menu_text_small")
---	local panel = Clockwork.character:GetPanel()
 	self.categoryList = vgui.Create("cwPanelList", self)
 	self.categoryList:SetPadding(8)
 	self.categoryList:SetSpacing(8)
 	self.categoryList:SizeToContents()
+
 	self.maximumPoints = Clockwork.config:Get("max_trait_points"):Get()
 	self.selectedTraits = {}
 	self.info = Clockwork.character:GetCreationInfo()
 	self.info.traits = {}
+
 	self.traitForm = vgui.Create("cwBasicForm")
 	self.traitForm:SetAutoSize(true)
 	self.traitForm:SetPadding(8)
 	self.traitForm:SetSpacing(8)
 	self.traitForm:SetText(L("CharacterMenuTraits"))
+
 	self.helpText = self.traitForm:Help(L("YouCanSpendMorePoints", maximumPoints))
+
 	self.traitItemsList = vgui.Create("DPanelList", self)
 	self.traitItemsList:SetPadding(4)
 	self.traitItemsList:SetSpacing(16)
@@ -1884,6 +2134,7 @@ function PANEL:Init()
 	self.traitItemsList:EnableVerticalScrollbar(true)
 	self.traitForm:AddItem(self.traitItemsList)
 	self.categoryList:AddItem(self.traitForm)
+
 	local informationColor = Clockwork.option:GetColor("information")
 
 	for k, v in pairs(Clockwork.trait:GetAll()) do
@@ -1935,23 +2186,58 @@ end
 
 -- A function to make the panel fade out.
 function PANEL:FadeOut(speed, Callback)
-	Clockwork.option:PlaySound("rollover")
-	self:SetVisible(false)
-	self:SetAlpha(0)
+	if self:GetAlpha() > 0 and CW_CONVAR_FADEPANEL:GetInt() == 1 and (not self.animation or not self.animation:Active()) then
+		self.animation = Derma_Anim("Fade Panel", self, function(panel, animation, delta, data)
+			panel:SetAlpha(255 - delta * 255)
 
-	if Callback then
-		Callback()
+			if animation.Finished then
+				panel:SetVisible(false)
+			end
+
+			if animation.Finished and Callback then
+				Callback()
+			end
+		end)
+
+		if self.animation then
+			self.animation:Start(speed)
+		end
+	else
+		self:SetVisible(false)
+		self:SetAlpha(0)
+
+		if Callback then
+			Callback()
+		end
 	end
 end
 
 -- A function to make the panel fade in.
 function PANEL:FadeIn(speed, Callback)
-	Clockwork.option:PlaySound("click_release")
-	self:SetVisible(true)
-	self:SetAlpha(255)
+	if self:GetAlpha() == 0 and CW_CONVAR_FADEPANEL:GetInt() == 1 and (not self.animation or not self.animation:Active()) then
+		self.animation = Derma_Anim("Fade Panel", self, function(panel, animation, delta, data)
+			panel:SetVisible(true)
+			panel:SetAlpha(delta * 255)
 
-	if Callback then
-		Callback()
+			if animation.Finished then
+				self.animation = nil
+			end
+
+			if animation.Finished and Callback then
+				Callback()
+			end
+		end)
+
+		if self.animation then
+			self.animation:Start(speed)
+		end
+	else
+		self:SetVisible(true)
+		self:SetAlpha(255)
+
+		if Callback then
+			Callback()
+		end
 	end
 end
 
@@ -1989,7 +2275,9 @@ vgui.Register("cwCharacterStageFive", PANEL, "EditablePanel")
 Clockwork.datastream:Hook("CharacterRemove", function(data)
 	local characters = Clockwork.character:GetAll()
 	local characterID = data
+
 	if table.Count(characters) == 0 then return end
+
 	if not characters[characterID] then return end
 	characters[characterID] = nil
 
@@ -2037,12 +2325,6 @@ Clockwork.datastream:Hook("CharacterMenu", function(data)
 		if Clockwork.character:GetPanel() then
 			Clockwork.character:SetPanelLoading(false)
 			Clockwork.character:RefreshPanelList()
-			local numCharacters = table.Count(Clockwork.character:GetAll())
-
-			if numCharacters == 0 then
-				Clockwork.character:ResetCreationInfo()
-				Clockwork.character:OpenNextCreationPanel()
-			end
 		end
 	elseif menuState == CHARACTER_MENU_CLOSE then
 		Clockwork.character:SetPanelOpen(false)

@@ -254,7 +254,7 @@ end
 --]]
 function Clockwork.theme:Initialize()
 	local theme = self:Get()
-	local defaultTheme = Clockwork.config:Get("default_theme"):Get()
+	local defaultTheme = Clockwork.config:Get("default_theme"):Get() or "Schema" -- For some reason default_theme always returns nil.
 
 	if defaultTheme then
 		theme = defaultTheme
@@ -269,6 +269,8 @@ function Clockwork.theme:Initialize()
 	end
 
 	if not theme then
+		MsgC(Color(255, 50, 50), "[Clockwork:Theme] Default theme not found, loading \"Clockwork\"!\n")
+
 		theme = "Clockwork"
 	end
 
@@ -284,6 +286,9 @@ end
 function Clockwork.theme:Register(bSwitchTo)
 	if cwTHEME then
 		local name = cwTHEME.name
+
+		Clockwork.plugin:Call("PreThemeRegister", cwTHEME)
+
 		Clockwork.theme:Finish(cwTHEME, not bSwitchTo)
 
 		return name

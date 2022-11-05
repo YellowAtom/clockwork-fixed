@@ -1,5 +1,5 @@
-
 local Clockwork = Clockwork
+
 local tonumber = tonumber
 local pairs = pairs
 local table = table
@@ -32,8 +32,9 @@ end
 -- A function to rebuild the panel.
 function PANEL:Rebuild()
 	self.panelList:Clear(true)
+
 	self.classTable = nil
---	local available
+
 	local classes = {}
 
 	for k, v in pairs(Clockwork.class.stored) do
@@ -69,6 +70,7 @@ function PANEL:Rebuild()
 		local label = vgui.Create("cwInfoText", self)
 		label:SetText("You do not have access to any classes!")
 		label:SetInfoColor("red")
+
 		self.panelList:AddItem(label)
 	end
 
@@ -117,8 +119,8 @@ local PANEL = {}
 
 -- Called when the panel is initialized.
 function PANEL:Init()
---	local colorWhite = Color(0, 0, 0, 200)
 	local parent = self:GetParent()
+
 	self.classTable = parent.classTable
 	self:SetSize(parent:GetWide(), 32)
 
@@ -153,12 +155,12 @@ function PANEL:Init()
 	Clockwork.plugin:Call("PlayerAdjustClassModelInfo", self.classTable.index, info)
 
 	if not self.classTable.image then
-		self.spawnIcon = vgui.Create("cwSpawnIcon", self)
+		self.spawnIcon = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("cwSpawnIcon", self))
 		self.spawnIcon:SetModel(info.model, info.skin)
 		self.spawnIcon:SetTooltip(self.classTable.description)
 		self.spawnIcon:SetSize(32, 32)
 	else
-		self.spawnIcon = vgui.Create("DImageButton", self)
+		self.spawnIcon = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("DImageButton", self))
 		self.spawnIcon:SetTooltip(self.classTable.description)
 		self.spawnIcon:SetImage(self.classTable.image .. ".png")
 		self.spawnIcon:SetSize(32, 32)

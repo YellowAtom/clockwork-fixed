@@ -1299,18 +1299,15 @@ else -- if (SERVER) then
 							name = info.name,
 							data = info.data
 						}, function()
-							cwKernel:PrintLog(LOGTYPE_MINOR, {"LogPlayerCreateChar", player:SteamName(), info.faction, info.name})
+							cwKernel:PrintLog(LOGTYPE_GENERIC, {"LogPlayerCreateChar", player:SteamName(), info.faction, info.name})
 
 							cwDatastream:Start(player, "CharacterFinish", {
 								wasSuccess = true
 							})
 
 							player.cwIsCreatingChar = nil
-							local characters = player:GetCharacters()
 
-							if table.Count(characters) == 1 then
-								self:UseCharacter(player, characterID)
-							end
+							self:UseCharacter(player, characterID)
 						end)
 					end
 				end)
@@ -5135,9 +5132,6 @@ else -- if (SERVER) then
 	function Clockwork.player:SaveCharacter(player, shouldCreate, character, Callback)
 		if shouldCreate then
 			local charactersTable = cwCfg:Get("mysql_characters_table"):Get()
---			local values = ""
---			local amount = 1
---			local keys = ""
 
 			if not character or type(character) ~= "table" then
 				character = player:GetCharacter()
@@ -5163,13 +5157,13 @@ else -- if (SERVER) then
 				end
 			end
 
-			if system.IsWindows() then
+			if cwDatabase:GetAdapter() == "tmysql4" then
 				queryObj:SetCallback(function(result, status, lastID)
 					if Callback and tonumber(lastID) then
 						Callback(tonumber(lastID))
 					end
 				end)
-			elseif system.IsLinux() then
+			else
 				queryObj:SetCallback(function(result, status, lastID)
 					if Callback then
 						Callback(tonumber(lastID))
@@ -5217,6 +5211,7 @@ else -- if (SERVER) then
 			end
 
 			queryObj:Push()
+
 			--[[ Save the player's data after pushing the update. --]]
 			Clockwork.player:SaveData(player)
 		end

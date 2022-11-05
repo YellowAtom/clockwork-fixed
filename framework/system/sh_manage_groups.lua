@@ -6,8 +6,10 @@ local GROUP_OPER = 3
 local GROUP_USER = 4
 
 if CLIENT then
-	local SYSTEM = Clockwork.system:New("Manage Groups")
-	SYSTEM.toolTip = "A way to manage all administration groups."
+	local SYSTEM = Clockwork.system:New("ManageGroups")
+
+	SYSTEM.image = "clockwork/system/groups"
+	SYSTEM.toolTip = "ManageGroupsHelp"
 	SYSTEM.groupType = GROUP_USER
 	SYSTEM.groupPage = 1
 	SYSTEM.groupPlayers = nil
@@ -25,20 +27,22 @@ if CLIENT then
 	function SYSTEM:OnDisplay(systemPanel, systemForm)
 		if self.groupType == GROUP_USER then
 			local label = vgui.Create("cwInfoText", systemPanel)
-			label:SetText("Selecting a user group will bring up a list of users in that group.")
+			label:SetText(L("ManageGroupsSelectingGroup"))
 			label:SetInfoColor("blue")
 			label:DockMargin(0, 0, 0, 8)
 			systemPanel.panelList:AddItem(label)
-			local userGroupsForm = vgui.Create("DForm", systemPanel)
-			userGroupsForm:SetName("User Groups")
-			userGroupsForm:SetPadding(4)
+
+			local userGroupsForm = vgui.Create("cwBasicForm", systemPanel)
+			userGroupsForm:SetText(L("ManageGroupsUserGroups"))
+			userGroupsForm:SetPadding(8)
+			userGroupsForm:SetAutoSize(true)
 			systemPanel.panelList:AddItem(userGroupsForm)
 
-			local userGroups = {"Super Admins", "Administrators", "Operators"}
+			local userGroups = {L("ManageGroupsSuperAdmins"), L("ManageGroupsAdmins"), L("ManageGroupsOperators")}
 
 			for k, v in pairs(userGroups) do
 				local groupButton = vgui.Create("DButton", systemPanel)
-				groupButton:SetTooltip("Manage users within the " .. v .. " user group.")
+				groupButton:SetTooltip(L("ManageGroupsManageWithin", v))
 				groupButton:SetText(v)
 				groupButton:SetWide(systemPanel:GetParent():GetWide())
 
@@ -53,7 +57,7 @@ if CLIENT then
 			end
 		else
 			local backButton = vgui.Create("DButton", systemPanel)
-			backButton:SetText("Back to User Groups")
+			backButton:SetText(L("ManageGroupsBackToGroups"))
 			backButton:SetWide(systemPanel:GetParent():GetWide())
 
 			-- Called when the button is clicked.
@@ -76,7 +80,7 @@ if CLIENT then
 						local label = vgui.Create("cwInfoText", systemPanel)
 						label:SetText(v.steamName)
 						label:SetButton(true)
-						label:SetTooltip("This player's Steam ID is " .. v.steamID .. ".")
+						label:SetTooltip(L("ManageGroupsSteamIDInfo", v.steamID))
 						label:SetInfoColor("blue")
 						systemPanel.panelList:AddItem(label)
 
@@ -85,7 +89,7 @@ if CLIENT then
 							local commandTable = Clockwork.command:FindByID("PlyDemote")
 
 							if commandTable and Clockwork.player:HasFlags(Clockwork.Client, commandTable.access) then
-								Derma_Query("Are you sure that you want to demote " .. v.steamName .. "?", "Demote " .. v.steamName .. ".", "Yes", function()
+								Derma_Query(L("ManageGroupsDemoteText", v.steamName), L("ManageGroupsDemoteTitle"), L("Yes"), function()
 									Clockwork.datastream:Start("SystemGroupDemote", {v.steamID, v.steamName, self.groupType})
 								end, "No", function() end)
 							end
@@ -93,9 +97,10 @@ if CLIENT then
 					end
 
 					if self.pageCount > 1 then
-						local pageForm = vgui.Create("DForm", systemPanel)
-						pageForm:SetName("Page " .. self.groupPage .. "/" .. self.pageCount)
-						pageForm:SetPadding(4)
+						local pageForm = vgui.Create("cwBasicForm", systemPanel)
+						pageForm:SetText(L("PageCount", self.groupPage, self.pageCount))
+						pageForm:SetPadding(8)
+						pageForm:SetAutoSize(true)
 						systemPanel.panelList:AddItem(pageForm)
 
 						if self.isNext then
@@ -118,13 +123,13 @@ if CLIENT then
 					end
 				else
 					local label = vgui.Create("cwInfoText", systemPanel)
-					label:SetText("There are no users to display in this group.")
+					label:SetText(L("ManageGroupsNoUsers"))
 					label:SetInfoColor("orange")
 					systemPanel.panelList:AddItem(label)
 				end
 			else
 				local label = vgui.Create("cwInfoText", systemPanel)
-				label:SetText("Hold on while the group users are retrieved...")
+				label:SetText(L("ManageGroupsGettingUsers"))
 				label:SetInfoColor("blue")
 				systemPanel.panelList:AddItem(label)
 			end
@@ -134,7 +139,7 @@ if CLIENT then
 	SYSTEM:Register()
 
 	Clockwork.datastream:Hook("SystemGroupRebuild", function(data)
-		local systemTable = Clockwork.system:FindByID("Manage Groups")
+		local systemTable = Clockwork.system:FindByID("ManageGroups")
 
 		if systemTable and systemTable:IsActive() then
 			systemTable:Rebuild()
@@ -143,7 +148,7 @@ if CLIENT then
 
 	Clockwork.datastream:Hook("SystemGroupGet", function(data)
 		if type(data) == "table" then
-			local systemTable = Clockwork.system:FindByID("Manage Groups")
+			local systemTable = Clockwork.system:FindByID("ManageGroups")
 
 			if systemTable then
 				systemTable.groupPlayers = data.players
@@ -155,7 +160,7 @@ if CLIENT then
 				systemTable:Rebuild()
 			end
 		else
-			local systemTable = Clockwork.system:FindByID("Manage Groups")
+			local systemTable = Clockwork.system:FindByID("ManageGroups")
 
 			if systemTable then
 				systemTable.groupPlayers = {}
@@ -206,7 +211,8 @@ else
 				end)
 
 				queryObj:Push()
-				Clockwork.player:NotifyAll(player:Name() .. " has demoted " .. data[2] .. " from " .. cwUserGroup .. " to user.")
+
+				Clockwork.player:NotifyAll({"PlayerDemotedUserToGroup", player:Name(), data[2], cwUserGroup, "user"})
 			end
 		end
 	end)

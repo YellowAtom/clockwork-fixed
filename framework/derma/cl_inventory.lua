@@ -22,8 +22,10 @@ function PANEL:Init()
 
 	self.columnSheet = vgui.Create("cwColumnSheet", self)
 	self.columnSheet.Navigation:SetWidth(150)
-	self.columnSheet:AddSheet(Clockwork.option:GetKey("name_inventory"), self.inventoryList, "icon16/box.png")
-	self.columnSheet:AddSheet("Equipment", self.equipmentList, "icon16/shield.png")
+
+	self.columnSheet:AddSheet(Clockwork.option:Translate("name_inventory"), self.inventoryList, "icon16/box.png")
+	self.columnSheet:AddSheet(L("EquipmentName"), self.equipmentList, "icon16/shield.png")
+
 	Clockwork.inventory.panel = self
 	Clockwork.inventory.panel:Rebuild()
 end
@@ -62,7 +64,7 @@ function PANEL:Rebuild()
 	self.weightForm:SetPadding(8)
 	self.weightForm:SetSpacing(8)
 	self.weightForm:SetAutoSize(true)
-	self.weightForm:SetText("Weight", nil, "basic_form_highlight")
+	self.weightForm:SetText(L("Weight"), nil, "basic_form_highlight")
 	self.weightForm:AddItem(vgui.Create("cwInventoryWeight", self))
 
 	if Clockwork.inventory:UseSpaceSystem() then
@@ -70,7 +72,7 @@ function PANEL:Rebuild()
 		self.spaceForm:SetPadding(8)
 		self.spaceForm:SetSpacing(8)
 		self.spaceForm:SetAutoSize(true)
-		self.spaceForm:SetText("Space", nil, "basic_form_highlight")
+		self.spaceForm:SetText(L("Space"), nil, "basic_form_highlight")
 		self.spaceForm:AddItem(vgui.Create("cwInventorySpace", self))
 	end
 
@@ -306,7 +308,7 @@ local PANEL = {}
 -- Called when the panel is initialized.
 function PANEL:Init()
 	local itemData = self:GetParent().itemData
-	self:SetSize(48, 48)
+	self:SetSize(52, 52)
 	self.itemTable = itemData.itemTable
 	self.spawnIcon = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("cwSpawnIcon", self))
 
@@ -329,7 +331,8 @@ function PANEL:Init()
 
 	local model, skin = Clockwork.item:GetIconInfo(self.itemTable)
 	self.spawnIcon:SetModel(model, skin)
-	self.spawnIcon:SetSize(48, 48)
+	self.spawnIcon:SetSize(52, 52)
+	self.spawnIcon:SetTooltip(false)
 
 	self.cachedInfo = {
 		model = model,

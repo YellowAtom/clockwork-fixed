@@ -1,4 +1,3 @@
-
 local Clockwork = Clockwork
 local CurTime = CurTime
 local surface = surface
@@ -9,26 +8,51 @@ local PANEL = {}
 
 -- Called when the panel is initialized.
 function PANEL:Init()
-	self.Icon.PaintOver = function(icon)
-		local curTime = CurTime()
+	self.HoverColor = Clockwork.option:GetColor("information")
+	self:SetTooltip(false)
+end
 
-		if self.Cooldown and self.Cooldown.expireTime > curTime then
-			local timeLeft = self.Cooldown.expireTime - curTime
-			local progress = 100 - (100 / self.Cooldown.duration) * timeLeft
-			Clockwork.cooldown:DrawBox(self.x, self.y, self:GetWide(), self:GetTall(), progress, Color(255, 255, 255, 255 - (255 / 100) * progress), self.Cooldown.textureID)
-		end
+-- Called when the panel is painted.
+function PANEL:Paint()
+	self.OverlayFade = math.Clamp((self.OverlayFade or 0) - RealFrameTime() * 640 * 2, 0, 255)
 
-		if self.BorderColor then
-			local alpha = math.min(self.BorderColor.a, self:GetAlpha())
-			Clockwork.SpawnIconMaterial:SetVector("$color", Vector(self.BorderColor.r / 255, self.BorderColor.g / 255, self.BorderColor.b / 255))
-			Clockwork.SpawnIconMaterial:SetFloat("$alpha", alpha / 255)
-			surface.SetDrawColor(self.BorderColor.r, self.BorderColor.g, self.BorderColor.b, alpha)
-			surface.SetMaterial(Clockwork.SpawnIconMaterial)
-			self:DrawTexturedRect()
-			Clockwork.SpawnIconMaterial:SetFloat("$alpha", 1)
-			Clockwork.SpawnIconMaterial:SetVector("$color", Vector(1, 1, 1))
-		end
+	if not dragndrop.IsDragging() and self:IsHovered() then
+		self.OverlayFade = math.Clamp(self.OverlayFade + RealFrameTime() * 640 * 8, 0, 255)
 	end
+end
+
+-- Called when the panel should be painted over.
+function PANEL:PaintOver(w, h)
+	local curTime = CurTime()
+
+	if self.Cooldown and self.Cooldown.expireTime > curTime then
+		local progress = 100 - (100 / self.Cooldown.duration) * self.Cooldown.expireTime - curTime
+
+		Clockwork.cooldown:DrawBox(0, 0, w, h, progress, Color(255, 255, 255, 255 - (255 / 100) * progress), self.Cooldown.textureID)
+	end
+
+	if self.BorderColor then
+		surface.SetDrawColor(self.BorderColor.r, self.BorderColor.g, self.BorderColor.b, math.min(self.OverlayFade, self:GetAlpha()))
+		surface.DrawOutlinedRect(0, 0, w, h, 2.5)
+	end
+
+	if self.HoverColor and self.OverlayFade > 0 then
+		surface.SetDrawColor(self.HoverColor.r, self.HoverColor.g, self.HoverColor.b, math.min(self.OverlayFade, self:GetAlpha()))
+		surface.DrawOutlinedRect(0, 0, w, h, 2.5)
+	end
+end
+
+function PANEL:OnMousePressed(key)
+	if self.DoClick and key == MOUSE_LEFT then
+		self:DoClick()
+	elseif self.DoRightClick and key == MOUSE_RIGHT then
+		self:DoRightClick()
+	end
+end
+
+-- A function to set the hover color.
+function PANEL:SetHoverColor(color)
+	self.HoverColor = color
 end
 
 -- A function to set the border color.

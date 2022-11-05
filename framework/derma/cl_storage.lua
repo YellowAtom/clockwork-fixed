@@ -1,11 +1,10 @@
-
 local Clockwork = Clockwork
+
 local CloseDermaMenus = CloseDermaMenus
 local IsValid = IsValid
 local pairs = pairs
 local ScrH = ScrH
 local ScrW = ScrW
-local string = string
 local table = table
 local vgui = vgui
 local math = math
@@ -141,17 +140,15 @@ function PANEL:RebuildPanel(storagePanel, storageType, usedWeight, weight, usedS
 		numberWang = vgui.Create("DNumberWang", storagePanel)
 		cashForm = vgui.Create("DForm", storagePanel)
 		button = vgui.Create("DButton", storagePanel)
-		button:SetText("Transfer")
+		button:SetText(L("StorageTransfer"))
 		button.Stretch = true
 
 		-- Called when the button is clicked.
 		function button.DoClick(button)
-			local cashName = Clockwork.option:GetKey("name_cash")
-
 			if storageType == "Inventory" then
-				Clockwork.kernel:RunCommand("StorageGive" .. string.gsub(cashName, "%s", ""), numberWang:GetValue())
+				Clockwork.kernel:RunCommand("StorageGiveCash", numberWang:GetValue())
 			else
-				Clockwork.kernel:RunCommand("StorageTake" .. string.gsub(cashName, "%s", ""), numberWang:GetValue())
+				Clockwork.kernel:RunCommand("StorageTakeCash", numberWang:GetValue())
 			end
 		end
 
@@ -161,14 +158,16 @@ function PANEL:RebuildPanel(storagePanel, storageType, usedWeight, weight, usedS
 		numberWang:SetValue(storagePanel.cash)
 		numberWang:SizeToContents()
 		cashForm:SetPadding(5)
-		cashForm:SetName(Clockwork.option:GetKey("name_cash"))
+		cashForm:SetName(L("Cash"))
+
 		cashForm:AddItem(numberWang)
 		cashForm:AddItem(button)
 	end
 
 	local informationForm = vgui.Create("DForm", storagePanel)
 	informationForm:SetPadding(5)
-	informationForm:SetName("Weight")
+	informationForm:SetName(L("Weight"))
+
 	local storageWeight = vgui.Create("cwStorageWeight", storagePanel)
 	storageWeight:SetWeight(weight)
 	storageWeight:SetUsedWeight(usedWeight)
@@ -178,7 +177,8 @@ function PANEL:RebuildPanel(storagePanel, storageType, usedWeight, weight, usedS
 	if Clockwork.inventory:UseSpaceSystem() and storagePanel.usedSpace > 0 then
 		local informationForm = vgui.Create("DForm", storagePanel)
 		informationForm:SetPadding(5)
-		informationForm:SetName("Space")
+		informationForm:SetName(L("Space"))
+
 		local storageSpace = vgui.Create("cwStorageSpace", storagePanel)
 		storageSpace:SetSpace(space)
 		storageSpace:SetUsedSpace(usedSpace)
@@ -261,7 +261,7 @@ local PANEL = {}
 -- Called when the panel is initialized.
 function PANEL:Init()
 	local itemData = self:GetParent().itemData or CURRENT_ITEM_DATA
-	self:SetSize(48, 48)
+	self:SetSize(56, 56)
 	self.itemTable = itemData.itemTable
 	self.storageType = itemData.storageType
 	self.spawnIcon = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("cwSpawnIcon", self))
@@ -281,8 +281,8 @@ function PANEL:Init()
 
 	local model, skin = Clockwork.item:GetIconInfo(self.itemTable)
 	self.spawnIcon:SetModel(model, skin)
-	self.spawnIcon:SetTooltip("")
-	self.spawnIcon:SetSize(48, 48)
+	self.spawnIcon:SetTooltip(false)
+	self.spawnIcon:SetSize(52, 52)
 
 	self.cachedInfo = {
 		model = model,

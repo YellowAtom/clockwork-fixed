@@ -248,6 +248,10 @@ function Clockwork.database:IsSQLite()
 	return self.liteSql or Clockwork.config:Get("mysql_adapter"):Get() == "sqlite"
 end
 
+function Clockwork.database:GetAdapter()
+	return self.adapter
+end
+
 function Clockwork.database:Update(tableName)
 	local object = Clockwork.kernel:NewMetaTable(MYSQL_UPDATE_CLASS)
 	object.updateVars = {}
@@ -521,14 +525,16 @@ function Clockwork.database:OnConnectionFailed(errText)
 end
 
 function Clockwork.database:Connect(adapter, host, username, password, database, port)
+	self.adapter = adapter
+
 	if host == "localhost" then
 		host = "127.0.0.1"
 	elseif host == "example.com" then
 		MsgC(Color(50, 255, 255), "[Clockwork:Database] No MySQL details found. Connecting to database using SQLite...\n")
-		adapter = "sqlite"
+		self.adapter = "sqlite"
 	end
 
-	if adapter == "mysqloo" then
+	if self.adapter == "mysqloo" then
 		local bSuccess, _ = xpcall(require, debug.traceback, "mysqloo")
 
 		if bSuccess then
@@ -551,7 +557,7 @@ function Clockwork.database:Connect(adapter, host, username, password, database,
 		end
 	end
 
-	if adapter == "tmysql4" then
+	if self.adapter == "tmysql4" then
 		local bSuccess, _ = xpcall(require, debug.traceback, "tmysql4")
 
 		if bSuccess then
@@ -576,7 +582,7 @@ function Clockwork.database:Connect(adapter, host, username, password, database,
 		end
 	end
 
-	if adapter == "sqlite" then
+	if self.adapter == "sqlite" then
 		MsgC(Color(50, 255, 255), "[Clockwork:Database] Connecting to internal sqlite database...\n")
 
 		self.liteSql = true
