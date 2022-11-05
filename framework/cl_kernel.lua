@@ -1602,7 +1602,7 @@ function Clockwork:Tick()
 
 	if menuMusic ~= "" then
 		if IsValid(cwClient) and cwCharacter:IsPanelOpen() then
-			if not self.MusicSound or not self.MusicSound:IsPlaying() then
+			if not self.MusicSound then
 				self.MusicSound = CreateSound(cwClient, menuMusic)
 				self.MusicSound:PlayEx(0.3, 100)
 				self.MusicFading = false
