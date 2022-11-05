@@ -3702,7 +3702,7 @@ else
 		end
 
 		function panel.SetToolTip(pan, toolTip)
-			return self:SetTooltip(toolTip)
+			return pan:SetTooltip(toolTip)
 		end
 
 		return panel
