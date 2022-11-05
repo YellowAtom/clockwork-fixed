@@ -1587,7 +1587,13 @@ function PANEL:Init()
 		self.hasSelectedModel = true
 	end
 
-	local genderModels = Clockwork.faction.stored[self.info.faction].models[string.lower(self.info.gender)]
+	local faction = Clockwork.faction.stored[self.info.faction]
+
+	local genderModels = faction.models
+
+	if not faction.singleGender then
+		genderModels = faction.models[string.lower(self.info.gender)]
+	end
 
 	if genderModels and #genderModels == 1 then
 		self.hasSelectedModel = false
@@ -1894,7 +1900,7 @@ function PANEL:Init()
 					end
 
 					if v.singleGender then
-						local index = self.genderMultiChoice:AddChoice(L(v.singleGender))
+						local index = self.genderMultiChoice:AddChoice(L(GENDER_NONE))
 						self.genderMultiChoice:ChooseOptionID(index)
 					else
 						self.genderMultiChoice:AddChoice(L(GENDER_FEMALE))
@@ -1913,7 +1919,7 @@ function PANEL:Init()
 				self.genderMultiChoice = self.settingsForm:ComboBox(L("Gender"))
 
 				if v.singleGender then
-					local index = self.genderMultiChoice:AddChoice(L(v.singleGender))
+					local index = self.genderMultiChoice:AddChoice(L(GENDER_NONE))
 					self.genderMultiChoice:ChooseOptionID(index)
 				else
 					self.genderMultiChoice:AddChoice(L(GENDER_FEMALE))
@@ -2002,8 +2008,10 @@ function PANEL:OnNext()
 
 		if gender == L(GENDER_MALE) then
 			gender = GENDER_MALE
-		else
+		elseif gender == L(GENDER_FEMALE) then
 			gender = GENDER_FEMALE
+		elseif gender == L(GENDER_NONE) then
+			gender = GENDER_NONE
 		end
 
 		if not faction and self.factionMultiChoice then

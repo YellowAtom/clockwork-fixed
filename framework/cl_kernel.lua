@@ -2306,11 +2306,7 @@ end
 --]]
 function Clockwork:DrawTargetPlayerStatus(target, alpha, x, y)
 	local informationColor = cwOption:GetColor("information")
-	local gender = "He"
-
-	if target:GetGender() == GENDER_FEMALE then
-		gender = "She"
-	end
+	local gender = target:GetPronouns()
 
 	if not target:Alive() then
 		return cwKernel:DrawInfo(gender .. " is clearly deceased.", x, y, informationColor, alpha)
@@ -2810,11 +2806,7 @@ end
 	@returns {Unknown}
 --]]
 function Clockwork:GetPlayerScoreboardText(player)
-	local thirdPerson = "him"
-
-	if player:GetGender() == GENDER_FEMALE then
-		thirdPerson = "her"
-	end
+	local _, thirdPerson = player:GetPronouns()
 
 	if cwPly:DoesRecognise(player, RECOGNISE_PARTIAL) then
 		local physDesc = cwPly:GetPhysDesc(player)

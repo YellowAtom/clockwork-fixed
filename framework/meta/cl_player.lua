@@ -88,11 +88,31 @@ end
 
 -- A function to get a player's gender.
 function playerMeta:GetGender()
-	if self:GetSharedVar("Gender") == 1 then
+	local genderEnum = self:GetSharedVar("Gender")
+
+	if genderEnum == 1 then
 		return GENDER_FEMALE
-	else
+	elseif genderEnum == 2 then
 		return GENDER_MALE
+	else
+		return GENDER_NONE
 	end
+end
+
+function playerMeta:GetPronouns()
+	local gender = self:GetGender()
+	local pronoun = "It"
+	local thirdperson = "It"
+
+	if gender == GENDER_FEMALE then
+		pronoun = "She"
+		thirdperson = "Her"
+	elseif gender == GENDER_MALE then
+		pronoun = "He"
+		thirdperson = "Him"
+	end
+
+	return pronoun, thirdperson
 end
 
 -- A function to get a player's faction.

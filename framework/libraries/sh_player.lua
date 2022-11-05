@@ -4851,8 +4851,10 @@ else -- if (SERVER) then
 
 		if gender == GENDER_MALE then
 			player:SetSharedVar("Gender", 2)
-		else
+		elseif gender == GENDER_FEMALE then
 			player:SetSharedVar("Gender", 1)
+		else
+			player:SetSharedVar("Gender", 0)
 		end
 
 		return true

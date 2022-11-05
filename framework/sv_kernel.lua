@@ -1818,8 +1818,8 @@ function Clockwork:PlayerDataStreamInfoSent(player)
 			if faction then
 				local genders = {GENDER_MALE, GENDER_FEMALE}
 
-				local gender = faction.singleGender or genders[math.random(1, #genders)]
-				local models = faction.models[string.lower(gender)]
+				local gender = faction.singleGender and GENDER_NONE or genders[math.random(1, #genders)]
+				local models = faction.singleGender and faction.models or faction.models[string.lower(gender)]
 				local model = models[math.random(1, #models)]
 
 				cwPly:LoadCharacter(player, 1, {

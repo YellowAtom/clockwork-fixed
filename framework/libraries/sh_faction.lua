@@ -139,8 +139,8 @@ end
 function Clockwork.faction:IsGenderValid(faction, gender)
 	local factionTable = self:FindByID(faction)
 
-	if factionTable and (gender == GENDER_MALE or gender == GENDER_FEMALE) then
-		if not factionTable.singleGender or gender == factionTable.singleGender then return true end
+	if factionTable and (gender == GENDER_MALE or gender == GENDER_FEMALE) or (not factionTable.singleGender or gender == GENDER_NONE) then
+		return true
 	end
 end
 
@@ -155,7 +155,9 @@ end
 function Clockwork.faction:IsModelValid(faction, gender, model)
 	if gender and model then
 		local factionTable = self:FindByID(faction)
-		if factionTable and table.HasValue(factionTable.models[string.lower(gender)], model) then return true end
+		local models = factionTable.singleGender and factionTable.models or factionTable.models[string.lower(gender)]
+
+		if factionTable and table.HasValue(models, model) then return true end
 	end
 end
 
