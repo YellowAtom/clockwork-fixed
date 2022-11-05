@@ -65,7 +65,7 @@ if CLIENT then
 					self.pluginButtons[v2.name] = vgui.Create("cwInfoText", systemPanel)
 					self.pluginButtons[v2.name]:SetText(L(v2.name))
 					self.pluginButtons[v2.name]:SetButton(true)
-					self.pluginButtons[v2.name]:SetTooltip(L(v2.description))
+					--self.pluginButtons[v2.name]:SetTooltip(L(v2.description))
 
 					panelList:AddItem(self.pluginButtons[v2.name])
 
