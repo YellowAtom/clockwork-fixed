@@ -3141,7 +3141,7 @@ function Clockwork:RenderScreenspaceEffects()
 			if cwLimb:IsActive() and cwEvent:CanRun("blur", "limb_damage") then
 				local headDamage = cwLimb:GetDamage(HITGROUP_HEAD)
 				motionBlurs.blurTable["health"] = math.Clamp(1 - headDamage * 0.01, 0, 1)
-			elseif cwClient:Health() <= 75 then
+			elseif cwClient:Health() <= 75 then -- This is set to 1 in oldwork.
 				if cwEvent:CanRun("blur", "health") then
 					motionBlurs.blurTable["health"] = math.Clamp(1 - (cwClient:GetMaxHealth() - cwClient:Health()) * 0.01, 0, 1)
 				end
@@ -3185,11 +3185,12 @@ function Clockwork:RenderScreenspaceEffects()
 		self.ColorModify["$pp_colour_mulr"] = 0
 		self.ColorModify["$pp_colour_mulg"] = 0
 		self.ColorModify["$pp_colour_mulb"] = 0
+
 		local systemTable = self.system:FindByID("ColorModify")
 		local overrideColorMod
 
 		if systemTable then
-			systemTable:GetModifyTable()
+			overrideColorMod = systemTable:GetModifyTable()
 		end
 
 		if overrideColorMod and overrideColorMod.enabled then
