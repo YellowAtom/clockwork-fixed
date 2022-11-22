@@ -51,7 +51,7 @@ Clockwork.config:Add("unrecognised_name", "Somebody you do not recognise.", true
 Clockwork.config:Add("scale_fall_damage", 1)
 Clockwork.config:Add("limb_damage_system", true, true)
 Clockwork.config:Add("enable_vignette", true, true)
-Clockwork.config:Add("use_free_aiming", true, true, true)
+Clockwork.config:Add("use_free_aiming", false, true, true)
 Clockwork.config:Add("default_cash", 100, nil, nil, nil, nil, nil, true)
 Clockwork.config:Add("armor_chest_only", false)
 Clockwork.config:Add("minimum_physdesc", 32, true)
