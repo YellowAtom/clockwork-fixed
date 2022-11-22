@@ -1077,7 +1077,8 @@ function playerMeta:SetCrouchedWalkSpeed(speed, setClockworkVar)
 		self.cwCrouchedSpeed = speed
 	end
 
-	self:ClockworkSetCrouchedWalkSpeed(speed)
+	-- SetCrouchedWalkSpeed now sets the walk speed directly.
+	self:ClockworkSetCrouchedWalkSpeed(1 / self:GetWalkSpeed() * speed)
 end
 
 -- A function to get whether a player has initialized.
