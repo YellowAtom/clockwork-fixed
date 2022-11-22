@@ -23,7 +23,7 @@ if CLIENT then
 	SWEP.Purpose = "Harming characters and knocking on doors."
 	SWEP.Contact = "CloudSixteen.com"
 	SWEP.DrawAmmo = false
-	SWEP.DrawCrosshair = false
+	SWEP.DrawCrosshair = true
 	SWEP.DrawSecondaryAmmo = false
 	SWEP.ViewModelFOV = 55
 	SWEP.ViewModelFlip = false
