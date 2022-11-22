@@ -1,4 +1,9 @@
 
+if Clockwork.database:IsSQLite() then
+	MsgC(Color(255, 255, 0), "[CrossServerChat] This plugin will not load with SQLite!\n")
+	return
+end
+
 -- Called when the Clockwork database has connected.
 function cwXCS:ClockworkDatabaseConnected()
 	local CREATE_MESSAGES_TABLE = [[
