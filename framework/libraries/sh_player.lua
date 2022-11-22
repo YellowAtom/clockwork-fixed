@@ -932,14 +932,17 @@ if CLIENT then
 		end
 
 		if not icon then
-			local faction = player:GetFaction()
 			icon = "icon16/user.png"
+
+			-- Removed plus chat icon while in a whitelisted faction.
+
+			--[[ local faction = player:GetFaction()
 
 			if faction and Clockwork.faction.stored[faction] then
 				if Clockwork.faction.stored[faction].whitelist then
 					icon = "icon16/add.png"
 				end
-			end
+			end ]]
 		end
 
 		return icon
