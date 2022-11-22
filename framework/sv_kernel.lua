@@ -1561,7 +1561,9 @@ end
 	@returns {Unknown}
 --]]
 function Clockwork:SaveData()
-	for k, v in pairs(player.GetAll()) do
+	cwPlugin:Call("PreSaveData")
+
+	for _, v in pairs(player.GetAll()) do
 		if v:HasInitialized() then
 			v:SaveCharacter()
 		end
@@ -1574,6 +1576,10 @@ function Clockwork:SaveData()
 	if not cwConfig:Get("use_local_machine_date"):Get() then
 		cwKernel:SaveSchemaData("date", self.date:GetSaveData())
 	end
+
+	cwPlugin:Call("PostSaveData")
+
+	MsgC(Color(0, 255, 0), "[Clockwork] Persistant data has been saved!\n")
 end
 
 function Clockwork:PlayerCanInteractCharacter(player, action, character)
@@ -2110,9 +2116,7 @@ function Clockwork:Tick()
 	end
 
 	if not self.NextSaveData or sysTime >= self.NextSaveData then
-		cwPlugin:Call("PreSaveData")
 		cwPlugin:Call("SaveData")
-		cwPlugin:Call("PostSaveData")
 		self.NextSaveData = sysTime + cwConfig:Get("save_data_interval"):Get()
 	end
 
@@ -4736,6 +4740,8 @@ end
 --]]
 function Clockwork:ShutDown()
 	Clockwork.ShuttingDown = true
+
+	cwPlugin:Call("SaveData")
 end
 
 --[[

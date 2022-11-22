@@ -56,15 +56,11 @@ function cwStorage:SaveStorage()
 
 	for k, v in pairs(self.storage) do
 		if IsValid(v) then
-			if v.cwInventory and v.cwCash and (v.cwMessage or table.Count(v.cwInventory) > 0 or v.cwCash > 0 or v:GetWString("Name") ~= "") then
+			if v.cwInventory and v.cwCash then
 				local physicsObject = v:GetPhysicsObject()
 				local bMoveable = nil
 				local startPos = v:GetStartPosition()
 				local model = v:GetModel()
-
-				if v:IsMapEntity() and startPos then
-					model = nil
-				end
 
 				if IsValid(physicsObject) then
 					bMoveable = physicsObject:IsMoveable()
@@ -96,64 +92,31 @@ function cwStorage:LoadStorage()
 	self.storage = {}
 
 	for k, v in pairs(storage) do
-		if not v.model then
-			local entity = ents.FindInSphere(v.startPos or v.position, 16)[1]
+		local entity = ents.Create("prop_physics")
+		entity:SetAngles(v.angles)
+		entity:SetModel(v.model)
+		entity:SetPos(v.position)
+		entity:Spawn()
 
-			if IsValid(entity) and entity:IsMapEntity() then
-				self.storage[entity] = entity
-				entity.cwInventory = Clockwork.inventory:ToLoadable(v.inventory)
-				entity.cwPassword = v.password
-				entity.cwMessage = v.message
-				entity.cwCash = v.cash
-
-				if IsValid(entity:GetPhysicsObject()) then
-					if not v.isMoveable then
-						entity:GetPhysicsObject():EnableMotion(false)
-					else
-						entity:GetPhysicsObject():EnableMotion(true)
-					end
-				end
-
-				if v.angles then
-					entity:SetAngles(v.angles)
-					entity:SetPos(v.position)
-				end
-
-				if v.color then
-					entity:SetColor(unpack(v.color))
-				end
-
-				if v.name ~= "" then
-					entity:SetNWString("Name", v.name)
-				end
+		if IsValid(entity:GetPhysicsObject()) then
+			if not v.isMoveable then
+				entity:GetPhysicsObject():EnableMotion(false)
 			end
-		else
-			local entity = ents.Create("prop_physics")
-			entity:SetAngles(v.angles)
-			entity:SetModel(v.model)
-			entity:SetPos(v.position)
-			entity:Spawn()
-
-			if IsValid(entity:GetPhysicsObject()) then
-				if not v.isMoveable then
-					entity:GetPhysicsObject():EnableMotion(false)
-				end
-			end
-
-			if v.color then
-				entity:SetColor(unpack(v.color))
-			end
-
-			if v.name ~= "" then
-				entity:SetNWString("Name", v.name)
-			end
-
-			self.storage[entity] = entity
-			entity.cwInventory = Clockwork.inventory:ToLoadable(v.inventory)
-			entity.cwPassword = v.password
-			entity.cwMessage = v.message
-			entity.cwCash = v.cash
 		end
+
+		if v.color then
+			entity:SetColor(unpack(v.color))
+		end
+
+		if v.name ~= "" then
+			entity:SetNWString("Name", v.name)
+		end
+
+		self.storage[entity] = entity
+		entity.cwInventory = Clockwork.inventory:ToLoadable(v.inventory)
+		entity.cwPassword = v.password
+		entity.cwMessage = v.message
+		entity.cwCash = v.cash
 	end
 end
 

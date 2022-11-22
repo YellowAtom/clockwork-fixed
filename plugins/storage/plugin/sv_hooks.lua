@@ -9,10 +9,16 @@ function cwStorage:ClockworkInitPostEntity()
 			self.randomItems[#self.randomItems + 1] = {v("uniqueID"), v("weight")}
 		end
 	end
+
+	for _, v in ipairs(ents.GetAll()) do
+		if self.containerList[v:GetModel()] then
+			v:Remove()
+		end
+	end
 end
 
 -- Called when data should be saved.
-function cwStorage:SaveData()
+function cwStorage:PostSaveData()
 	self:SaveStorage()
 end
 
