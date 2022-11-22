@@ -238,6 +238,12 @@ function PANEL:OpenPanel(panelToOpen)
 		else
 			self.activePanel:SetAlpha(255)
 			self.activePanel:SetVisible(true)
+
+			if IsValid(self.activePanel) then
+				if self.activePanel.OnSelected then
+					self.activePanel:OnSelected()
+				end
+			end
 		end
 
 		Clockwork.theme:Call("PostMainMenuOpenPanel", self, panelToOpen)
