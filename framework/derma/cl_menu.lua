@@ -42,17 +42,17 @@ function PANEL:ReturnToMainMenu(bPerformCheck)
 
 	Clockwork.option:PlaySound("rollover")
 
-	if CW_CONVAR_FADEPANEL:GetInt() == 1 then
-		if IsValid(self.activePanel) and self.activePanel:IsVisible() then
+	if IsValid(self.activePanel) and self.activePanel:IsVisible() then
+		if CW_CONVAR_FADEPANEL:GetInt() == 1 then
 			self.activePanel:MakePopup()
 
 			self:FadeOut(0.5, self.activePanel, function()
 				self.activePanel = nil
 			end)
+		else
+			self.activePanel:SetVisible(false)
+			self.activePanel = nil
 		end
-	else
-		self.activePanel:SetVisible(false)
-		self.activePanel = nil
 	end
 
 	self:MoveTo(self.tabX, self.tabY, 0.4, 0, 4)
@@ -208,6 +208,8 @@ function PANEL:OpenPanel(panelToOpen)
 				self.activePanel:SetVisible(false)
 				self.activePanel = nil
 				self:OpenPanel(panelToOpen)
+
+				return
 			end
 		end
 
