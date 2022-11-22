@@ -199,10 +199,20 @@ function cwSalesmen:LoadSalesmen()
 
 	for k, v in pairs(self.salesmen) do
 		local salesman = ents.Create("cw_salesman")
+
 		salesman:SetPos(v.position)
 		salesman:SetModel(v.model)
 		salesman:SetAngles(v.angles)
+		salesman:SetSkin(v.skin)
+
+		if (istable(v.bodyGroups)) then
+			for k2, v2 in pairs(v.bodyGroups) do
+				salesman:SetBodygroup(k2, v2)
+			end
+		end
+
 		salesman:Spawn()
+
 		salesman.cwCash = v.cash
 		salesman.cwStock = v.stock
 		salesman.cwClasses = v.classes
@@ -214,6 +224,7 @@ function cwSalesmen:LoadSalesmen()
 		salesman.cwPriceScale = v.priceScale
 		salesman.cwBuyInShipments = v.buyInShipments
 		salesman.cwAnimation = v.animation
+
 		salesman:SetupSalesman(v.name, v.physDesc, v.animation, v.showChatBubble)
 		Clockwork.entity:MakeSafe(salesman, true, true)
 		self.salesmen[k] = salesman
@@ -222,7 +233,7 @@ end
 
 -- A function to get a salesman table from an entity.
 function cwSalesmen:GetTableFromEntity(entity)
-	return {
+	local entTable = {
 		name = entity:GetNWString("Name"),
 		cash = entity.cwCash,
 		stock = entity.cwStock,
@@ -239,8 +250,23 @@ function cwSalesmen:GetTableFromEntity(entity)
 		animation = entity.cwAnimation,
 		priceScale = entity.cwPriceScale,
 		buyInShipments = entity.cwBuyInShipments,
-		showChatBubble = IsValid(entity:GetChatBubble())
+		showChatBubble = IsValid(entity:GetChatBubble()),
+		skin = entity:GetSkin()
 	}
+
+	local bodyGroups = entity:GetBodyGroups()
+
+	if (istable(bodyGroups)) then
+		entTable.bodyGroups = {}
+
+		for _, v2 in pairs(bodyGroups) do
+			if (entity:GetBodygroup(v2.id) > 0) then
+				entTable.bodyGroups[v2.id] = entity:GetBodygroup(v2.id)
+			end
+		end
+	end
+
+	return entTable
 end
 
 -- A function to save the salesmen.
