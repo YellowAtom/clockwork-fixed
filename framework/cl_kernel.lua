@@ -856,7 +856,7 @@ end
 	@details Called when Clockwork has initialized.
 --]]
 function Clockwork:ClockworkInitialized()
-	local logoFile = "clockwork/logo/002.png"
+	local logoFile = "ug_clockwork/logo/002.png"
 	self.SpawnIconMaterial = cwKernel:GetMaterial("vgui/spawnmenu/hover")
 	self.DefaultGradient = surface.GetTextureID("gui/gradient_down")
 	self.GradientTexture = cwKernel:GetMaterial(cwOption:GetKey("gradient") .. ".png")
@@ -1704,8 +1704,8 @@ end
 function Clockwork:HUDPaintTopScreen(info)
 end
 
-local SCREEN_DAMAGE_OVERLAY = cwKernel:GetMaterial("clockwork/screendamage.png")
-local VIGNETTE_OVERLAY = cwKernel:GetMaterial("clockwork/vignette.png")
+local SCREEN_DAMAGE_OVERLAY = cwKernel:GetMaterial("ug_clockwork/screendamage.png")
+local VIGNETTE_OVERLAY = cwKernel:GetMaterial("ug_clockwork/vignette.png")
 
 --[[
 	@codebase Client

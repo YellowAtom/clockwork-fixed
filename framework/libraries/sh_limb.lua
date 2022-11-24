@@ -175,17 +175,17 @@ if SERVER then
 		return 0
 	end
 else
-	Clockwork.limb.bodyTexture = Material("clockwork/limbs/body.png")
+	Clockwork.limb.bodyTexture = Material("ug_clockwork/limbs/body.png")
 	Clockwork.limb.stored = Clockwork.limb.stored or {}
 
 	Clockwork.limb.hitGroups = {
-		[HITGROUP_RIGHTARM] = Material("clockwork/limbs/rarm.png"),
-		[HITGROUP_RIGHTLEG] = Material("clockwork/limbs/rleg.png"),
-		[HITGROUP_LEFTARM] = Material("clockwork/limbs/larm.png"),
-		[HITGROUP_LEFTLEG] = Material("clockwork/limbs/lleg.png"),
-		[HITGROUP_STOMACH] = Material("clockwork/limbs/stomach.png"),
-		[HITGROUP_CHEST] = Material("clockwork/limbs/chest.png"),
-		[HITGROUP_HEAD] = Material("clockwork/limbs/head.png")
+		[HITGROUP_RIGHTARM] = Material("ug_clockwork/limbs/rarm.png"),
+		[HITGROUP_RIGHTLEG] = Material("ug_clockwork/limbs/rleg.png"),
+		[HITGROUP_LEFTARM] = Material("ug_clockwork/limbs/larm.png"),
+		[HITGROUP_LEFTLEG] = Material("ug_clockwork/limbs/lleg.png"),
+		[HITGROUP_STOMACH] = Material("ug_clockwork/limbs/stomach.png"),
+		[HITGROUP_CHEST] = Material("ug_clockwork/limbs/chest.png"),
+		[HITGROUP_HEAD] = Material("ug_clockwork/limbs/head.png")
 	}
 
 	Clockwork.limb.names = {

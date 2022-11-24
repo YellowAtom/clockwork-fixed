@@ -49,7 +49,7 @@ function PANEL:Setup(player)
 	if self.Recognises then
 		self.Avatar:SetPlayer(player)
 	else
-		self.Avatar:SetImage("clockwork/unknown.png")
+		self.Avatar:SetImage("ug_clockwork/unknown.png")
 	end
 end
 
