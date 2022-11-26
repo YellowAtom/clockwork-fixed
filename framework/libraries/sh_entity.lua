@@ -63,6 +63,13 @@ else
 	end
 end
 
+local VALID_DOORS = {
+	["func_door"] = true,
+	["func_door_rotating"] = true,
+	["prop_door_rotating"] = true,
+	["func_movelinear"] = true
+}
+
 --[[
 	@codebase Shared
 	@details A function to check if an entity is a door or not by seeing if its name includes "door" or if the entity is one of the following classes: "func_door", "func_door_rotating", "prop_door_rotating", "func_movelinear"
@@ -71,13 +78,10 @@ end
 --]]
 function Clockwork.entity:IsDoor(entity)
 	if IsValid(entity) then
-		local class = entity:GetClass()
-		local model = entity:GetModel()
+		local class = string.lower(entity:GetClass())
 
-		if class and model then
-			class = string.lower(class)
-			model = string.lower(model)
-			if class == "func_door" or class == "func_door_rotating" or class == "prop_door_rotating" or class == "prop_dynamic" and string.find(model, "door") or class == "func_movelinear" then return true end
+		if VALID_DOORS[class] or (class == "prop_dynamic" and string.find(string.lower(entity:GetModel()), "door")) then
+			return true
 		end
 	end
 end
