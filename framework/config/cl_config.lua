@@ -38,8 +38,6 @@ Clockwork.config:AddToSystem("MinimumPhysicalDescriptionLength", "minimum_physde
 Clockwork.config:AddToSystem("WoodBreaksFall", "wood_breaks_fall", "WoodBreaksFallDesc")
 Clockwork.config:AddToSystem("VignetteEnabled", "enable_vignette", "VignetteEnabledDesc")
 Clockwork.config:AddToSystem("HeartbeatSoundsEnabled", "enable_heartbeat", "HeartbeatSoundsEnabledDesc")
-Clockwork.config:AddToSystem("CrosshairEnabled", "enable_crosshair", "CrosshairEnabledDesc")
-Clockwork.config:AddToSystem("FreeAimingEnabled", "use_free_aiming", "FreeAimingEnabledDesc")
 Clockwork.config:AddToSystem("RecogniseSystemEnabled", "recognise_system", "RecogniseSystemEnabledDesc")
 Clockwork.config:AddToSystem("CurrencyEnabled", "cash_enabled", "CurrencyEnabledDesc")
 Clockwork.config:AddToSystem("DefaultPhysicalDescription", "default_physdesc", "DefaultPhysicalDescriptionDesc")

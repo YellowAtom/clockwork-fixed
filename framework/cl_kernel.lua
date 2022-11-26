@@ -806,7 +806,9 @@ function Clockwork:Initialize()
 	CW_CONVAR_SHOWOOC = cwKernel:CreateClientConVar("cwShowOOC", 1, true, true)
 	CW_CONVAR_SHOWIC = cwKernel:CreateClientConVar("cwShowIC", 1, true, true)
 	CW_CONVAR_LANG = cwKernel:CreateClientConVar("cwLang", "English", true, true)
-	CW_CONVAR_VIGNETTE = cwKernel:CreateClientConVar("cwShowVignette", 1, true, true)
+	CW_CONVAR_VIGNETTE = cwKernel:CreateClientConVar("cwShowVignette", 0, true, true)
+	CW_CONVAR_CROSSHAIR = cwKernel:CreateClientConVar("cwShowCrosshair", 1, true, true)
+	CW_CONVAR_CROSSHAIRDYNAMIC = cwKernel:CreateClientConVar("cwShowCrosshairDynamic", 0, true, true)
 	CW_CONVAR_ESPTIME = cwKernel:CreateClientConVar("cwESPTime", 1, true, true)
 	CW_CONVAR_ADMINESP = cwKernel:CreateClientConVar("cwAdminESP", 0, true, true)
 	CW_CONVAR_ESPBARS = cwKernel:CreateClientConVar("cwESPBars", 1, true, true)
@@ -3777,8 +3779,6 @@ function Clockwork:HUDPaint()
 			cwKernel:DrawHints()
 		end
 
-		--	if ((cwConfig:Get("enable_crosshair"):Get() or cwKernel:IsDefaultWeapon(weapon))
-		--	and (IsValid(weapon) and weapon.DrawCrosshair != false)) then
 		if cwPlugin:Call("CanDrawCrosshair", weapon) then
 			local info = {
 				color = Color(255, 255, 255, 80),
@@ -3795,7 +3795,7 @@ function Clockwork:HUDPaint()
 end
 
 function Clockwork:CanDrawCrosshair(weapon)
-	return (cwConfig:Get("enable_crosshair"):Get() or cwKernel:IsDefaultWeapon(weapon)) and (IsValid(weapon) and weapon.DrawCrosshair ~= false)
+	return (CW_CONVAR_CROSSHAIR:GetInt() == 1 or cwKernel:IsDefaultWeapon(weapon)) and (IsValid(weapon) and weapon.DrawCrosshair ~= false)
 end
 
 --[[
@@ -3805,7 +3805,7 @@ end
 	@returns {Unknown}
 --]]
 function Clockwork:GetPlayerCrosshairInfo(info)
-	if cwConfig:Get("use_free_aiming"):Get() then
+	if CW_CONVAR_CROSSHAIRDYNAMIC:GetInt() == 1 then
 		-- Thanks to BlackOps7799 for this open source example.
 		local traceLine = util.TraceLine({
 			start = cwClient:EyePos(),

@@ -127,7 +127,7 @@ else
 	end
 
 	function Clockwork.ironsights:CanDrawCrosshair(weapon)
-		if not cwConfig:Get("enable_crosshair"):Get() then
+		if CW_CONVAR_CROSSHAIR:GetInt() == 0 then
 			if self:GetIronSights() and Clockwork.Client:GetThirdPerson() then return true end
 		end
 	end
