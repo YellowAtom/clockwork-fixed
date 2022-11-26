@@ -195,7 +195,7 @@ function PANEL:Init()
 		self.spawnIcon:SetHoverColor(false)
 	else
 		self.spawnIcon = Clockwork.kernel:CreateMarkupToolTip(vgui.Create("DImageButton", self))
-		self.spawnIcon:SetImage("clockwork/unknown.png")
+		self.spawnIcon:SetImage("ug_clockwork/unknown.png")
 		self.spawnIcon:SetSize(40, 40)
 	end
 

@@ -74,9 +74,9 @@ function cwStaticEnts:LoadStaticEnts()
 		entity:SetAngles(v.angles)
 		entity:SetModel(v.model)
 		entity:SetPos(v.position)
-		entity:SetSkin(v.skin)
+		entity:SetSkin(v.skin or 0)
 
-		if v.bNoCollision then
+		if v.bNoCollision == nil or v.bNoCollision then
 			entity:SetCollisionGroup(COLLISION_GROUP_WORLD)
 		end
 
