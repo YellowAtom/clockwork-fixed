@@ -3781,7 +3781,7 @@ function Clockwork:HUDPaint()
 		--	and (IsValid(weapon) and weapon.DrawCrosshair != false)) then
 		if cwPlugin:Call("CanDrawCrosshair", weapon) then
 			local info = {
-				color = Color(255, 255, 255, 255),
+				color = Color(255, 255, 255, 80),
 				x = ScrW() / 2,
 				y = ScrH() / 2
 			}
