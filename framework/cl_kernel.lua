@@ -1541,7 +1541,7 @@ function Clockwork:Tick()
 			local maxHealth = cwClient:GetMaxHealth()
 			local health = cwClient:Health()
 
-			if health < maxHealth then
+			if health < 25 then
 				if not self.HeartbeatSound then
 					self.HeartbeatSound = CreateSound(cwClient, "player/heartbeat1.wav")
 				end
@@ -3141,7 +3141,7 @@ function Clockwork:RenderScreenspaceEffects()
 			if cwLimb:IsActive() and cwEvent:CanRun("blur", "limb_damage") then
 				local headDamage = cwLimb:GetDamage(HITGROUP_HEAD)
 				motionBlurs.blurTable["health"] = math.Clamp(1 - headDamage * 0.01, 0, 1)
-			elseif cwClient:Health() <= 75 then -- This is set to 1 in oldwork.
+			elseif cwClient:Health() <= 25 then
 				if cwEvent:CanRun("blur", "health") then
 					motionBlurs.blurTable["health"] = math.Clamp(1 - (cwClient:GetMaxHealth() - cwClient:Health()) * 0.01, 0, 1)
 				end
