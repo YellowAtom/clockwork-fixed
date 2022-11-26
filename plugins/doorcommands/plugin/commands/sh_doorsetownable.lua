@@ -22,7 +22,6 @@ function COMMAND:OnRun(player, arguments)
 		Clockwork.entity:SetDoorText(data.entity, false)
 		Clockwork.entity:SetDoorName(data.entity, data.name)
 		cwDoorCmds.doorData[data.entity] = data
-		cwDoorCmds:SaveDoorData()
 		Clockwork.player:Notify(player, "You have set an ownable door.")
 	else
 		Clockwork.player:Notify(player, "This is not a valid door!")

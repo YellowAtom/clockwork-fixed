@@ -13,7 +13,6 @@ function COMMAND:OnRun(player, arguments)
 			if cwDoorCmds.parentData[door] ~= player.cwParentDoor then
 				if player.cwParentDoor ~= door then
 					cwDoorCmds.parentData[door] = player.cwParentDoor
-					cwDoorCmds:SaveParentData()
 					Clockwork.entity:SetDoorParent(door, player.cwParentDoor)
 					Clockwork.player:Notify(player, "You have added this as a child to the active parent door.")
 					cwDoorCmds.infoTable = cwDoorCmds.infoTable or {}

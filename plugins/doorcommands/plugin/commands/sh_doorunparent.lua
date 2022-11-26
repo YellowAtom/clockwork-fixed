@@ -21,7 +21,6 @@ function COMMAND:OnRun(player, arguments)
 
 		Clockwork.datastream:Start(player, "doorParentESP", cwDoorCmds.infoTable)
 		cwDoorCmds.parentData[door] = nil
-		cwDoorCmds:SaveParentData()
 		Clockwork.entity:SetDoorParent(door, false)
 		Clockwork.player:Notify(player, "You have unparented this door.")
 	else

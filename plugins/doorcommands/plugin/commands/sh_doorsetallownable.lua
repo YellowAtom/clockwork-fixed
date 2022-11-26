@@ -23,7 +23,6 @@ function COMMAND:OnRun(player, arguments)
 			Clockwork.entity:SetDoorText(data.entity, false)
 			Clockwork.entity:SetDoorName(data.entity, data.name)
 			cwDoorCmds.doorData[data.entity] = data
-			cwDoorCmds:SaveDoorData()
 			good_doors = good_doors + 1
 		end
 	end

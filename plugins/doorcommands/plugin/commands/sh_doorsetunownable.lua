@@ -23,7 +23,6 @@ function COMMAND:OnRun(player, arguments)
 		Clockwork.entity:SetDoorText(data.entity, data.text)
 		Clockwork.entity:SetDoorUnownable(data.entity, true)
 		cwDoorCmds.doorData[data.entity] = data
-		cwDoorCmds:SaveDoorData()
 		Clockwork.player:Notify(player, "You have set an unownable door.")
 	else
 		Clockwork.player:Notify(player, "This is not a valid door!")
