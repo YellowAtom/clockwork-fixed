@@ -175,7 +175,7 @@ if not Clockwork.OverrideColorMod then
 	Clockwork.OverrideColorMod = {
 		brightness = 0,
 		contrast = 1,
-		enabled = false,
+		enabled = true,
 		color = 1,
 		mulr = 0,
 		mulg = 0,
