@@ -18,10 +18,8 @@ end
 
 if CLIENT then
 	SWEP.PrintName = "Hands"
-	SWEP.Author = "Cloud Sixteen"
-	SWEP.Instructions = "Primary Fire: Hit.\nSecondary Fire: Knock on a door.\nR: Drop an item."
-	SWEP.Purpose = "Harming characters and knocking on doors."
-	SWEP.Contact = "CloudSixteen.com"
+	SWEP.Author = "CloudSixteen"
+	SWEP.Instructions = "Primary Fire: Hit.\nSecondary Fire: Knock on a door."
 	SWEP.DrawAmmo = false
 	SWEP.DrawCrosshair = true
 	SWEP.DrawSecondaryAmmo = false
@@ -48,7 +46,7 @@ SWEP.Secondary.Damage = 100
 SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = ""
 SWEP.WallSound = Sound("Flesh.ImpactHard")
-SWEP.SwingSound = Sound("WeaponFrag.Throw")
+SWEP.SwingSound = Sound("npc/vort/claw_swing2.wav")
 SWEP.HitDistance = 38
 SWEP.LoweredAngles = Angle(0.000, 0.000, -90.000)
 

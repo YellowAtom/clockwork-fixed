@@ -24,9 +24,8 @@ if CLIENT then
 end
 
 SWEP.Instructions = "Primary Fire: Lock.\nSecondary Fire: Unlock."
-SWEP.Contact = "CloudSixteen.com"
 SWEP.Purpose = "Locking and unlocking entities that you have access to."
-SWEP.Author = "Cloud Sixteen"
+SWEP.Author = "CloudSixteen"
 SWEP.Category = "Clockwork"
 SWEP.WorldModel = ""
 SWEP.ViewModel = "models/weapons/c_arms.mdl"
