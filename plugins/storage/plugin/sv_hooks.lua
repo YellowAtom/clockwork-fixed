@@ -11,7 +11,7 @@ function cwStorage:ClockworkInitPostEntity()
 	end
 
 	for _, v in ipairs(ents.GetAll()) do
-		if self.containerList[v:GetModel()] then
+		if self.containerList[v:GetModel()] and v:MapCreationID() != -1 then
 			v:Remove()
 		end
 	end
