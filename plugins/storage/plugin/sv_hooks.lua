@@ -22,6 +22,15 @@ function cwStorage:PostSaveData()
 	self:SaveStorage()
 end
 
+function cwStorage:PlayerSpawnedProp(client, model, entity)
+	if IsValid(entity) and self.containerList[string.lower(model)] then
+		self.storage[entity] = entity
+
+		entity.cwInventory = {}
+		entity.cwCash = 0
+	end
+end
+
 -- Called when a player attempts to breach an entity.
 function cwStorage:PlayerCanBreachEntity(player, entity)
 	if entity.cwInventory and entity.cwPassword then return true end
