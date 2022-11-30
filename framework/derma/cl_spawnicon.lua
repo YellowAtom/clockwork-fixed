@@ -32,7 +32,7 @@ function PANEL:PaintOver(w, h)
 	end
 
 	if self.BorderColor then
-		surface.SetDrawColor(self.BorderColor.r, self.BorderColor.g, self.BorderColor.b, math.min(self.OverlayFade, self:GetAlpha()))
+		surface.SetDrawColor(self.BorderColor.r, self.BorderColor.g, self.BorderColor.b, math.min(self.BorderColor.a, self:GetAlpha()))
 		surface.DrawOutlinedRect(0, 0, w, h, 2.5)
 	end
 

@@ -11,7 +11,7 @@ function cwStorage:ClockworkInitPostEntity()
 	end
 
 	for _, v in ipairs(ents.GetAll()) do
-		if self.containerList[v:GetModel()] then
+		if self.containerList[v:GetModel()] and v:MapCreationID() ~= -1 then
 			v:Remove()
 		end
 	end
@@ -20,6 +20,15 @@ end
 -- Called when data should be saved.
 function cwStorage:PostSaveData()
 	self:SaveStorage()
+end
+
+function cwStorage:PlayerSpawnedProp(client, model, entity)
+	if IsValid(entity) and self.containerList[string.lower(model)] then
+		self.storage[entity] = entity
+
+		entity.cwInventory = {}
+		entity.cwCash = 0
+	end
 end
 
 -- Called when a player attempts to breach an entity.
