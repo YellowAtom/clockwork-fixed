@@ -332,6 +332,7 @@ function PANEL:Init()
 	local model, skin = Clockwork.item:GetIconInfo(self.itemTable)
 	self.spawnIcon:SetModel(model, skin)
 	self.spawnIcon:SetSize(52, 52)
+	self.spawnIcon:SetColor(self.itemTable.color)
 	self.spawnIcon:SetTooltip(false)
 
 	self.cachedInfo = {
@@ -343,7 +344,7 @@ end
 -- Called each frame.
 function PANEL:Think()
 	self.spawnIcon:SetMarkupToolTip(Clockwork.item:GetMarkupToolTip(self.itemTable))
-	self.spawnIcon:SetColor(self.itemTable("color"))
+
 	--[[ Check if the model or skin has changed and update the spawn icon. --]]
 	local model, skin = Clockwork.item:GetIconInfo(self.itemTable)
 
