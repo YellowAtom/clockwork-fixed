@@ -79,11 +79,7 @@ end
 function Clockwork.inventory:FindItemByID(inventory, uniqueID, itemID)
 	local itemTable = Clockwork.item:FindByID(uniqueID)
 
-	if not inventory then
-		debug.Trace()
-
-		return
-	end
+	if not inventory then debug.Trace() return end
 
 	if itemID then
 		itemID = tonumber(itemID)
@@ -95,7 +91,9 @@ function Clockwork.inventory:FindItemByID(inventory, uniqueID, itemID)
 	if itemID then
 		if itemsList then return itemsList[itemID] end
 	else
-		local firstValue = itemsList[1] --table.GetFirstValue(itemsList) -- THIS MIGHT CAUSE PROBLEMS -Yell0wAt0m
+		-- table.GetFirstValue() is a deprecated function that shouldn't actually work, I couldn't figure out a replacement without the full picture.
+		-- So when a gmod update breaks the gamemode look here... -Yell0wAt0m
+		local firstValue = table.GetFirstValue(itemsList)
 		if firstValue then return itemsList[firstValue.itemID] end
 	end
 end
