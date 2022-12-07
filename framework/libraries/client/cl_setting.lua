@@ -162,7 +162,7 @@ function Clockwork.setting:AddSettings()
 		Clockwork.setting:AddCheckBox(frameworkStr, "Enable the hints system.", "cwShowHints", "Whether or not to show you any hints.")
 		Clockwork.setting:AddCheckBox(frameworkStr, "Enable Vignette.", "cwShowVignette", "Whether or not to draw the vignette.")
 		Clockwork.setting:AddCheckBox(frameworkStr, "Enable Crosshair.", "cwShowCrosshair", "Whether or not to draw the crosshair.")
-		Clockwork.setting:AddCheckBox(frameworkStr, "Enable Dynamic Crosshair.", "cwShowCrosshairDynamic", "Whether or not to draw the responsive crosshair, can be laggy.")
+		Clockwork.setting:AddCheckBox(frameworkStr, "Enable Dynamic Crosshair.", "cwShowCrosshairDynamic", "Whether or not to draw the dynamic crosshair — can cause performace issues.")
 		Clockwork.setting:AddNumberSlider(frameworkStr, "Headbob Amount:", "cwHeadbobScale", 0, 1, 1, "The amount to scale the headbob by.")
 		Clockwork.setting:AddMultiChoice(frameworkStr, L("Language") .. ":", "cwLang", langTable, L("LangDesc"))
 
