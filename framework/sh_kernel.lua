@@ -5211,7 +5211,7 @@ function Clockwork.kernel:ParseData(text)
 	for k in string.gmatch(text, "%*(.-)%*") do
 		k = string.gsub(k, "[%(%)]", "")
 
-		if k ~= "" then
+		if k and k ~= "" then
 			text = string.gsub(text, "%*%(" .. k .. "%)%*", tostring(Clockwork.option:Translate(k, true)))
 			text = string.gsub(text, "%*" .. k .. "%*", tostring(Clockwork.option:Translate(k)))
 		end

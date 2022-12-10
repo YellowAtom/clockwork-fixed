@@ -130,6 +130,8 @@ end
 	@returns {String} The final ouput string.
 --]]
 function Clockwork.lang:ReplaceSubs(language, input, subs)
+	if not input then return end
+
 	for child in string.gmatch(input, "%{(.-)%}") do
 		input = string.gsub(input, "{" .. child .. "}", self:GetString(language, child))
 	end
