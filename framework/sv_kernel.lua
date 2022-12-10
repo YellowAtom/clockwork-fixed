@@ -1769,31 +1769,41 @@ end
 	@param {Unknown} Missing description for velocity.
 	@returns {Unknown}
 --]]
-function Clockwork:GetFallDamage(player, velocity)
-	local ragdollEntity = nil
-	local position = player:GetPos()
-	local damage = math.max((velocity - 464) * 0.225225225, 0) * cwConfig:Get("scale_fall_damage"):Get()
-
-	local filter = {player}
+function GM:GetFallDamage(player, velocity)
+	local damage = math.max((velocity - 526.5) * (100 / 396), 0) * cwConfig:Get("scale_fall_damage"):Get()
 
 	if cwConfig:Get("wood_breaks_fall"):Get() then
-		if player:IsRagdolled() then
-			ragdollEntity = player:GetRagdollEntity()
-			position = ragdollEntity:GetPos()
+		local reduction = damage * 0.4
+		local position = player:GetPos()
 
+		local filter = {player}
+
+		if (player:IsRagdolled()) then
+			local ragdollEntity = player:GetRagdollEntity()
+
+			position = ragdollEntity:GetPos()
 			filter = {player, ragdollEntity}
 		end
 
-		local traceLine = util.TraceLine({
-			endpos = position - Vector(0, 0, 64),
-			start = position,
-			filter = filter
-		})
+		local data = {}
+		data.start = position
+		data.endpos = data.start - Vector(0, 0, 64)
+		data.filter = filter
 
-		if IsValid(traceLine.Entity) and traceLine.MatType == MAT_WOOD then
-			if string.find(traceLine.Entity:GetClass(), "prop_physics") then
-				traceLine.Entity:Fire("Break", "", 0)
-				damage = damage * 0.25
+		local trace = util.TraceLine(data)
+		local entity = trace.Entity
+
+		if IsValid(entity) and entity:GetClass() == "prop_physics" and trace.MatType == MAT_WOOD then
+			local entHealth = entity:Health()
+			local dmgInfo = DamageInfo()
+
+			dmgInfo:SetDamage(reduction * 4)
+			dmgInfo:SetDamageType(DMG_CRUSH)
+			dmgInfo:SetAttacker(player)
+			entity:DispatchTraceAttack(dmgInfo, data.start, data.endpos)
+
+			if entHealth > entity:Health() then
+				damage = damage - reduction
 			end
 		end
 	end
@@ -4923,14 +4933,18 @@ function Clockwork:EntityTakeDamage(entity, damageInfo)
 						player:SetFakingDeath(false, true)
 					else
 						local bNoMsg = cwPlugin:Call("PlayerTakeDamage", player, inflictor, attacker, lastHitGroup, damageInfo)
-						local sound = cwPlugin:Call("PlayerPlayPainSound", player, player:GetGender(), damageInfo, lastHitGroup)
+						local sound
+
+						if (player.cwNextPainSound or 0) < CurTime() then
+							sound = cwPlugin:Call("PlayerPlayPainSound", player, player:GetGender(), damageInfo, hitGroup)
+							player.cwNextPainSound = CurTime() + 1
+						end
+
 						cwKernel:CreateBloodEffects(damageInfo:GetDamagePosition(), 1, player, damageInfo:GetDamageForce())
 
 						if sound and not bNoMsg then
 							player:EmitHitSound(sound)
 						end
-
---						local armor = "!"
 
 						if player:Armor() > 0 then
 							armor = " and " .. player:Armor() .. " armor!"
@@ -4973,13 +4987,16 @@ function Clockwork:EntityTakeDamage(entity, damageInfo)
 					player:SetFakingDeath(false, true)
 				elseif player:Alive() then
 					local bNoMsg = cwPlugin:Call("PlayerTakeDamage", player, inflictor, attacker, hitGroup, damageInfo)
-					local sound = cwPlugin:Call("PlayerPlayPainSound", player, player:GetGender(), damageInfo, hitGroup)
+					local sound
+
+					if (player.cwNextPainSound or 0) < CurTime() then
+						sound = cwPlugin:Call("PlayerPlayPainSound", player, player:GetGender(), damageInfo, hitGroup)
+						player.cwNextPainSound = CurTime() + 1
+					end
 
 					if sound and not bNoMsg then
 						entity:EmitHitSound(sound)
 					end
-
---					local armor = "!"
 
 					if player:Armor() > 0 then
 						armor = " and " .. player:Armor() .. " armor!"
