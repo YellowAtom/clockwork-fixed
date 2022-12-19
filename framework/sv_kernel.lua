@@ -3583,7 +3583,10 @@ function Clockwork:EntityHandleMenuOption(player, entity, option, arguments)
 				end
 
 				local pickupSound = itemTable.pickupSound or "physics/body/body_medium_impact_soft" .. math.random(1, 7) .. ".wav"
-
+				local quickUse = arguments == "cwItemUse"
+				
+				if quickUse then
+				return false end
 				if type(pickupSound) == "table" then
 					pickupSound = pickupSound[math.random(1, #pickupSound)]
 				end
