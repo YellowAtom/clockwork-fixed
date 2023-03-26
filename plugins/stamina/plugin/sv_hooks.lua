@@ -27,7 +27,7 @@ end
 
 -- Called when a player throws a punch.
 function cwStamina:PlayerPunchThrown(player)
-	local attribute = Clockwork.attributes:Fraction(player, ATB_STAMINA, 1.5, 0.25)
+	local attribute = Clockwork.attributes:Fraction(player, ATB_AGILITY, 1.5, 0.25)
 	local decrease = 5 / (1 + attribute)
 	player:SetCharacterData("Stamina", math.Clamp(player:GetCharacterData("Stamina") - decrease, 0, 100))
 end
@@ -51,7 +51,7 @@ end
 function cwStamina:PlayerThink(player, curTime, infoTable)
 	local regenScale = Clockwork.config:Get("stam_regen_scale"):Get()
 	local drainScale = Clockwork.config:Get("stam_drain_scale"):Get()
-	local attribute = Clockwork.attributes:Fraction(player, ATB_STAMINA, 1, 0.25)
+	local attribute = Clockwork.attributes:Fraction(player, ATB_AGILITY, 1, 0.25)
 	local regeneration = 0
 	local maxHealth = player:GetMaxHealth()
 	local healthScale = drainScale * (math.Clamp(player:Health(), maxHealth * 0.1, maxHealth) / maxHealth)
@@ -66,9 +66,9 @@ function cwStamina:PlayerThink(player, curTime, infoTable)
 
 				if player:GetCharacterData("Stamina") > 1 then
 					if infoTable.isRunning then
-						player:ProgressAttribute(ATB_STAMINA, 0.025, true)
+						player:ProgressAttribute(ATB_AGILITY, 0.025, true)
 					elseif infoTable.isJogging then
-						player:ProgressAttribute(ATB_STAMINA, 0.0125, true)
+						player:ProgressAttribute(ATB_AGILITY, 0.0125, true)
 					end
 				end
 			end

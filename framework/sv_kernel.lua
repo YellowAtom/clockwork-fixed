@@ -2965,7 +2965,7 @@ end
 	@returns {Unknown}
 --]]
 function Clockwork:PlayerCanRagdollDecay(player, ragdoll, seconds)
-	return true
+	return false
 end
 
 --[[
