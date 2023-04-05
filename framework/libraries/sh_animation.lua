@@ -34,6 +34,7 @@ Clockwork.animation.convert = {
 	["normal"] = "fist",
 	["melee"] = "blunt",
 	["slam"] = "slam",
+	["camera"] = "slam",
 	["smg"] = "smg",
 	["ar2"] = "smg",
 	["357"] = "pistol",
@@ -42,6 +43,7 @@ Clockwork.animation.convert = {
 
 Clockwork.animation.holdTypes = {
 	["gmod_tool"] = "pistol",
+	["gmod_camera"] = "slam",
 	["weapon_357"] = "pistol",
 	["weapon_ar2"] = "smg",
 	["weapon_smg1"] = "smg",

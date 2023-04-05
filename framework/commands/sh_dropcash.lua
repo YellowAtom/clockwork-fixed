@@ -3,6 +3,7 @@ local COMMAND = Clockwork.command:New("DropCash")
 COMMAND.tip = "CmdDropCash"
 COMMAND.text = "CmdDropCashDesc"
 COMMAND.flags = CMD_DEFAULT
+COMMAND.alias = {"DropTokens", "DropCredits", "DropChips", "DropCaps", "DropDollars"}
 COMMAND.arguments = 1
 
 -- Called when the command has been run.

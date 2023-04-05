@@ -8,12 +8,12 @@ function cwDisplayTyping:PlayerStartTypingDisplay(player, code)
 				local faction = Clockwork.faction:FindByID(player:GetFaction())
 				local startChatNoise
 
-				if code == "r" then
-					if rank and rank.radioStartChatNoise then
-						startChatNoise = rank.radioStartChatNoise
-					elseif faction and faction.radioStartChatNoise then
-						startChatNoise = faction.radioStartChatNoise
-					end
+				if (code == "r") then
+					if (rank and rank.radioStartChatNoise and player:HasItemByID("handheld_radio")) then
+						startChatNoise = rank.radioStartChatNoise;
+					elseif (faction and faction.radioStartChatNoise and player:HasItemByID("handheld_radio")) then
+						startChatNoise = faction.radioStartChatNoise;
+					end;
 				else
 					if rank and rank.startChatNoise then
 						startChatNoise = rank.startChatNoise
