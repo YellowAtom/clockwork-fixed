@@ -10,6 +10,10 @@ local surface = surface
 local timer = timer
 local draw = draw
 
+if not Clockwork.datastream then
+	include("clockwork/framework/libraries/sh_datastream.lua")
+end
+
 Clockwork.selector = Clockwork.kernel:NewLibrary("Selector")
 Clockwork.selector.COLOR_ORANGE = Color(215, 150, 50, 255)
 Clockwork.selector.COLOR_CREAM = Color(225, 215, 175, 255)
