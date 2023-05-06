@@ -15,7 +15,7 @@ This version of clockwork has compatability for anything that worked with versio
 
 ## Credits
 ### Undetermined Development Team
-- [Yell0wAt0m](https://github.com/Yell0wAt0m) - Lead Developer
+- [YellowAtom](https://github.com/YellowAtom) - Lead Developer
 - [Pandafish](https://github.com/Awoowogei)
 ### External
 - [Homonovus](https://github.com/homonovus) - Bug Fixes and full CloudAuthX removal.
