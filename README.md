@@ -1,4 +1,4 @@
-[Orignal Repository](https://github.com/cloudsixteen/clockwork)
+This is a fork of [Clockwork](https://github.com/cloudsixteen/clockwork) by [Cloud Sixteen](https://github.com/CloudSixteen).
 
 # Clockwork - Undetermined Edit
 An extensive edit to Clockwork 0.101 with CloudAuthX competely removed, a visual style closer to 0.93 with derma fixes, general optimizations, proper code formatting, new features such as single file entities and a more modern approch to internal solutions. The framework files and default plugins are all modified. This was orignally made for Undetermined Gaming, but as that project was never completed it is now public.
