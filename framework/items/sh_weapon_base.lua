@@ -59,6 +59,17 @@ function ITEM:HasPlayerEquipped(player, bIsValidWeapon)
 	return false
 end
 
+-- Called when a player attempts to pick up the item.
+function ITEM:CanPickup(player, quickUse, itemEntity)
+	if (quickUse) then
+		if (!player:CanHoldWeight(self.weight)) then
+			Clockwork.player:Notify(player, "You do not have enough inventory space!");
+			
+			return false;
+		end;
+	end;
+end;
+
 -- Called when a player attempts to holster the weapon.
 function ITEM:CanHolsterWeapon(player, forceHolster, bNoMsg)
 	return true
