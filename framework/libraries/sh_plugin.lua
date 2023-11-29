@@ -82,7 +82,7 @@ PLUGIN_META = {
 	__index = PLUGIN_META
 }
 
-PLUGIN_META.description = "An undescribed plugin or schema."
+PLUGIN_META.description = "A serious roleplaying game set in the Half-Life universe."
 PLUGIN_META.hookOrder = 0
 PLUGIN_META.version = "1.0"
 PLUGIN_META.author = "Unknown"
