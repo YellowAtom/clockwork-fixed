@@ -2137,7 +2137,7 @@ function Clockwork:HUDDrawTargetID()
 					self.TargetIDData.class = class
 
 					if entity and cwClient ~= entity then
-						if cwPlugin:Call("ShouldDrawPlayerTargetID", entity) then
+						if cwPlugin:Call("ShouldDrawPlayerTargetID", entity, traceEntity) then
 							if not cwPly:IsNoClipping(entity) then
 								if cwClient:GetShootPos():Distance(trace.HitPos) <= fadeDistance then
 									if self.nextCheckRecognises and self.nextCheckRecognises[2] ~= entity then
