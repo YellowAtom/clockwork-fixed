@@ -28,6 +28,7 @@ end
 
 cwEmoteAnims.stanceList = {
 	["d1_t03_tenements_look_out_window_idle"] = true,
+	["d1_town05_wounded_idle_1"] = true,
 	["d2_coast03_postbattle_idle02_entry"] = true,
 	["d2_coast03_postbattle_idle01_entry"] = true,
 	["d2_coast03_postbattle_idle02"] = true,

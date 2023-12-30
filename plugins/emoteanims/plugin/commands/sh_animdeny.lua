@@ -1,6 +1,7 @@
 local COMMAND = Clockwork.command:New("AnimDeny")
 
 COMMAND.tip = "Make your character stick his hand out to deny access."
+COMMAND.alias = {"ActDeny"}
 COMMAND.flags = CMD_DEFAULT
 
 -- Called when the command has been run.

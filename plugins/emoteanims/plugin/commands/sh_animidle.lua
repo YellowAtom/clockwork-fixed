@@ -2,6 +2,7 @@ local COMMAND = Clockwork.command:New("AnimIdle")
 
 COMMAND.tip = "Put your character into an idle stance."
 COMMAND.text = "[bool ArmsCrossed]"
+COMMAND.alias = {"ActIdle"}
 COMMAND.flags = CMD_DEFAULT
 COMMAND.optionalArguments = 1
 

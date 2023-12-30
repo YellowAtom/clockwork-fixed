@@ -1,6 +1,7 @@
 local COMMAND = Clockwork.command:New("AnimLean")
 
 COMMAND.tip = "Make your character lean back up against a wall."
+COMMAND.alias = {"ActLean"}
 COMMAND.text = "[string ArmsBack|ArmsDown]"
 COMMAND.flags = CMD_DEFAULT
 COMMAND.optionalArguments = 1

@@ -1,6 +1,7 @@
 local COMMAND = Clockwork.command:New("AnimSignals")
 
 COMMAND.tip = "Allows your character to signal with hand motions."
+COMMAND.alias = {"ActSignals"}
 COMMAND.text = ""
 COMMAND.flags = CMD_DEFAULT
 

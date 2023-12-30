@@ -1,6 +1,7 @@
 local COMMAND = Clockwork.command:New("AnimWindow")
 
 COMMAND.tip = "Make your character look out of a window."
+COMMAND.alias = {"ActWindow"}
 COMMAND.flags = CMD_DEFAULT
 
 -- Called when the command has been run.

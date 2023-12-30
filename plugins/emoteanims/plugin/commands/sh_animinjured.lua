@@ -1,7 +1,7 @@
-local COMMAND = Clockwork.command:New("AnimCheer")
+local COMMAND = Clockwork.command:New("AnimInjured")
 
-COMMAND.tip = "Make your character cheer in happiness."
-COMMAND.alias = {"ActCheer"}
+COMMAND.tip = "Make your character lay on the ground."
+COMMAND.alias = {"ActInjured"}
 COMMAND.flags = CMD_DEFAULT
 
 -- Called when the command has been run.
@@ -18,15 +18,15 @@ function COMMAND:OnRun(player, arguments)
 			if forcedAnimation and cwEmoteAnimscwEmoteAnims[forcedAnimation.animation] then
 				Clockwork.player:Notify(player, "You cannot do this action at the moment!")
 			else
-				if modelClass == "femaleHuman" or math.random(1, 2) == 1 then
-					player:SetForcedAnimation("cheer1", 2)
+				if modelClass == "femaleHuman" then
+					player:SetForcedAnimation("d1_town05_wounded_idle_1", 0)
 				else
-					player:SetForcedAnimation("cheer2", 2)
+					player:SetForcedAnimation("d1_town05_wounded_idle_1", 0)
 				end
 
-				player:SetSharedVar("StancePos", player:GetPos())
-				player:SetSharedVar("StanceAng", player:GetAngles())
-				player:SetSharedVar("StanceIdle", false)
+					player:SetSharedVar("StancePos", player:GetPos())
+					player:SetSharedVar("StanceAng", player:GetAngles())
+					player:SetSharedVar("StanceIdle", true)
 			end
 		else
 			Clockwork.player:Notify(player, "The model that you are using cannot perform this action!")

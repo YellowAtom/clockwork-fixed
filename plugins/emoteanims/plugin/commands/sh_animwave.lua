@@ -1,6 +1,7 @@
 local COMMAND = Clockwork.command:New("AnimWave")
 
 COMMAND.tip = "Make your character wave at another character."
+COMMAND.alias = {"ActWave"}
 COMMAND.text = "[string Close|Normal]"
 COMMAND.flags = CMD_DEFAULT
 COMMAND.optionalArguments = 1

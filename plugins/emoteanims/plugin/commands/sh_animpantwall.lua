@@ -1,6 +1,7 @@
 local COMMAND = Clockwork.command:New("AnimPantWall")
 
 COMMAND.tip = "Make your character pant up against a wall."
+COMMAND.alias = {"ActPantWall"}
 COMMAND.flags = CMD_DEFAULT
 
 -- Called when the command has been run.

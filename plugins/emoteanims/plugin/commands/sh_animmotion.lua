@@ -1,6 +1,7 @@
 local COMMAND = Clockwork.command:New("AnimMotion")
 
 COMMAND.tip = "Make your character motion to something in a direction."
+COMMAND.alias = {"ActMotion"}
 COMMAND.text = "<string Left|Right|Behind>"
 COMMAND.flags = CMD_DEFAULT
 

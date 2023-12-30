@@ -1,6 +1,7 @@
 local COMMAND = Clockwork.command:New("AnimThreat")
 
 COMMAND.tip = "Put your character into a threatening stance."
+COMMAND.alias = {"ActThreat"}
 COMMAND.text = "[bool ArmsCrossed]"
 COMMAND.flags = CMD_DEFAULT
 COMMAND.optionalArguments = 1

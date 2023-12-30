@@ -1,6 +1,7 @@
 local COMMAND = Clockwork.command:New("AnimSit")
 
 COMMAND.tip = "Make your character sit on the ground."
+COMMAND.alias = {"ActSit"}
 COMMAND.flags = CMD_DEFAULT
 
 -- Called when the command has been run.

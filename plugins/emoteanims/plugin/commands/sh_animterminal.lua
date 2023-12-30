@@ -1,6 +1,7 @@
 local COMMAND = Clockwork.command:New("AnimTerminal")
 
 COMMAND.tip = "Type on that terminal."
+COMMAND.alias = {"ActTerminal"}
 COMMAND.flags = CMD_DEFAULT
 
 -- Called when the command has been run.
