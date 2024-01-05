@@ -8,7 +8,7 @@ An extensive edit to Clockwork 0.101 with CloudAuthX competely removed, a visual
 
 Unlike regular Clockwork the installation procedure is a lot cleaner. 
 - Place this repository in a folder named "clockwork" in `garrysmod/gamemodes` and a second folder called the schema's name (e.g cwhl2rp) containing the schema gamemode. The schema gamemode is the one that actually gets loaded by scrds.
-- At `garrysmod/lua/bin` place the .dll of either [mysqloo](https://github.com/FredyH/MySQLOO/releases) or [tmysql4](https://github.com/SuperiorServers/gm_tmysql4/releases) as well as [cwutils](https://www.dropbox.com/sh/dpdvc2ax04zghh1/AADAobyoYcEjjQ1ynoNzlrqFa?dl=0).
+- At `garrysmod/lua/bin` place the .dll of either [mysqloo](https://github.com/FredyH/MySQLOO/releases) or [tmysql4](https://github.com/SuperiorServers/gm_tmysql4/releases) as well as [cwutils](https://www.dropbox.com/sh/dpdvc2ax04zghh1/AADAobyoYcEjjQ1ynoNzlrqFa?dl=0), or if you don't trust that binary you can use the [original](https://github.com/CloudSixteen/Clockwork/tree/master/upload/garrysmod/lua/bin).
 - Configure `gamemodes/clockwork/clockwork.cfg` with your database settings, "mysqloo", "tmysql4" and "sqlite" are available as adapters, the first two must be installed as stated above.
 - Finally make sure that your server and client are subscribed to the [workshop content](https://steamcommunity.com/sharedfiles/filedetails/?id=2892883208).
 
