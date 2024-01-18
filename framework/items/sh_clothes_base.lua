@@ -137,7 +137,7 @@ if CLIENT then
 	function ITEM:GetClientSideInfo()
 		if not self:IsInstance() then return end
 
-		if Clockwork.player:IsWearingAccessory(self) then
+		if Clockwork.player:IsWearingItem(self) then
 			return L("ItemInfoIsWearingYes")
 		else
 			return L("ItemInfoIsWearingNo")

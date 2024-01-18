@@ -5,7 +5,9 @@ concommand.Add("cwTypingStart", function(player, command, arguments)
 		if arguments and arguments[1] then
 			hook.Call("PlayerStartTypingDisplay", Clockwork, player, arguments[1])
 
-			if arguments[1] == "w" then
+			if arguments[1] == "t" then
+				player:SetSharedVar("Typing", TYPING_TRANSMIT)
+			elseif arguments[1] == "w" then
 				player:SetSharedVar("Typing", TYPING_WHISPER)
 			elseif arguments[1] == "p" then
 				player:SetSharedVar("Typing", TYPING_PERFORM)

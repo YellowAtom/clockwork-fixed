@@ -2,9 +2,9 @@
 -- Called when a player's typing display has started.
 function cwDisplayTyping:PlayerStartTypingDisplay(player, code)
 	if not player:IsNoClipping() then
-		if code == "n" or code == "y" or code == "w" or code == "r" then
+		if code == "n" or code == "y" or code == "w" or code == "r" or code == "t" then
 			if not player.typingBeep or player.typingCode ~= code then
-				local _, rank = player:GetFactionRank()
+				local rank = player:GetFactionRank()
 				local faction = Clockwork.faction:FindByID(player:GetFaction())
 				local startChatNoise
 
@@ -14,7 +14,13 @@ function cwDisplayTyping:PlayerStartTypingDisplay(player, code)
 					elseif (faction and faction.radioStartChatNoise and player:HasItemByID("handheld_radio")) then
 						startChatNoise = faction.radioStartChatNoise;
 					end;
-				else
+				elseif (code == "t") then
+					if (rank and rank.radioStartChatNoise and player:HasItemByID("walkie_talkie")) then
+						startChatNoise = rank.radioStartChatNoise;
+					elseif (faction and faction.radioStartChatNoise and player:HasItemByID("walkie_talkie")) then
+						startChatNoise = faction.radioStartChatNoise;
+					end;
+					else
 					if rank and rank.startChatNoise then
 						startChatNoise = rank.startChatNoise
 					elseif faction and faction.startChatNoise then
