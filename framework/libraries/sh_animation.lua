@@ -219,7 +219,7 @@ Clockwork.animation.stored.civilProtection = {
 	["grenade_attack"] = ACT_COMBINE_THROW_GRENADE,
 	["grenade_reload"] = ACT_COMBINE_THROW_GRENADE,
 
-	["crouch_pistol_aim_idle"] = ACT_RANGE_AIM_PISTOL_LOW,
+	["crouch_pistol_aim_idle"] = ACT_COVER_SMG1_LOW,
 	["crouch_pistol_aim_walk"] = ACT_WALK_CROUCH,
 	["stand_pistol_aim_walk"] = ACT_WALK_AIM_PISTOL,
 	["stand_pistol_aim_idle"] = ACT_IDLE_ANGRY_PISTOL,
