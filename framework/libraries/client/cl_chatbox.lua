@@ -419,8 +419,8 @@ function Clockwork.chatBox:CreateDermaPanel()
 			editablePanel:SetKeyboardInputEnabled(true)
 			editablePanel:SetMouseInputEnabled(true)
 			editablePanel:SetVisible(true)
-			editablePanel:MakePopup()
 			self.textEntry:RequestFocus()
+			editablePanel:MakePopup()
 			self.scroll:SetVisible(true)
 			self.historyPos = #self.historyMsgs
 
