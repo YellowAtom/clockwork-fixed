@@ -419,8 +419,8 @@ function Clockwork.chatBox:CreateDermaPanel()
 			editablePanel:SetKeyboardInputEnabled(true)
 			editablePanel:SetMouseInputEnabled(true)
 			editablePanel:SetVisible(true)
-			self.textEntry:RequestFocus()
 			editablePanel:MakePopup()
+			self.textEntry:RequestFocus()
 			self.scroll:SetVisible(true)
 			self.historyPos = #self.historyMsgs
 
@@ -470,7 +470,7 @@ function Clockwork.chatBox:CreateDermaPanel()
 		self.scroll = vgui.Create("Panel")
 		self.scroll:SetPos(0, 0)
 		self.scroll:SetSize(0, 0)
-		self.scroll:SetMouseInputEnabled(true)
+		self.scroll:MakePopup()
 
 		-- Called when the panel is scrolled with the mouse wheel.
 		self.scroll.OnMouseWheeled = function(panel, delta)
