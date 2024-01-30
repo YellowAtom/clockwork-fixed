@@ -15,7 +15,7 @@ end
 SWEP.HoldType = "pistol"
 SWEP.Category = "HL2RP - CS"
 SWEP.Base = "rcs_base"
-SWEP.Spawnable = true
+SWEP.Spawnable = false
 SWEP.AdminSpawnable = true
 SWEP.ViewModel = "models/weapons/v_pist_glock18.mdl"
 SWEP.WorldModel = "models/weapons/w_pist_glock18.mdl"

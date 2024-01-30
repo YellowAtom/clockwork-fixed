@@ -13,7 +13,7 @@ end
 
 SWEP.Category = "HL2RP - CS"
 SWEP.Base = "rcs_base_shotgun"
-SWEP.Spawnable = true
+SWEP.Spawnable = false
 SWEP.AdminSpawnable = true
 SWEP.HoldType = "ar2"
 SWEP.IsShotgun = true

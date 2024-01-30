@@ -19,7 +19,7 @@ end
 
 SWEP.Category = "HL2RP - CS"
 SWEP.Base = "rcs_base_pistol"
-SWEP.Spawnable = true
+SWEP.Spawnable = false
 SWEP.AdminSpawnable = true
 SWEP.HoldType = "pistol"
 SWEP.ViewModel = "models/weapons/v_357.mdl"

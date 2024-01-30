@@ -18,7 +18,7 @@ end
 SWEP.HoldType = "pistol"
 SWEP.Category = "HL2RP - CS"
 SWEP.Base = "rcs_base_silencer_rifle"
-SWEP.Spawnable = true
+SWEP.Spawnable = false
 SWEP.AdminSpawnable = true
 SWEP.ViewModel = "models/weapons/v_pist_usp.mdl"
 SWEP.WorldModel = "models/weapons/w_pist_usp.mdl"

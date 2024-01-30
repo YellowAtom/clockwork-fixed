@@ -17,7 +17,7 @@ end
 SWEP.Category = "HL2RP - CS" --duh
 SWEP.Base = "rcs_base_burst_pistol" --dont mess with this unless if you want to royally screw this gun up
 SWEP.HoldType = "ar2"
-SWEP.Spawnable = true
+SWEP.Spawnable = false
 SWEP.AdminSpawnable = true
 SWEP.ViewModel = "models/weapons/v_rif_famas.mdl" --duh
 SWEP.WorldModel = "models/weapons/w_rif_famas.mdl" --duh

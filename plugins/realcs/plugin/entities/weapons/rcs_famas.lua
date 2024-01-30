@@ -25,7 +25,7 @@ end
 SWEP.Category = "HL2RP - CS" --duh
 SWEP.Base = "rcs_base" --dont mess with this unless if you want to royally screw this gun up
 SWEP.Penetrating = true
-SWEP.Spawnable = true
+SWEP.Spawnable = false
 SWEP.AdminSpawnable = true
 SWEP.HoldType = "ar2"
 SWEP.ViewModel = "models/weapons/v_rif_famas.mdl" --duh

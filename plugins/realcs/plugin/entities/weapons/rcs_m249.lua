@@ -17,7 +17,7 @@ end
 SWEP.HoldType = "ar2"
 SWEP.Category = "HL2RP - CS"
 SWEP.Base = "rcs_base"
-SWEP.Spawnable = true
+SWEP.Spawnable = false
 SWEP.AdminSpawnable = true
 SWEP.ViewModel = "models/weapons/v_mach_m249para.mdl"
 SWEP.WorldModel = "models/weapons/w_mach_m249para.mdl"

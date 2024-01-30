@@ -23,7 +23,7 @@ end
 SWEP.Category = "HL2RP - CS"
 SWEP.Base = "rcs_base_1scope"
 SWEP.Penetrating = true
-SWEP.Spawnable = true
+SWEP.Spawnable = false
 SWEP.AdminSpawnable = true
 SWEP.HoldType = "ar2"
 SWEP.ViewModel = "models/weapons/v_rif_sg552.mdl"

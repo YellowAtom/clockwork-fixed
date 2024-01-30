@@ -14,7 +14,7 @@ end
 
 SWEP.Category = "HL2RP - CS"
 SWEP.Base = "rcs_base_bsnip"
-SWEP.Spawnable = true
+SWEP.Spawnable = false
 SWEP.AdminSpawnable = true
 SWEP.HoldType = "ar2"
 SWEP.ViewModel = "models/weapons/v_snip_sg550.mdl"
