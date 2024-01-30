@@ -34,102 +34,104 @@ function cwDisplayTyping:PostDrawTranslucentRenderables()
 			local plyPos = player:GetPos()
 			local clientPos = Clockwork.Client:GetPos()
 
-			if typing ~= 0 and player:GetMoveType() ~= MOVETYPE_NOCLIP and player:Alive() then
-				local fadeDistance = 192
+			if (isvector(plyPos) and isvector(clientPos)) then
+				if typing ~= 0 and player:GetMoveType() ~= MOVETYPE_NOCLIP and player:Alive() then
+					local fadeDistance = 192
 
-				if typing == TYPING_YELL or typing == TYPING_PERFORM then
-					fadeDistance = cwConfig:Get("talk_radius"):Get() * 2
-				elseif typing == TYPING_WHISPER then
-					fadeDistance = cwConfig:Get("talk_radius"):Get() / 3
+					if typing == TYPING_YELL or typing == TYPING_PERFORM then
+						fadeDistance = cwConfig:Get("talk_radius"):Get() * 2
+					elseif typing == TYPING_WHISPER then
+						fadeDistance = cwConfig:Get("talk_radius"):Get() / 3
 
-					if fadeDistance > 80 then
-						fadeDistance = 80
-					end
-				else
-					fadeDistance = cwConfig:Get("talk_radius"):Get()
-				end
-
-				if (IsValid(plyPos) and IsValid(clientPos)) and plyPos:Distance(clientPos) <= fadeDistance then
---					local color, curTime = player:GetColor(), UnPredictedCurTime()
-
-					if player:GetMaterial() ~= "sprites/heatwave" and (a ~= 0 or player:IsRagdolled()) then
-						local alpha = cwKernel:CalculateAlphaFromDistance(fadeDistance, Clockwork.Client, player)
-						local position = cwPlugin:Call("GetPlayerTypingDisplayPosition", player)
-						local headBone = "ValveBiped.Bip01_Head1"
-
-						if string.find(player:GetModel(), "vortigaunt") then
-							headBone = "ValveBiped.Head"
+						if fadeDistance > 80 then
+							fadeDistance = 80
 						end
+					else
+						fadeDistance = cwConfig:Get("talk_radius"):Get()
+					end
 
-						if not position then
-							local bonePosition = nil
-							local offset = Vector(0, 0, 80)
+					if fadeDistance and plyPos:Distance(clientPos) <= fadeDistance then
+--						local color, curTime = player:GetColor(), UnPredictedCurTime()
 
-							if player:IsRagdolled() then
-								local entity = player:GetRagdollEntity()
+						if player:GetMaterial() ~= "sprites/heatwave" and (a ~= 0 or player:IsRagdolled()) then
+							local alpha = cwKernel:CalculateAlphaFromDistance(fadeDistance, Clockwork.Client, player)
+							local position = cwPlugin:Call("GetPlayerTypingDisplayPosition", player)
+							local headBone = "ValveBiped.Bip01_Head1"
 
-								if IsValid(entity) then
-									local physBone = entity:LookupBone(headBone)
+							if string.find(player:GetModel(), "vortigaunt") then
+								headBone = "ValveBiped.Head"
+							end
+
+							if not position then
+								local bonePosition = nil
+								local offset = Vector(0, 0, 80)
+
+								if player:IsRagdolled() then
+									local entity = player:GetRagdollEntity()
+
+									if IsValid(entity) then
+										local physBone = entity:LookupBone(headBone)
+
+										if physBone then
+											bonePosition = entity:GetBonePosition(physBone)
+										end
+									end
+								else
+									local physBone = player:LookupBone(headBone)
 
 									if physBone then
-										bonePosition = entity:GetBonePosition(physBone)
+										bonePosition = player:GetBonePosition(physBone)
 									end
 								end
-							else
-								local physBone = player:LookupBone(headBone)
 
-								if physBone then
-									bonePosition = player:GetBonePosition(physBone)
+								if player:InVehicle() then
+									offset = Vector(0, 0, 132)
+								elseif player:IsRagdolled() then
+									offset = Vector(0, 0, 20)
+								elseif player:Crouching() then
+									offset = Vector(0, 0, 68)
+								end
+
+								if bonePosition then
+									position = bonePosition + Vector(0, 0, 20)
+								else
+									position = player:GetPos() + offset
 								end
 							end
 
-							if player:InVehicle() then
-								offset = Vector(0, 0, 132)
-							elseif player:IsRagdolled() then
-								offset = Vector(0, 0, 20)
-							elseif player:Crouching() then
-								offset = Vector(0, 0, 68)
-							end
+							if position then
+								local drawText = ""
+								position = position + eyeAngles:Up()
+								eyeAngles:RotateAroundAxis(eyeAngles:Forward(), 90)
+								eyeAngles:RotateAroundAxis(eyeAngles:Right(), 90)
 
-							if bonePosition then
-								position = bonePosition + Vector(0, 0, 20)
-							else
-								position = player:GetPos() + offset
-							end
-						end
+								if typing == TYPING_TRANSMIT then
+									drawText = "Transmitting"
+								elseif typing == TYPING_WHISPER then
+									drawText = "Whispering"
+								elseif typing == TYPING_PERFORM then
+									drawText = "Performing"
+								elseif typing == TYPING_NORMAL then
+									drawText = "Talking"
+								elseif typing == TYPING_RADIO then
+									drawText = "Radioing"
+								elseif typing == TYPING_YELL then
+									drawText = "Yelling"
+								elseif typing == TYPING_OOC then
+									drawText = "Typing"
+								end
 
-						if position then
-							local drawText = ""
-							position = position + eyeAngles:Up()
-							eyeAngles:RotateAroundAxis(eyeAngles:Forward(), 90)
-							eyeAngles:RotateAroundAxis(eyeAngles:Right(), 90)
+								if drawText ~= "" then
+									local textWidth, textHeight = cwKernel:GetCachedTextSize(cwOption:GetFont("main_text"), drawText)
+									local x = cwKernel:GetCachedTextSize(large3D2DFont, drawText)
 
-							if typing == TYPING_TRANSMIT then
-								drawText = "Transmitting"
-							elseif typing == TYPING_WHISPER then
-								drawText = "Whispering"
-							elseif typing == TYPING_PERFORM then
-								drawText = "Performing"
-							elseif typing == TYPING_NORMAL then
-								drawText = "Talking"
-							elseif typing == TYPING_RADIO then
-								drawText = "Radioing"
-							elseif typing == TYPING_YELL then
-								drawText = "Yelling"
-							elseif typing == TYPING_OOC then
-								drawText = "Typing"
-							end
-
-							if drawText ~= "" then
-								local textWidth, textHeight = cwKernel:GetCachedTextSize(cwOption:GetFont("main_text"), drawText)
-								local x = cwKernel:GetCachedTextSize(large3D2DFont, drawText)
-
-								if textWidth and textHeight then
-									cam.Start3D2D(position, Angle(0, eyeAngles.y, 90), 0.04)
-									cwKernel:OverrideMainFont(large3D2DFont)
-									cwKernel:DrawInfo(drawText .. typingDots, -x / 2, 0, colorWhite, alpha, true, nil, 4)
-									cwKernel:OverrideMainFont(false)
-									cam.End3D2D()
+									if textWidth and textHeight then
+										cam.Start3D2D(position, Angle(0, eyeAngles.y, 90), 0.04)
+										cwKernel:OverrideMainFont(large3D2DFont)
+										cwKernel:DrawInfo(drawText .. typingDots, -x / 2, 0, colorWhite, alpha, true, nil, 4)
+										cwKernel:OverrideMainFont(false)
+										cam.End3D2D()
+									end
 								end
 							end
 						end
