@@ -49,7 +49,7 @@ function cwDisplayTyping:PostDrawTranslucentRenderables()
 					fadeDistance = cwConfig:Get("talk_radius"):Get()
 				end
 
-				if (plyPos and clientPos) and plyPos:Distance(clientPos) <= fadeDistance then
+				if (IsValid(plyPos) and IsValid(clientPos)) and plyPos:Distance(clientPos) <= fadeDistance then
 --					local color, curTime = player:GetColor(), UnPredictedCurTime()
 
 					if player:GetMaterial() ~= "sprites/heatwave" and (a ~= 0 or player:IsRagdolled()) then
