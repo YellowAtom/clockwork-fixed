@@ -4,7 +4,7 @@ This is a fork of [Clockwork](https://github.com/cloudsixteen/clockwork) by [Clo
 An extensive edit to Clockwork 0.101 with CloudAuthX competely removed, a visual style closer to 0.93 with derma fixes, general optimizations, proper code formatting, new features such as single file entities and a more modern approch to internal solutions. The framework files and default plugins are all modified. This was orignally made for Undetermined Gaming, but as that project was never completed it is now public.
 
 ## Installation
-> Support for modern versions of tmysql4 is currently broken! Use the version [here](https://github.com/CloudSixteen/Clockwork/tree/master/upload/garrysmod/lua/bin) or use mysqloo.
+> Modern versions of mysqloo and tmysql4 both have issues, I recommend using the old version of tmysql4 from official clockwork [here](https://github.com/CloudSixteen/Clockwork/tree/master/upload/garrysmod/lua/bin).
 
 Unlike regular Clockwork the installation procedure is a lot cleaner. 
 - Place this repository in a folder named "clockwork" in `garrysmod/gamemodes` and a second folder called the schema's name (e.g cwhl2rp) containing the schema gamemode. The schema gamemode is the one that actually gets loaded by scrds.
