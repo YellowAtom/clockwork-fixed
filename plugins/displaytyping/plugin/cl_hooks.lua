@@ -36,18 +36,32 @@ function cwDisplayTyping:PostDrawTranslucentRenderables()
 
 			if (isvector(plyPos) and isvector(clientPos)) then
 				if typing ~= 0 and player:GetMoveType() ~= MOVETYPE_NOCLIP and player:Alive() then
-					local fadeDistance = 192
+					local fadeDistance
+
+					-- Seems like sometimes cwConfig:Get("talk_radius"):Get() is being returned as nil?
 
 					if typing == TYPING_YELL or typing == TYPING_PERFORM then
-						fadeDistance = cwConfig:Get("talk_radius"):Get() * 2
-					elseif typing == TYPING_WHISPER then
-						fadeDistance = cwConfig:Get("talk_radius"):Get() / 3
+						fadeDistance = cwConfig:Get("talk_radius"):Get()
 
-						if fadeDistance > 80 then
+						if (fadeDistance) then
+							fadeDistance = fadeDistance * 2
+						else
+							fadeDistance = 192 * 2
+						end
+					elseif typing == TYPING_WHISPER then
+						fadeDistance = cwConfig:Get("talk_radius"):Get()
+
+						if (fadeDistance) then
+							fadeDistance = fadeDistance / 3
+
+							if fadeDistance > 80 then
+								fadeDistance = 80
+							end
+						else
 							fadeDistance = 80
 						end
 					else
-						fadeDistance = cwConfig:Get("talk_radius"):Get()
+						fadeDistance = cwConfig:Get("talk_radius"):Get() or 192
 					end
 
 					if fadeDistance and plyPos:Distance(clientPos) <= fadeDistance then
