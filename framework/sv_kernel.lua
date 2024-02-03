@@ -3123,6 +3123,10 @@ end
 	@returns {Unknown}
 --]]
 function Clockwork:PlayerCanEarnWagesCash(player, cash)
+	if (cwConfig:Get("wages_interval"):Get() == 0) then
+		return false
+	end
+
 	return true
 end
 
