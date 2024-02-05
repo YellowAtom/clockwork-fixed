@@ -858,7 +858,14 @@ end
 	@details Called when Clockwork has initialized.
 --]]
 function Clockwork:ClockworkInitialized()
+	local weapon = weapons.GetStored("gmod_tool")
 	local logoFile = "ug_clockwork/logo/002.png"
+
+	-- Capitalize tool gun text on weapon scroll.
+	if (weapon) then
+		weapon.PrintName = "Tool Gun"
+	end
+
 	self.SpawnIconMaterial = cwKernel:GetMaterial("vgui/spawnmenu/hover")
 	self.DefaultGradient = surface.GetTextureID("gui/gradient_down")
 	self.GradientTexture = cwKernel:GetMaterial(cwOption:GetKey("gradient") .. ".png")

@@ -35,6 +35,10 @@ function cwObserverMode:MakePlayerExitObserverMode(player)
 			player.cwObserverMode = nil
 		end
 	end)
+
+	if (player:GetInfoNum("cwNoTarget", 1) == 1) then
+		player:SetNoTarget(false)
+	end
 end
 
 -- A function to make a player enter observer mode.
@@ -46,4 +50,8 @@ function cwObserverMode:MakePlayerEnterObserverMode(player)
 	player.cwObserverColor = player:GetColor()
 	player.cwObserverMode = true
 	player:SetMoveType(MOVETYPE_NOCLIP)
+
+	if (player:GetInfoNum("cwNoTarget", 1) == 1) then
+		player:SetNoTarget(true)
+	end
 end

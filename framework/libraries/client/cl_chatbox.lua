@@ -150,8 +150,13 @@ end
 --]]
 function Clockwork.chatBox:GetPosition(addX, addY)
 	local customPosition = self:GetCustomPosition()
+	local scrH = ScrH()
 	local x = 8
-	local y = ScrH() - 40
+	local y = scrH - 40
+
+	if (!self:IsOpen()) then
+		y = scrH - (scrH * 0.037)
+	end
 
 	if customPosition.x then
 		x = customPosition.x

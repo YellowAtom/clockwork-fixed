@@ -717,8 +717,10 @@ end
 
 -- Called when the layout should be performed.
 function PANEL:PerformLayout(w, h)
+	local scrH = ScrH()
+
 	self:SetPos(0, 96)
-	self:SetSize(ScrW(), ScrH() - 96 * 2)
+	self:SetSize(ScrW(), scrH - (scrH * 0.203))
 end
 
 vgui.Register("cwCharacterList", PANEL, "EditablePanel")
