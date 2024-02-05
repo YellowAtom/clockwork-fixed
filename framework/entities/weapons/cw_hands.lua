@@ -193,7 +193,7 @@ function SWEP:PunchEntity()
 		self:CallOnClient("PunchEntity", "")
 
 		if IsValid(traceLineAttack.Entity) then
-			traceLineAttack.Entity:TakeDamageInfo(Clockwork.kernel:FakeDamageInfo(self.Primary.Damage, self, self:GetOwner(), traceLineAttack.HitPos, DMG_CLUB, 1))
+			traceLineAttack.Entity:TakeDamageInfo(Clockwork.kernel:FakeDamageInfo(self.Primary.Damage, self, self:GetOwner(), traceLineAttack.HitPos, DMG_SLASH, 1))
 		end
 	end
 end
