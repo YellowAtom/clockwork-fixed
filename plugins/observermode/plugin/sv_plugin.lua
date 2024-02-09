@@ -36,9 +36,7 @@ function cwObserverMode:MakePlayerExitObserverMode(player)
 		end
 	end)
 
-	if (player:GetInfoNum("cwNoTarget", 1) == 1) then
-		player:SetNoTarget(false)
-	end
+	player:SetNoTarget(false)
 end
 
 -- A function to make a player enter observer mode.
