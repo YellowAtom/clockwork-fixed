@@ -110,7 +110,6 @@ function PANEL:ComboBox(strLabel, strConVar)
 	left:SizeToContents()
 	local right = vgui.Create("DComboBox", self)
 	right:SetConVar(strConVar)
-	right:DockMargin(237, 0, 23, 0)
 	right:Dock(FILL)
 
 	function right:OnSelect(index, value, data)
