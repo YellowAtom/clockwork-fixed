@@ -1572,7 +1572,7 @@ function Clockwork:SaveData()
 
 	cwPlugin:Call("PostSaveData")
 
-	MsgC(Color(0, 255, 0), "[Clockwork] Persistant data has been saved!\n")
+	--MsgC(Color(0, 255, 0), "[Clockwork] Persistant data has been saved!\n")
 end
 
 function Clockwork:PlayerCanInteractCharacter(player, action, character)
