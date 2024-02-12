@@ -66,9 +66,9 @@ function cwStamina:PlayerThink(player, curTime, infoTable)
 
 				if player:GetCharacterData("Stamina") > 1 then
 					if infoTable.isRunning then
-						player:ProgressAttribute(ATB_AGILITY, 0.025, true)
-					elseif infoTable.isJogging then
 						player:ProgressAttribute(ATB_AGILITY, 0.0125, true)
+					elseif infoTable.isJogging then
+						player:ProgressAttribute(ATB_AGILITY, 0.00625, true)
 					end
 				end
 			end
