@@ -169,8 +169,8 @@ end
 function cwDisplayTyping:ChatBoxTextChanged(previousText, newText)
 	local prefix = cwConfig:Get("command_prefix"):Get()
 
-	if string.utf8sub(newText, 1, string.utf8len(prefix) + 3) == prefix .. "rad" then
-		if string.utf8sub(previousText, 1, string.utf8len(prefix) + 3) ~= prefix .. "rad" then
+	if string.utf8sub(newText, 1, string.utf8len(prefix) + 3) == prefix .. "r" then
+		if string.utf8sub(previousText, 1, string.utf8len(prefix) + 3) ~= prefix .. "r" then
 			RunConsoleCommand("cwTypingStart", "r")
 		end
 	elseif string.utf8sub(newText, 1, string.utf8len(prefix) + 2) == prefix .. "me" then
