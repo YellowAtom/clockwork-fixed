@@ -3380,7 +3380,7 @@ function Clockwork:PhysgunPickup(player, entity)
 		canPickup = true
 	end
 
-	if cwEntity:IsChairEntity(entity) and not isAdmin then
+	if cwEntity:IsChairEntity(entity) then
 		local entities = ents.FindInSphere(entity:GetPos(), 256)
 
 		for k, v in pairs(entities) do
