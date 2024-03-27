@@ -2,7 +2,7 @@ local COMMAND = Clockwork.command:New("PlySearch")
 
 COMMAND.tip = "CmdPlySearch"
 COMMAND.text = "CmdPlySearchDesc"
-COMMAND.access = "s"
+COMMAND.access = "a"
 COMMAND.arguments = 1
 
 -- Called when the command has been run.
