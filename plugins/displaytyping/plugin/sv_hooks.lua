@@ -25,6 +25,8 @@ function cwDisplayTyping:PlayerStartTypingDisplay(player, code)
 						startChatNoise = rank.startChatNoise
 					elseif faction and faction.startChatNoise then
 						startChatNoise = faction.startChatNoise
+					elseif faction and faction.startUniformNoise and player:IsWearingClothes() then
+						startChatNoise = faction.startUniformNoise
 					end
 				end
 
@@ -50,6 +52,8 @@ function cwDisplayTyping:PlayerFinishTypingDisplay(player, textTyped)
 				player:EmitSound(rank.endChatNoise)
 			elseif faction and faction.endChatNoise then
 				player:EmitSound(faction.endChatNoise)
+			elseif faction and faction.endUniformNoise and player:IsWearingClothes() then
+				player:EmitSound(faction.endUniformNoise)
 			end
 		end
 	end

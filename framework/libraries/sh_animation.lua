@@ -312,7 +312,7 @@ Clockwork.animation.stored.civilProtection = {
 	
 	["crouch_shotgun_aim_walk"] = ACT_WALK_CROUCH,
 	["crouch_shotgun_aim_idle"] = ACT_COVER_SMG1_LOW,
-	["stand_shotgun_aim_idle"] = "SMGcover",
+	["stand_shotgun_aim_idle"] = ACT_IDLE_ANGRY_SMG1,
 	["stand_shotgun_aim_walk"] = ACT_WALK_AIM_RIFLE,
 	["stand_shotgun_aim_run"] = ACT_RUN_AIM_RIFLE,
 	["crouch_shotgun_walk"] = ACT_WALK_CROUCH,
@@ -490,7 +490,7 @@ Clockwork.animation.stored.maleHuman = {
 	["stand_pistol_aim_run"] = ACT_RUN_AIM_RIFLE_STIMULATED,
 	["crouch_fist_aim_idle"] = ACT_RANGE_AIM_SMG1_LOW,
 	["stand_heavy_aim_idle"] = ACT_IDLE_ANGRY_RPG,
-	["stand_melee_aim_idle"] = ACT_IDLE_MANNEDGUN,
+	["stand_melee_aim_idle"] = ACT_IDLE_ANGRY_MELEE,
 	["crouch_slam_aim_idle"] = ACT_COVER_LOW_RPG,
 	["stand_melee_aim_walk"] = ACT_WALK_AIM_RIFLE,
 	["stand_heavy_aim_walk"] = ACT_WALK_AIM_RIFLE_STIMULATED,

@@ -1147,6 +1147,15 @@ end
 
 --[[
 	@codebase Server
+	@details Called when a player uses a ration.
+	@returns {Unknown}
+--]]
+function Clockwork:PlayerUseRation(player)
+	return true
+end
+
+--[[
+	@codebase Server
 	@details Called when a player punches an entity.
 	@returns {Unknown}
 --]]
