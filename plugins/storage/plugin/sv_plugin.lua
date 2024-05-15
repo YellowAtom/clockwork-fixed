@@ -61,6 +61,7 @@ function cwStorage:SaveStorage()
 				local bMoveable = nil
 				local startPos = v:GetStartPosition()
 				local model = v:GetModel()
+				local skin = v:GetSkin()
 
 				if IsValid(physicsObject) then
 					bMoveable = physicsObject:IsMoveable()
@@ -69,6 +70,7 @@ function cwStorage:SaveStorage()
 				storage[#storage + 1] = {
 					name = v:GetNWString("Name"),
 					model = model,
+					skin = skin,
 					cash = v.cwCash,
 					color = {v:GetColor()},
 					angles = v:GetAngles(),
@@ -95,6 +97,7 @@ function cwStorage:LoadStorage()
 		local entity = ents.Create("prop_physics")
 		entity:SetAngles(v.angles)
 		entity:SetModel(v.model)
+		entity:SetSkin(v.skin)
 		entity:SetPos(v.position)
 		entity:Spawn()
 
