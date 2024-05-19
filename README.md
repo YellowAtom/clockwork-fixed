@@ -13,7 +13,7 @@ Unlike regular Clockwork the installation procedure is a lot cleaner.
 - Finally make sure that your server and client are subscribed to the [workshop content](https://steamcommunity.com/sharedfiles/filedetails/?id=2892883208).
 
 ## Compatibility
-This version of clockwork has compatability for anything that worked with version 0.101. Most 0.93 plugins work but 0.93 schemas and ealier often do not load or will not function correctly, however I have uploaded a modified 0.93 hl2rp schema. Note that clockwork can only run on win32 or linux servers.
+This version of clockwork has compatability for anything that worked with version 0.101. Most 0.93 plugins work but 0.93 schemas and ealier often do not load or will not function correctl. Note that clockwork can only run on win32 or linux servers.
 
 ## Credits
 - Github contributors.
