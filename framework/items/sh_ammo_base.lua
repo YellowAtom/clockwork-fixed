@@ -1,69 +1,57 @@
-local Clockwork = Clockwork
 
-local ITEM = Clockwork.item:New(nil, true)
+-----------------------------------------------------
+--[[
+	� 2013 CloudSixteen.com do not share, re-distribute or modify
+	without permission of its author (kurozael@gmail.com).
+--]]
 
-ITEM.name = "Ammo Base"
-ITEM.useText = "Load"
-ITEM.useSound = false
-ITEM.category = "Ammunition"
-ITEM.ammoClass = "pistol"
-ITEM.ammoAmount = 0
-ITEM.roundsText = "Rounds"
-ITEM.customFunctions = {"Split"}
+local Clockwork = Clockwork;
 
-ITEM:AddData("Rounds", -1, true)
+local ITEM = Clockwork.item:New(nil, true);
+ITEM.name = "Ammo Base";
+ITEM.useText = "Load";
+ITEM.useSound = false;
+ITEM.category = "Ammunition";
+ITEM.ammoClass = "pistol";
+ITEM.ammoAmount = 0;
+ITEM.roundsText = "Rounds";
+
+ITEM:AddData("Rounds", -1, true);
+ITEM:AddQueryProxy("ammoAmount", "Rounds", true);
 
 -- A function to get the item's weight.
 function ITEM:GetItemWeight()
-	return (self.weight / self.ammoAmount) * self:GetData("Rounds")
-end
+	return (self.weight / self.ammoAmount) * self:GetData("Rounds");
+end;
 
 -- A function to get the item's space.
 function ITEM:GetItemSpace()
-	return (self.space / self.ammoAmount) * self:GetData("Rounds")
-end
+	return (self.space / self.ammoAmount) * self:GetData("Rounds");
+end;
 
---ITEM:AddQueryProxy("weight", ITEM.GetItemWeight);
---ITEM:AddQueryProxy("space", ITEM.GetItemSpace);
---ITEM:AddQueryProxy("ammoCount", "Rounds", true);
 -- Called when a player uses the item.
 function ITEM:OnUse(player, itemEntity)
---	local secondaryAmmoClass = self("secondaryAmmoClass")
---	local primaryAmmoClass = self("primaryAmmoClass")
-	local ammoAmount = self("ammoAmount")
-	local ammoClass = self("ammoClass")
+	local ammoAmount = self("ammoAmount");
+	local ammoClass = self("ammoClass");
 
-	for k, v in pairs(player:GetWeapons()) do
-		local itemTable = Clockwork.item:GetByWeapon(v)
+			player:GiveAmmo(ammoAmount, ammoClass);
 
-		if itemTable and (itemTable.primaryAmmoClass == ammoClass or itemTable.secondaryAmmoClass == ammoClass) then
-			player:GiveAmmo(ammoAmount, ammoClass)
-
-			return
-		end
-	end
-
-	Clockwork.player:Notify(player, {"NeedWeaponThatUsesAmmo"})
-
-	return false
-end
+			return;
+		end;
 
 -- Called when a player drops the item.
-function ITEM:OnDrop(player, position)
-end
+function ITEM:OnDrop(player, position) end;
 
-if SERVER then
+if (SERVER) then
 	function ITEM:OnInstantiated()
-		self:SetData("Rounds", self.ammoCount)
-	end
-
-	-- Called when a custom function was called.
-	function ITEM:OnCustomFunction(player, funcName)
-	end
+		self:SetData("Rounds", self("ammoAmount"));
+	end;
 else
 	function ITEM:GetClientSideInfo()
-		return Clockwork.kernel:AddMarkupLine("", self("roundsText") .. ": " .. self("ammoAmount"))
-	end
-end
+		return Clockwork.kernel:AddMarkupLine(
+			"", self("roundsText")..": "..self("ammoAmount")
+		);
+	end;
+end;
 
-Clockwork.item:Register(ITEM)
+ITEM:Register();
