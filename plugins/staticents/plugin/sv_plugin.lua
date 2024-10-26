@@ -75,7 +75,9 @@ function cwStaticEnts:LoadStaticEnts()
 		entity:SetModel(v.model)
 		entity:SetPos(v.position)
 		entity:SetSkin(v.skin or 0)
-
+		entity:SetNWString("physDesc", v.physdesc)
+		entity:SetOwnerKey(v.ownerkey)
+    
 		if v.bNoCollision == nil or v.bNoCollision then
 			entity:SetCollisionGroup(COLLISION_GROUP_WORLD)
 		end
@@ -132,6 +134,8 @@ function cwStaticEnts:SaveStaticEnts()
 				entTable.renderFX = v:GetRenderFX()
 				entTable.bNoCollision = v:GetCollisionGroup() == COLLISION_GROUP_WORLD
 				entTable.skin = v:GetSkin()
+				entTable.physdesc = v:GetNWString("physDesc")
+				entTable.ownerkey = v:GetOwnerKey()
 
 				local bodyGroups = v:GetBodyGroups()
 
