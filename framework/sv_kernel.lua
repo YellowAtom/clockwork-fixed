@@ -1725,16 +1725,14 @@ function Clockwork:PlayerGivenWeapon(player, class, itemTable)
 	self.inventory:Rebuild(player)
 
 	if cwItem:IsWeapon(itemTable) and not itemTable:IsFakeWeapon() then
-		if not itemTable:IsMeleeWeapon() and not itemTable:IsThrowableWeapon() then
-			if itemTable("weight") <= 2 then
-				cwPly:CreateGear(player, "Secondary", itemTable)
-			else
-				cwPly:CreateGear(player, "Primary", itemTable)
-			end
+		if itemTable:IsMeleeWeapon() then
+		cwPly:CreateGear(player, "Melee", itemTable)
 		elseif itemTable:IsThrowableWeapon() then
-			cwPly:CreateGear(player, "Throwable", itemTable)
-		else
-			cwPly:CreateGear(player, "Melee", itemTable)
+		cwPly:CreateGear(player, "Throwable", itemTable)
+		elseif itemTable:IsPrimaryWeapon() then
+		cwPly:CreateGear(player, "Primary", itemTable)
+		elseif itemTable:IsSecondaryWeapon() then
+		cwPly:CreateGear(player, "Secondary", itemTable)
 		end
 	end
 end
