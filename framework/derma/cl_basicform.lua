@@ -111,6 +111,8 @@ function PANEL:ComboBox(strLabel, strConVar)
 	local right = vgui.Create("DComboBox", self)
 	right:SetConVar(strConVar)
 	right:Dock(FILL)
+	local tall = right:GetTall()
+	right:SetSize(panelSize, tall)
 
 	function right:OnSelect(index, value, data)
 		if not self.m_strConVar then return end
