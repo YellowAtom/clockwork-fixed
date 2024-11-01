@@ -41,6 +41,18 @@ function Clockwork.class:New(name)
 	return object
 end
 
+local assignedIDs = {}
+
+function Clockwork.class:GetUniqueTeamID()
+	for id = 1, 65535 do
+        if (!assignedIDs[id]) then
+            assignedIDs[id] = true  -- Mark this ID as used
+            return id
+        end
+    end
+    error("No available IDs")  -- Handle the case where all IDs are used
+end
+
 --[[
 	@codebase Shared
 	@details A function to register a new class.
@@ -60,7 +72,7 @@ function Clockwork.class:Register(data, name)
 	data.flags = data.flags or "b"
 	data.limit = data.limit or 128
 	data.wages = data.wages or 0
-	data.index = Clockwork.kernel:GetShortCRC(name)
+	data.index = self:GetUniqueTeamID()
 	data.name = name
 	cwTeam.SetUp(data.index, data.name, data.color)
 	self.buffer[data.index] = data
