@@ -4944,8 +4944,13 @@ end
 	@param {Unknown} Missing description for value.
 	@returns {Unknown}
 --]]
-function Clockwork.kernel:GetShortCRC(value)
+--[[ function Clockwork.kernel:GetShortCRC(value)
 	return math.ceil(util.CRC(value) / 100000)
+end--]] 
+
+-- 16-bit version of the above, to fix issues introduced in the GMod October 2024 Update
+function Clockwork.kernel:GetShortCRC(value)
+	return util.CRC(value) % 65536
 end
 
 --[[
