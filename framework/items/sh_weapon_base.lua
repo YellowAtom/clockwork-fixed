@@ -299,6 +299,8 @@ if CLIENT then
 		local ammoClass = self("primaryAmmoClass")
 		local ammoClassSecondary = self("secondaryAmmoClass")
 local ammoTypes = {
+    ["nil"] = "N/A",
+	[""] = "N/A",
     ["ar2"] = "Pulse",
     ["ar2altfire"] = "Pulse Orbs",
     ["pistol"] = "Pistol",
