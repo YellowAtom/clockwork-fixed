@@ -25,8 +25,10 @@ end
 
 -- Called to draw the text over each player's head if needed.
 function cwDisplayTyping:PostDrawTranslucentRenderables()
+	local client = LocalPlayer()
+
 	for k, player in pairs(playerGetAll()) do
-		if player:HasInitialized() then
+		if player:HasInitialized() and !(player == client and !client:GetThirdPerson()) then
 			local large3D2DFont = cwOption:GetFont("large_3d_2d")
 			local colorWhite = cwOption:GetColor("white")
 			local eyeAngles = Clockwork.Client:EyeAngles()
