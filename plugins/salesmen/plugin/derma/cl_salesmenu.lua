@@ -70,7 +70,7 @@ function PANEL:RebuildPanel(typeName, panelList, inventory)
 			cashForm:SetName(Clockwork.option:GetKey("name_cash"))
 			cashForm:SetPadding(4)
 			panelList:AddItem(cashForm)
-			cashForm:Help(Clockwork.salesmenu:GetName() .. " has " .. Clockwork.kernel:FormatCash(totalCash, nil, true) .. " to their name.")
+			cashForm:Help(Clockwork.salesmenu:GetName() .. " has " .. Clockwork.kernel:FormatCash(math.floor(totalCash, nil, true)) .. " to their name.")
 		end
 	end
 
@@ -244,7 +244,7 @@ function PANEL:Think()
 
 		if Clockwork.config:Get("cash_enabled"):Get() then
 			if self.itemTable("cost") ~= 0 then
-				displayInfo.weight = Clockwork.kernel:FormatCash((self.itemTable("cost") * priceScale) * math.max(amount, 1))
+				displayInfo.weight = Clockwork.kernel:FormatCash(math.floor(self.itemTable("cost") * priceScale) * math.max(amount, 1))
 			else
 				displayInfo.weight = "Free"
 			end
@@ -256,7 +256,7 @@ function PANEL:Think()
 			end
 
 			if type(overrideCash) == "number" then
-				displayInfo.weight = Clockwork.kernel:FormatCash(overrideCash * math.max(amount, 1))
+				displayInfo.weight = Clockwork.kernel:FormatCash(math.floor(overrideCash * math.max(amount, 1)))
 			end
 		end
 

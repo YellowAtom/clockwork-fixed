@@ -66,7 +66,7 @@ Clockwork.datastream:Hook("Salesmenu", function(player, data)
 					end
 				else
 					local cashRequired = cost * amount - player:GetCash()
-					data.entity:TalkToPlayer(player, data.entity.cwTextTab.needMore, "You need another " .. Clockwork.kernel:FormatCash(cashRequired, nil, true) .. "!")
+					data.entity:TalkToPlayer(player, data.entity.cwTextTab.needMore, "You need another " .. Clockwork.kernel:FormatCash(math.floor(cashRequired, nil, true)) .. "!")
 				end
 			elseif data.tradeType == "Buys" and not itemTable("isBaseItem") and data.entity.cwBuyTab[itemUniqueID] then
 				local itemTable = player:FindItemByID(data.uniqueID, data.itemID)
