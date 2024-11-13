@@ -88,27 +88,14 @@ end
 
 -- Called each frame.
 function ENT:Think()
-	local itemTable = self.cwItemTable
-	local curTime = CurTime()
-
-	if not self:IsInWorld() then
-		if self.cwOutOfWorldTime == nil then
-			self.cwOutOfWorldTime = curTime + 5
-		end
-
-		if curTime >= self.cwOutOfWorldTime then
-			self:Remove()
-		end
-	else
-		self.cwOutOfWorldTime = nil
-	end
-
-	if itemTable then
-		if itemTable.OnEntityThink then
-			local nextThink = itemTable:OnEntityThink(self)
-			if type(nextThink) == "number" then return self:NextThink(CurTime() + nextThink) end
-		end
-	end
-
-	self:NextThink(CurTime() + 1)
-end
+	local itemTable = self.cwItemTable;
+	
+	if (itemTable and itemTable.OnEntityThink) then
+		local nextThink = itemTable:OnEntityThink(self);
+		
+		if (type(nextThink) == "number") then
+			self:NextThink(CurTime() + nextThink);
+			return true;
+		end;
+	end;
+end;
