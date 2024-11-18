@@ -122,8 +122,8 @@ function PANEL:Init()
 		local modelSize = math.min(ScrW() * 0.5, ScrH() * 0.75)
 
 		self.characterModel = vgui.Create("cwCharacterModel", self)
-		self.characterModel:SetSize(modelSize, modelSize)
 		self.characterModel:SetAlpha(0)
+		self.characterModel:SetSize(modelSize, modelSize) -- TBD: Remove this for new cam pos
 
 		self.characterModel:SetModel("models/error.mdl")
 		self.createTime = SysTime()
@@ -905,6 +905,17 @@ function PANEL:Init()
 		maxWidth = self.factionLabel:GetWide()
 	end
 
+	local widths = {
+		["Vortigaunt"] = 90,
+		["Enslaved Vortigaunt"] = 80,
+		["Antlion"] = 180,
+		["Zombie"] = 40
+	}
+
+	if (widths[self.customData.faction]) then
+		maxWidth = maxWidth + widths[self.customData.faction]
+	end
+
 	local labelY = self.characterModel.y + self.characterModel:GetTall() + 4
 
 	for k, v in pairs(labels) do
@@ -1118,19 +1129,19 @@ local function setModelAndSequence(panel, model)
 		end
 	end
 
-	if sequence <= 0 then
+	if sequence < 0 then
 		sequence = entity:LookupSequence("idle_unarmed")
 	end
 
-	if sequence <= 0 then
+	if sequence < 0 then
 		sequence = entity:LookupSequence("idle1")
 	end
 
-	if sequence <= 0 then
+	if sequence < 0 then
 		sequence = entity:LookupSequence("walk_all")
 	end
 
-	if sequence > 0 then
+	if sequence >= 0 then
 		entity:ResetSequence(sequence)
 	end
 end
