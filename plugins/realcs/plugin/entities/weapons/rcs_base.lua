@@ -1314,6 +1314,7 @@ local function SimilarizeAngles(ang1, ang2)
 		end
 	end
 end
+--[[
 
 local function ReduceScopeSensitivity(uCmd)
 	if IsValid(Clockwork.Client) then
@@ -1333,3 +1334,6 @@ local function ReduceScopeSensitivity(uCmd)
 end
 
 hook.Add("CreateMove", "RSS", ReduceScopeSensitivity)
+
+--]]
+-- disabled for performance
