@@ -86,4 +86,4 @@ end
 
 Clockwork.icon:GroupSet("superadmin", "SuperAdminShield", "icon16/shield.png")
 Clockwork.icon:GroupSet("admin", "AdminStar", "icon16/star.png")
-Clockwork.icon:GroupSet("operator", "OperatorSmile", "icon16/emoticon_smile.png")
+Clockwork.icon:GroupSet("operator", "OperatorSmile", "icon16/eye.png")
