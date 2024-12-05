@@ -1177,7 +1177,7 @@ Clockwork.chatBox:RegisterDefaultClass("itc", "ic", function(info)
 		color = Color(175, 255, 175, 255)
 	end
 
-	local localized = Clockwork.chatBox:LangToTable("ChatPlayerItC", color, info.name, info.text)
+	local localized = Clockwork.chatBox:LangToTable("ChatPlayerItC", color, info.text)
 	Clockwork.chatBox:Add(info.filtered, nil, unpack(localized))
 end)
 
