@@ -1456,7 +1456,7 @@ else -- if (SERVER) then
 			end
 
 			if itemTable("attachmentColor") then
-				player.cwGearTab[gearClass]:SetColor(cwKernel:UnpackColor(itemTable("attachmentColor")))
+				player.cwGearTab[gearClass]:SetColor(itemTable("attachmentColor"))
 			else
 				player.cwGearTab[gearClass]:SetColor(Color(255, 255, 255, 255))
 			end
