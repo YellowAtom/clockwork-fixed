@@ -13,7 +13,7 @@ function cwDelayLOOC:PlayerCanSayLOOC(player, text)
 	local libplayer = Clockwork.player
 	local curTime = CurTime()
 
-	if player.cwNextTalkLOOC ~= nil and curTime < player.cwNextTalkLOOC then
+	if player.cwNextTalkLOOC ~= nil and curTime < player.cwNextTalkLOOC and not player:IsAdmin(player) then
 		libplayer:Notify(player, "You cannot cannot talk in LOOC for another " .. math.ceil(player.cwNextTalkLOOC - curTime) .. " second(s)!")
 
 		return false
