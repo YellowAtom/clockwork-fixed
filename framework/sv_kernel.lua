@@ -1692,14 +1692,10 @@ end
 --]]
 function Clockwork:PlayerDataLoaded(player)
 	if cwConfig:Get("clockwork_intro_enabled"):Get() then
-		if not player:GetData("ClockworkIntro") then
 			cwDatastream:Start(player, "ClockworkIntro", true)
-			player:SetData("ClockworkIntro", true)
 		end
+			cwDatastream:Start(player, "Donations", player.cwDonations)
 	end
-
-	cwDatastream:Start(player, "Donations", player.cwDonations)
-end
 
 --[[
 	@codebase Server
