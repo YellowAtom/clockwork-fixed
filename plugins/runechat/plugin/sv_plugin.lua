@@ -3,11 +3,11 @@
 /* -------------------------------------------------------------------------- */
 -- function Clockwork.config:Add(key, value, isShared, isGlobal, isStatic, isPrivate, needsRestart)
 Clockwork.config:Add("runechat_minplayers", 1, true, true)
-Clockwork.config:Add("runechat_messagelen", 32, true, true)
-Clockwork.config:Add("runechat_messagetime", 5, true, true)
+Clockwork.config:Add("runechat_messagelen", 48, true, true)
+Clockwork.config:Add("runechat_messagetime", 7, true, true)
 Clockwork.config:Add("runechat_max", 3, true, true)
 Clockwork.config:Add("runechat_enabled", true, true, true)
-Clockwork.config:Add("runechat_range", 512, true, true)
+Clockwork.config:Add("runechat_range", 410, true, true)
 
 util.AddNetworkString("cwRunechatAddMessage")
 
