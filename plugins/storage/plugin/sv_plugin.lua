@@ -63,6 +63,10 @@ function cwStorage:SaveStorage()
 				local model = v:GetModel()
 				local skin = v:GetSkin()
 				local material = v:GetMaterial()
+				local color = v:GetColor()
+				local renderMode = v:GetRenderMode()
+				local renderFX = v:GetRenderFX()
+				local bNoCollision = v:GetCollisionGroup() == COLLISION_GROUP_WORLD
 
 				if IsValid(physicsObject) then
 					bMoveable = physicsObject:IsMoveable()
@@ -74,13 +78,16 @@ function cwStorage:SaveStorage()
 					skin = skin,
 					material = material,
 					cash = v.cwCash,
-					color = {v:GetColor()},
+					color = color,
+					renderMode = renderMode,
+					renderFX = renderFX,
 					angles = v:GetAngles(),
 					position = v:GetPos(),
 					message = v.cwMessage,
 					password = v.cwPassword,
 					startPos = startPos,
 					inventory = Clockwork.inventory:ToSaveable(v.cwInventory),
+					bNoCollision = bNoCollision,
 					isMoveable = bMoveable
 				}
 			end
@@ -100,8 +107,25 @@ function cwStorage:LoadStorage()
 		entity:SetAngles(v.angles)
 		entity:SetModel(v.model)
 		entity:SetMaterial(v.material)
-		entity:SetSkin(v.skin)
+		entity:SetSkin(v.skin or 0)
 		entity:SetPos(v.position)
+		
+		if v.bNoCollision == nil or v.bNoCollision then
+			entity:SetCollisionGroup(COLLISION_GROUP_WORLD)
+		end
+		
+		if not v.renderMode then
+			v.renderMode = 0
+			v.renderFX = 0
+		end
+
+		if v.color.a < 255 and v.renderMode == 0 then
+			v.renderMode = 1
+		end
+		
+		entity:SetColor(v.color)
+		entity:SetRenderMode(v.renderMode)
+		entity:SetRenderFX(v.renderFX)
 		entity:Spawn()
 
 		if IsValid(entity:GetPhysicsObject()) then
