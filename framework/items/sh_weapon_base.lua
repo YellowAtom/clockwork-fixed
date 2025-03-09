@@ -157,6 +157,16 @@ function ITEM:IsMeleeWeapon()
 	return self("isMeleeWeapon")
 end
 
+-- A function to get whether the item is a melee weapon.
+function ITEM:IsPrimaryWeapon()
+	return self("isPrimaryWeapon")
+end
+
+-- A function to get whether the item is a melee weapon.
+function ITEM:IsSecondaryWeapon()
+	return self("isSecondaryWeapon")
+end
+
 -- Called when the item is given to a player as a weapon.
 function ITEM:OnWeaponGiven(player, weapon)
 	Clockwork.player:StripDefaultAmmo(player, weapon, self)
@@ -286,7 +296,69 @@ if CLIENT then
 		local clientSideInfo = ""
 		local clipOne = self:GetData("ClipOne")
 		local clipTwo = self:GetData("ClipTwo")
-
+		local ammoClass = self("primaryAmmoClass")
+		local ammoClassSecondary = self("secondaryAmmoClass")
+local ammoTypes = {
+    ["nil"] = "N/A",
+	[""] = "N/A",
+    ["ar2"] = "Pulse",
+    ["ar2altfire"] = "Pulse Orbs",
+    ["pistol"] = "Pistol",
+    ["smg1"] = "SMG",
+    ["357"] = "357",
+    ["357"] = "Magnum",
+    ["xbowbolt"] = "Crossbow Bolts",
+    ["buckshot"] = "Shotgun Shells",
+    ["rpg_round"] = "Rockets",
+    ["smg1_grenade"] = "SMG Grenades",
+    ["grenade"] = "Grenades",
+    ["slam"] = "SLAMs",
+    ["alyxgun"] = "Rifle", -- rifle
+    ["sniperround"] = "Darts", -- darts
+    ["sniperpenetratedround"] = "Sniper", -- sniper
+    ["combinecannon"] = "Flares", -- flares
+	["thumper"] = "Thumper",
+	["gravity"] = "Gravity",
+	["battery"] = "Battery",
+	["gaussenergy"] = "Gauss Energy",
+	["airboatgun"] = "BB Pellets",
+	["striderminigun"] = "Magnum",
+	["helicoptergun"] = "Helicopter",
+	["9mmround"] = "9mm Rounds",
+	["357round"] = "357 Rounds",
+	["buckshothl1"] = "Buckshot",
+	["xbowbolthl1"] = "Crossbow",
+	["mp5_grenade"] = "MP5 Grenade",
+	["rpg_rocket"] = "RPG",
+	["uranium"] = "Uranium",
+	["grenadehl1"] = "Granada",
+	["hornet"] = "Hornet",
+	["snark"] = "Snark",
+	["tripmine"] = "Tripmine",
+	["satchel"] = "Satchel Charge",
+	["12mmround"] = "Turret",
+	["striderminigundirect"] = "Strider",
+	["combineheavycannon"] = "Combine Cannon",
+}
+		
+		if self("isPrimaryWeapon") == true then
+			clientSideInfo = Clockwork.kernel:AddMarkupLine(clientSideInfo, L("Weapon Slot: Primary"))
+			clientSideInfo = Clockwork.kernel:AddMarkupLine(clientSideInfo, L("Ammo Type: "..ammoTypes[ammoClass]..""))
+		end
+		
+		if self("isSecondaryWeapon") == true then
+			clientSideInfo = Clockwork.kernel:AddMarkupLine(clientSideInfo, L("Weapon Slot: Secondary"))
+			clientSideInfo = Clockwork.kernel:AddMarkupLine(clientSideInfo, L("Ammo Type: "..ammoTypes[ammoClass]..""))
+		end
+		
+		if self("isMeleeWeapon") == true then
+			clientSideInfo = Clockwork.kernel:AddMarkupLine(clientSideInfo, L("Weapon Slot: Melee"))
+		end
+		
+		if self("isThrowableWeapon") == true then
+			clientSideInfo = Clockwork.kernel:AddMarkupLine(clientSideInfo, L("Weapon Slot: Throwable"))
+		end
+		
 		if clipOne > 0 then
 			clientSideInfo = Clockwork.kernel:AddMarkupLine(clientSideInfo, L("ItemInfoClipOne", clipOne))
 		end

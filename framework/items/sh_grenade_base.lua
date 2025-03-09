@@ -3,7 +3,7 @@ local Clockwork = Clockwork
 local ITEM = Clockwork.item:New("weapon_base", true)
 
 ITEM.name = "Grenade Base"
-ITEM.category = "Weapons";
+ITEM.category = "Throwables";
 ITEM.isThrowableWeapon = true
 
 -- Called when a player equips the item.
