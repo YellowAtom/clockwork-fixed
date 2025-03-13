@@ -1,4 +1,4 @@
-local COMMAND = Clockwork.command:New("Radio")
+--[[local COMMAND = Clockwork.command:New("Radio")
 
 COMMAND.tip = "CmdRadio"
 COMMAND.text = "CmdRadioDesc"
@@ -13,3 +13,4 @@ function COMMAND:OnRun(player, arguments)
 end
 
 COMMAND:Register()
+]]
