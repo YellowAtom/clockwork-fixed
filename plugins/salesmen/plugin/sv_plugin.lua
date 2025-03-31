@@ -7,7 +7,7 @@ end)
 
 Clockwork.datastream:Hook("Salesmenu", function(player, data)
 	if data.entity:GetClass() == "cw_salesman" then
-		--if player:GetPos():Distance(data.entity:GetPos()) < 196 then
+		if player:GetPos():Distance(data.entity:GetPos()) < 196 then
 			local itemTable = Clockwork.item:FindByID(data.uniqueID)
 			local itemUniqueID = itemTable("uniqueID")
 
@@ -99,7 +99,7 @@ Clockwork.datastream:Hook("Salesmenu", function(player, data)
 					Clockwork.datastream:Start(player, "SalesmenuRebuild", data.entity.cwCash)
 				end
 			end
-		--end
+		end
 	end
 end)
 

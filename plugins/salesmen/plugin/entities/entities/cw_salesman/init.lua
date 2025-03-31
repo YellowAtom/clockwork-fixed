@@ -65,10 +65,10 @@ end
 -- Called when the entity is used.
 function ENT:Use(activator, caller)
 	if IsValid(activator) and activator:IsPlayer() then
-	--	if activator:GetEyeTraceNoCursor().HitPos:Distance(self:GetPos()) < 196 then
+		if activator:GetEyeTraceNoCursor().HitPos:Distance(self:GetPos()) < 196 then
 			if Clockwork.plugin:Call("PlayerCanUseSalesman", activator, self) ~= false then
 				Clockwork.plugin:Call("PlayerUseSalesman", activator, self)
 			end
-	--	end
+		end
 	end
 end
