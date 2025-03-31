@@ -252,7 +252,7 @@ function cwSalesmen:GetTableFromEntity(entity)
 		stock = entity.cwStock,
 		model = entity:GetModel(),
 		material = entity:GetMaterial(),
-		color = entity:GetColor()
+		color = entity:GetColor(),
 		renderMode = entity:GetRenderMode(),
 		renderFX = entity:GetRenderFX()
 		angles = entity:GetAngles(),
