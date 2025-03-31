@@ -254,7 +254,7 @@ function cwSalesmen:GetTableFromEntity(entity)
 		material = entity:GetMaterial(),
 		color = entity:GetColor(),
 		renderMode = entity:GetRenderMode(),
-		renderFX = entity:GetRenderFX()
+		renderFX = entity:GetRenderFX(),
 		angles = entity:GetAngles(),
 		buyRate = entity.cwBuyRate,
 		factions = entity.cwFactions,
