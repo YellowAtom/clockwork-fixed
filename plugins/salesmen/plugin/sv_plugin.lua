@@ -7,7 +7,7 @@ end)
 
 Clockwork.datastream:Hook("Salesmenu", function(player, data)
 	if data.entity:GetClass() == "cw_salesman" then
-		if player:GetPos():Distance(data.entity:GetPos()) < 196 then
+		--if player:GetPos():Distance(data.entity:GetPos()) < 196 then
 			local itemTable = Clockwork.item:FindByID(data.uniqueID)
 			local itemUniqueID = itemTable("uniqueID")
 
@@ -66,7 +66,7 @@ Clockwork.datastream:Hook("Salesmenu", function(player, data)
 					end
 				else
 					local cashRequired = cost * amount - player:GetCash()
-					data.entity:TalkToPlayer(player, data.entity.cwTextTab.needMore, "You need another " .. Clockwork.kernel:FormatCash(math.floor(cashRequired, nil, true)) .. "!")
+					data.entity:TalkToPlayer(player, data.entity.cwTextTab.needMore, "You need another " .. Clockwork.kernel:FormatCash(cashRequired, nil, true) .. "!")
 				end
 			elseif data.tradeType == "Buys" and not itemTable("isBaseItem") and data.entity.cwBuyTab[itemUniqueID] then
 				local itemTable = player:FindItemByID(data.uniqueID, data.itemID)
@@ -99,7 +99,7 @@ Clockwork.datastream:Hook("Salesmenu", function(player, data)
 					Clockwork.datastream:Start(player, "SalesmenuRebuild", data.entity.cwCash)
 				end
 			end
-		end
+		--end
 	end
 end)
 
@@ -204,7 +204,20 @@ function cwSalesmen:LoadSalesmen()
 		salesman:SetModel(v.model)
 		salesman:SetAngles(v.angles)
 		salesman:SetSkin(v.skin)
+		salesman:SetMaterial(v.material)
 
+		if not v.renderMode then
+			v.renderMode = 0
+			v.renderFX = 0
+		end
+
+		if v.color.a < 255 and v.renderMode == 0 then
+			v.renderMode = 1
+		end
+		salesman:SetColor(v.color)
+		salesman:SetRenderMode(v.renderMode)
+		salesman:SetRenderFX(v.renderFX)
+		
 		if (istable(v.bodyGroups)) then
 			for k2, v2 in pairs(v.bodyGroups) do
 				salesman:SetBodygroup(k2, v2)
@@ -238,6 +251,10 @@ function cwSalesmen:GetTableFromEntity(entity)
 		cash = entity.cwCash,
 		stock = entity.cwStock,
 		model = entity:GetModel(),
+		material = entity:GetMaterial(),
+		color = entity:GetColor()
+		renderMode = entity:GetRenderMode(),
+		renderFX = entity:GetRenderFX()
 		angles = entity:GetAngles(),
 		buyRate = entity.cwBuyRate,
 		factions = entity.cwFactions,
