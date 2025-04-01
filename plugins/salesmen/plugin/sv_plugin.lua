@@ -211,10 +211,12 @@ function cwSalesmen:LoadSalesmen()
 			v.renderFX = 0
 		end
 
-		if v.color.a < 255 and v.renderMode == 0 then
-			v.renderMode = 1
-		end
+		if (v.color) then
 		salesman:SetColor(v.color)
+			if v.color.a < 255 and v.renderMode == 0 then
+				v.renderMode = 1
+			end
+		end
 		salesman:SetRenderMode(v.renderMode)
 		salesman:SetRenderFX(v.renderFX)
 		
