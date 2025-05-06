@@ -10,6 +10,43 @@ Clockwork.datastream:Hook("ContainerPassword", function(player, data)
 			local containerWeight = cwStorage.containerList[model][1]
 
 			if entity.cwPassword == password then
+				-- Mark the password as used to prevent automatic removal
+				entity.cwPasswordUsed = true
+				entity.cwLastPasswordTime = CurTime()
+				-- Password used
+				
+				-- Function to reset password removal timer
+				local function resetPasswordTimer()
+					-- Cancel existing timer if it exists
+					if timer.Exists("StoragePasswordRemoval" .. entity:EntIndex()) then
+						timer.Remove("StoragePasswordRemoval" .. entity:EntIndex())
+					end
+					
+					-- Create new timer for 30 days
+					timer.Create("StoragePasswordRemoval" .. entity:EntIndex(), 2592000, 1, function()
+						if not IsValid(entity) then return end
+
+						-- Remove password if not used for 30 days
+						local currentTime = CurTime()
+						local lastPasswordTime = entity.cwLastPasswordTime or 0
+						local timeSinceLastUse = currentTime - lastPasswordTime
+
+						-- Only remove if no password usage for 30 days
+						if timeSinceLastUse > 2592000 and not entity.cwPasswordUsed then
+							entity.cwPassword = nil
+							if entity.SetPassword then
+								entity:SetPassword(nil)
+							end
+						else
+							-- Reset timer if password was used or too recent
+							resetPasswordTimer()
+						end
+					end)
+				end
+				
+				-- Initial timer creation
+				resetPasswordTimer()
+				
 				cwStorage:OpenContainer(player, entity, containerWeight)
 			else
 				Clockwork.player:Notify(player, "You have entered an incorrect password!")
