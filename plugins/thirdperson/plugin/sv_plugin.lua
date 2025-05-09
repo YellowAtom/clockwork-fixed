@@ -2,7 +2,29 @@ local cwThirdPerson = cwThirdPerson
 
 Clockwork.config:Add("enable_third_person", true)
 
+-- Add delay tracking
+cwThirdPerson.lastToggleTimes = cwThirdPerson.lastToggleTimes or {}
+cwThirdPerson.toggleDelay = 5 -- 5 second delay
+
+function cwThirdPerson:CanToggleThirdPerson(player)
+	local steamID = player:SteamID()
+	local currentTime = CurTime()
+	local lastToggleTime = self.lastToggleTimes[steamID] or 0
+
+	if currentTime - lastToggleTime >= self.toggleDelay then
+		self.lastToggleTimes[steamID] = currentTime
+		return true
+	else
+		local remainingTime = math.ceil(self.toggleDelay - (currentTime - lastToggleTime))
+		Clockwork.player:Notify(player, "You must wait " .. remainingTime .. " more seconds before toggling third person.")
+		return false
+	end
+end
+
 function cwThirdPerson:Disable(player)
+	if not Clockwork.config:Get("enable_third_person"):Get() then return end
+	if not self:CanToggleThirdPerson(player) then return end
+
 	local entity = player:GetViewEntity()
 	player:SetNWBool("thirdperson", false)
 	player:SetViewEntity(player)
@@ -10,9 +32,15 @@ function cwThirdPerson:Disable(player)
 	if IsValid(entity) and entity:IsValid() then
 		entity:Remove()
 	end
+
+	-- Logging
+	Clockwork.kernel:PrintLog(LOGTYPE_GENERIC, player:Name() .. " disabled third-person view.")
 end
 
 function cwThirdPerson:Enable(player)
+	if not Clockwork.config:Get("enable_third_person"):Get() then return end
+	if not self:CanToggleThirdPerson(player) then return end
+
 	local entity = ents.Create("prop_dynamic")
 	entity:SetModel("models/error.mdl")
 	entity:SetColor(Color(0, 0, 0, 0))
@@ -22,6 +50,9 @@ function cwThirdPerson:Enable(player)
 	entity:SetMoveType(MOVETYPE_NONE)
 	entity:SetParent(player)
 	entity:SetPos(player:GetPos() + Vector(0, 0, 60))
+
+	-- Logging
+	Clockwork.kernel:PrintLog(LOGTYPE_GENERIC, player:Name() .. " enabled third-person view.")
 	entity:SetRenderMode(RENDERMODE_NONE)
 	entity:SetSolid(SOLID_NONE)
 	player:SetViewEntity(entity)
