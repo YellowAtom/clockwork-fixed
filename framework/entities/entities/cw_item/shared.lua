@@ -15,5 +15,10 @@ end
 
 -- A function to get the entity's item table.
 function ENT:GetItemTable()
-	return Clockwork.entity:FetchItemTable(self)
+	return self.cwItemTable or Clockwork.entity:FetchItemTable(self)
+end
+
+-- A function to set the entity's item table.
+function ENT:SetItemTable(itemTable)
+	self.cwItemTable = itemTable
 end
