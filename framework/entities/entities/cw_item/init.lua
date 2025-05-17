@@ -176,6 +176,13 @@ function ENT:PhysicsCollide(data, phys)
 			   string.find(surfaceMaterial, "grass", 1, true) or 
 			   string.find(surfaceMaterial, "sand", 1, true) then
 			surfaceMaterial = "dirt"
+		elseif string.find(surfaceMaterial, "flesh", 1, true) or 
+			   string.find(surfaceMaterial, "body", 1, true) then
+			surfaceMaterial = "flesh"
+		elseif string.find(surfaceMaterial, "plaster", 1, true) then
+			surfaceMaterial = "plaster"
+		elseif string.find(surfaceMaterial, "rubber", 1, true) then
+			surfaceMaterial = "rubber"
 		end
 		
 		-- Default sound properties
@@ -198,6 +205,12 @@ function ENT:PhysicsCollide(data, phys)
 			soundName = "physics/plastic/plastic_box_impact_hard" .. soundVariation .. ".wav"
 		elseif soundType == "paintcan" then
 			soundName = "physics/metal/paintcan_impact_hard" .. soundVariation .. ".wav"
+		elseif soundType == "flesh" or soundType == "body" then
+			soundName = "physics/flesh/flesh_impact_hard" .. math.random(1, 6) .. ".wav"
+		elseif soundType == "plaster" then
+			soundName = "physics/plaster/drywall_impact_hard" .. math.random(1, 3) .. ".wav"
+		elseif soundType == "rubber" then
+			soundName = "physics/rubber/rubber_tire_impact_hard" .. math.random(1, 3) .. ".wav"
 		else
 			soundName = "physics/cardboard/cardboard_box_impact_hard" .. soundVariation .. ".wav"
 		end
@@ -213,6 +226,12 @@ function ENT:PhysicsCollide(data, phys)
 			volume = volume * 0.6
 		elseif surfaceMaterial == "paintcan" then
 			volume = volume * 1.1
+		elseif surfaceMaterial == "flesh" or surfaceMaterial == "body" then
+			volume = volume * 0.8
+		elseif surfaceMaterial == "plaster" then
+			volume = volume * 0.7
+		elseif surfaceMaterial == "rubber" then
+			volume = volume * 0.9
 		end
 		
 		-- Allow item table to override sound behavior
