@@ -203,8 +203,8 @@ function cwSalesmen:LoadSalesmen()
 		salesman:SetPos(v.position)
 		salesman:SetModel(v.model)
 		salesman:SetAngles(v.angles)
-		salesman:SetSkin(v.skin)
-		salesman:SetMaterial(v.material)
+		salesman:SetSkin(v.skin or 0)
+		salesman:SetMaterial(v.material or "")
 
 		if not v.renderMode then
 			v.renderMode = 0
@@ -212,7 +212,7 @@ function cwSalesmen:LoadSalesmen()
 		end
 
 		if (v.color) then
-		salesman:SetColor(v.color)
+			salesman:SetColor(v.color)
 			if v.color.a < 255 and v.renderMode == 0 then
 				v.renderMode = 1
 			end
@@ -220,13 +220,22 @@ function cwSalesmen:LoadSalesmen()
 		salesman:SetRenderMode(v.renderMode)
 		salesman:SetRenderFX(v.renderFX)
 		
+		-- Spawn the entity
+		salesman:Spawn()
+		
+		-- Apply bodygroups after spawn
 		if (istable(v.bodyGroups)) then
 			for k2, v2 in pairs(v.bodyGroups) do
 				salesman:SetBodygroup(k2, v2)
 			end
 		end
-
-		salesman:Spawn()
+		
+		-- Apply flex data after spawn if it exists
+		if v.flexes then
+			for flexId, weight in pairs(v.flexes) do
+				salesman:SetFlexWeight(tonumber(flexId), weight)
+			end
+		end
 
 		salesman.cwCash = v.cash
 		salesman.cwStock = v.stock
@@ -272,6 +281,18 @@ function cwSalesmen:GetTableFromEntity(entity)
 		showChatBubble = IsValid(entity:GetChatBubble()),
 		skin = entity:GetSkin()
 	}
+	
+	-- Save flex data if the model supports it
+	local flexCount = entity:GetFlexNum()
+	if flexCount > 0 then
+		entTable.flexes = {}
+		for i = 0, flexCount - 1 do
+			local weight = entity:GetFlexWeight(i)
+			if weight > 0 then
+				entTable.flexes[i] = weight
+			end
+		end
+	end
 
 	local bodyGroups = entity:GetBodyGroups()
 
