@@ -3,7 +3,7 @@ local COMMAND = Clockwork.command:New("CharUnban")
 COMMAND.tip = "CmdCharUnban"
 COMMAND.text = "CmdCharUnbanDesc"
 COMMAND.flags = CMD_DEFAULT
-COMMAND.access = "a"
+COMMAND.access = "o"
 COMMAND.arguments = 1
 
 -- Called when the command has been run.
