@@ -5,7 +5,7 @@ COMMAND.text = "CmdRadioDesc"
 COMMAND.flags = bit.bor(CMD_DEFAULT, CMD_DEATHCODE, CMD_FALLENOVER)
 COMMAND.arguments = 1
 
-COMMAND.alias = {"rad"}
+COMMAND.alias = {"r"}
 
 -- Called when the command has been run.
 function COMMAND:OnRun(player, arguments)

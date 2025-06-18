@@ -2,22 +2,22 @@
 -- Called when a player's typing display has started.
 function cwDisplayTyping:PlayerStartTypingDisplay(player, code)
 	if not player:IsNoClipping() then
-		if code == "n" or code == "y" or code == "w" or code == "rad" or code == "req" then
+		if code == "n" or code == "y" or code == "w" or code == "r" or code == "t" then
 			if not player.typingBeep or player.typingCode ~= code then
 				local rank = player:GetFactionRank()
 				local faction = Clockwork.faction:FindByID(player:GetFaction())
 				local startChatNoise
 
-				if (code == "rad") then
+				if (code == "r") then
 					if (rank and rank.radioStartChatNoise and player:HasItemByID("handheld_radio")) then
 						startChatNoise = rank.radioStartChatNoise;
 					elseif (faction and faction.radioStartChatNoise and player:HasItemByID("handheld_radio")) then
 						startChatNoise = faction.radioStartChatNoise;
 					end;
-				elseif (code == "req") then
-					if (rank and rank.radioStartChatNoise and player:HasItemByID("request_device")) then
+				elseif (code == "t") then
+					if (rank and rank.radioStartChatNoise and player:HasItemByID("walkie_talkie")) then
 						startChatNoise = rank.radioStartChatNoise;
-					elseif (faction and faction.radioStartChatNoise and player:HasItemByID("request_device")) then
+					elseif (faction and faction.radioStartChatNoise and player:HasItemByID("walkie_talkie")) then
 						startChatNoise = faction.radioStartChatNoise;
 					end;
 					else

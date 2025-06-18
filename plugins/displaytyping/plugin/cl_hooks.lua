@@ -121,8 +121,8 @@ function cwDisplayTyping:PostDrawTranslucentRenderables()
 								eyeAngles:RotateAroundAxis(eyeAngles:Forward(), 90)
 								eyeAngles:RotateAroundAxis(eyeAngles:Right(), 90)
 
-								if typing == TYPING_REQUEST then
-									drawText = "Requesting"
+								if typing == TYPING_TRANSMIT then
+									drawText = "Transmitting"
 								elseif typing == TYPING_WHISPER then
 									drawText = "Whispering"
 								elseif typing == TYPING_PERFORM then
@@ -171,17 +171,17 @@ end
 function cwDisplayTyping:ChatBoxTextChanged(previousText, newText)
 	local prefix = cwConfig:Get("command_prefix"):Get()
 
-	if string.utf8sub(newText, 1, string.utf8len(prefix) + 3) == prefix .. "rad" then
-		if string.utf8sub(previousText, 1, string.utf8len(prefix) + 3) ~= prefix .. "rad" then
-			RunConsoleCommand("cwTypingStart", "rad")
+	if string.utf8sub(newText, 1, string.utf8len(prefix) + 1) == prefix .. "r" then
+		if string.utf8sub(previousText, 1, string.utf8len(prefix) + 1) ~= prefix .. "r" then
+			RunConsoleCommand("cwTypingStart", "r")
 		end
 	elseif string.utf8sub(newText, 1, string.utf8len(prefix) + 2) == prefix .. "me" then
 		if string.utf8sub(previousText, 1, string.utf8len(prefix) + 2) ~= prefix .. "me" then
 			RunConsoleCommand("cwTypingStart", "p")
 		end
-	elseif string.utf8sub(newText, 1, string.utf8len(prefix) + 3) == prefix .. "req" then
-		if string.utf8sub(previousText, 1, string.utf8len(prefix) + 3) ~= prefix .. "req" then
-			RunConsoleCommand("cwTypingStart", "req")
+	elseif string.utf8sub(newText, 1, string.utf8len(prefix) + 5) == prefix .. "trans" then
+		if string.utf8sub(previousText, 1, string.utf8len(prefix) + 5) ~= prefix .. "trans" then
+			RunConsoleCommand("cwTypingStart", "t")
 		end
 	elseif string.utf8sub(newText, 1, string.utf8len(prefix) + 2) == prefix .. "pm" then
 		if string.utf8sub(previousText, 1, string.utf8len(prefix) + 2) ~= prefix .. "pm" then
