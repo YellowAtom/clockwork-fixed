@@ -54,7 +54,14 @@ function cwStorage:EntityHandleMenuOption(player, entity, option, arguments)
 			if self.containerList[model] then
 				local containerWeight = self.containerList[model][1]
 
-				if not entity.cwPassword or entity.cwIsBreached then
+				-- Check if password is stale (not used for 30 days)
+				local currentTime = CurTime()
+				local lastPasswordTime = entity.cwLastPasswordTime or 0
+				local timeSinceLastUse = currentTime - lastPasswordTime
+				
+				-- Remove password if not used for 30 days or if breached
+				if not entity.cwPassword or entity.cwIsBreached or 
+				   (timeSinceLastUse > 2592000 and not entity.cwPasswordUsed) then
 					self:OpenContainer(player, entity, containerWeight)
 				else
 					Clockwork.datastream:Start(player, "ContainerPassword", entity)
