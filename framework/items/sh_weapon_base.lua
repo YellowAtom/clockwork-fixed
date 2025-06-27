@@ -163,6 +163,11 @@ function ITEM:IsPrimaryWeapon()
 end
 
 -- A function to get whether the item is a melee weapon.
+function ITEM:IsUnbreakable()
+	return self("isUnbreakable")
+end
+
+-- A function to get whether the item is a melee weapon.
 function ITEM:IsSecondaryWeapon()
 	return self("isSecondaryWeapon")
 end
