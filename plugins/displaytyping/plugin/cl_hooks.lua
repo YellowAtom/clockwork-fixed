@@ -183,6 +183,10 @@ function cwDisplayTyping:ChatBoxTextChanged(previousText, newText)
 		if string.utf8sub(previousText, 1, string.utf8len(prefix) + 3) ~= prefix .. "req" then
 			RunConsoleCommand("cwTypingStart", "req")
 		end
+	elseif string.utf8sub(newText, 1, string.utf8len(prefix) + 1) == prefix .. "r" then
+		if string.utf8sub(previousText, 1, string.utf8len(prefix) + 1) ~= prefix .. "r" then
+			RunConsoleCommand("cwTypingStart", "rad")
+		end
 	elseif string.utf8sub(newText, 1, string.utf8len(prefix) + 2) == prefix .. "pm" then
 		if string.utf8sub(previousText, 1, string.utf8len(prefix) + 2) ~= prefix .. "pm" then
 			RunConsoleCommand("cwTypingStart", "o")
@@ -194,6 +198,10 @@ function cwDisplayTyping:ChatBoxTextChanged(previousText, newText)
 	elseif string.utf8sub(newText, 1, string.utf8len(prefix) + 1) == prefix .. "y" then
 		if string.utf8sub(previousText, 1, string.utf8len(prefix) + 1) ~= prefix .. "y" then
 			RunConsoleCommand("cwTypingStart", "y")
+		end
+	elseif string.utf8sub(newText, 1, 1) == "/" then
+		if string.utf8sub(previousText, 1, 1) ~= prefix .. "/" then
+			RunConsoleCommand("cwTypingStart", "o")
 		end
 	elseif string.utf8sub(newText, 1, 2) == "//" then
 		if string.utf8sub(previousText, 1, 2) ~= prefix .. "//" then

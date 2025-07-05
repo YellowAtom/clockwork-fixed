@@ -2,7 +2,7 @@
 -- Called when a player's typing display has started.
 function cwDisplayTyping:PlayerStartTypingDisplay(player, code)
 	if not player:IsNoClipping() then
-		if code == "n" or code == "y" or code == "w" or code == "req" or code == "rad" then
+		if code == "n" or code == "y" or code == "req" or code == "rad" or code == "w" then
 			if not player.typingBeep or player.typingCode ~= code then
 				local rank = player:GetFactionRank()
 				local faction = Clockwork.faction:FindByID(player:GetFaction())
