@@ -3,7 +3,6 @@ Clockwork.config:Add("observer_reset", true, true)
 
 -- A function to make a player exit observer mode.
 function cwObserverMode:MakePlayerExitObserverMode(player)
-	local bObserverReset = Clockwork.config:Get("observer_reset"):Get()
 	Clockwork.plugin:Call("PlayerExitObserverMode", player)
 	player.cwObserverReset = true
 	player:DrawWorldModel(true)
@@ -14,7 +13,7 @@ function cwObserverMode:MakePlayerExitObserverMode(player)
 
 	timer.Simple(FrameTime() * 0.5, function()
 		if IsValid(player) then
-			if bObserverReset then
+			if player:GetInfoNum("cwObserverReset", 1) == 1 then
 				if player.cwObserverPos then
 					player:SetPos(player.cwObserverPos)
 				end
