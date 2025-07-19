@@ -23,6 +23,8 @@ function cwEmoteAnims:CalcViewAdjustTable(view)
 
 		if string.find(Clockwork.Client:GetModel(), "vortigaunt") then
 			headBone = "ValveBiped.Head"
+		elseif string.find(Clockwork.Client:GetModel(), "dog") then
+			headBone = "Bip01 Head"
 		end
 
 		if idleStance then

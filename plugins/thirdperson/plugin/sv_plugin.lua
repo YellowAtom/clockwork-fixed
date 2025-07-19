@@ -2,22 +2,13 @@ local cwThirdPerson = cwThirdPerson
 
 Clockwork.config:Add("enable_third_person", true)
 
--- Add delay tracking
-cwThirdPerson.lastToggleTimes = cwThirdPerson.lastToggleTimes or {}
-cwThirdPerson.toggleDelay = 5 -- 5 second delay
-
 function cwThirdPerson:CanToggleThirdPerson(player)
-	local steamID = player:SteamID()
-	local currentTime = CurTime()
-	local lastToggleTime = self.lastToggleTimes[steamID] or 0
-
-	if currentTime - lastToggleTime >= self.toggleDelay then
-		self.lastToggleTimes[steamID] = currentTime
-		return true
+	local bIsRaised = Clockwork.player:GetWeaponRaised(player, true)
+	if bIsRaised == true and player:GetNWBool("thirdperson") == false then
+	Clockwork.player:Notify(player, "You cannot toggle third-person with a raised weapon!")
+	return false
 	else
-		local remainingTime = math.ceil(self.toggleDelay - (currentTime - lastToggleTime))
-		Clockwork.player:Notify(player, "You must wait " .. remainingTime .. " more seconds before toggling third person.")
-		return false
+	return true
 	end
 end
 
@@ -93,6 +84,14 @@ end
 
 function cwThirdPerson:PlayerCharacterUnloaded(player)
 	player:SetThirdPerson(false)
+end
+
+function cwThirdPerson:GetPlayerWeaponRaised(player, class, weapon)
+	local bIsRaised = Clockwork.player:GetWeaponRaised(player, true)
+	local activeWeapon = player:GetActiveWeapon()
+	if bIsRaised then
+	player:SetThirdPerson(false)
+end
 end
 
 local PLAYER_META = FindMetaTable("Player")

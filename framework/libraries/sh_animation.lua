@@ -972,6 +972,11 @@ function Clockwork.animation:AddVortigauntModel(model)
 	return self:AddModel("vortigaunt", model)
 end
 
+-- A function to add an animal model.
+function Clockwork.animation:AddWildlifeModel(model)
+	return self:AddModel("wildlife", model);
+end;
+
 --[[
 	@codebase Shared
 	@details A function to add a Combine Overwatch model.
