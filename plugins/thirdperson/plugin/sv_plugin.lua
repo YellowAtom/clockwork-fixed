@@ -3,13 +3,18 @@ local cwThirdPerson = cwThirdPerson
 Clockwork.config:Add("enable_third_person", true)
 
 function cwThirdPerson:CanToggleThirdPerson(player)
+	-- Allow admins and operators to bypass the weapon check
+	if player:IsAdmin() or player:IsUserGroup("operator") then
+		return true
+	end
+	
 	local bIsRaised = Clockwork.player:GetWeaponRaised(player, true)
 	if bIsRaised == true and player:GetNWBool("thirdperson") == false then
-	Clockwork.player:Notify(player, "You cannot toggle third-person with a raised weapon!")
-	return false
-	else
-	return true
+		Clockwork.player:Notify(player, "You cannot toggle third-person with a raised weapon!")
+		return false
 	end
+	
+	return true
 end
 
 function cwThirdPerson:Disable(player)
