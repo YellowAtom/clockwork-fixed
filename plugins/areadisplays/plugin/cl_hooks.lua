@@ -1,7 +1,7 @@
 
 -- Called when the client initializes.
 function cwAreaDisplays:Initialize()
-	CW_CONVAR_SHOWAREAS = Clockwork.kernel:CreateClientConVar("cwShowAreas", 1, true, true)
+	CW_CONVAR_SHOWAREAS = Clockwork.kernel:CreateClientConVar("cwShowAreas", 0, true, true)
 end
 
 -- Called when the local player has entered an area.
