@@ -211,6 +211,10 @@ function THEME:Initialize()
 	Clockwork.option:SetSound("click", "ui/buttonclick.wav")
 	Clockwork.option:SetSound("tick", "common/talk.wav")
 
+	Clockwork.option:SetSound("clickCombine", "ug/ui/buttonrolloverez2.wav")
+	Clockwork.option:SetSound("click_releaseCombine", "ug/ui/buttonclickreleaseez2.wav")
+	Clockwork.option:SetSound("rolloverCombine", "ug/ui/buttonrolloverez2.wav")
+
 	SMALL_BAR_BG = Clockwork.render:AddSlice9("SimpleTint", "ug_clockwork/sliced/simpletint", 6)
 	SMALL_BAR_FG = Clockwork.render:AddSlice9("SimpleTint", "ug_clockwork/sliced/simpletint", 6)
 	INFOTEXT_SLICED = Clockwork.render:AddSlice9("SimpleTint", "ug_clockwork/sliced/simpletint", 6)

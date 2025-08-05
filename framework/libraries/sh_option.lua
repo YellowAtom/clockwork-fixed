@@ -49,13 +49,20 @@ end
 -- A function to play a schema sound.
 function Clockwork.option:PlaySound(name)
 	local sound = self:GetSound(name)
+	if not sound then return end
 
-	if sound then
-		if CLIENT then
-			surface.PlaySound(sound)
+	
+
+	if CLIENT then
+		local faction = Clockwork.Client:GetFaction()
+		local soundCombine = self:GetSound(name .. "Combine")
+		if ((faction == FACTION_MPF or faction == FACTION_OTA) and (soundCombine)) then
+			surface.PlaySound(soundCombine)
 		else
-			Clockwork.player:PlaySound(nil, sound)
+			surface.PlaySound(sound)
 		end
+	else
+		Clockwork.player:PlaySound(nil, sound)
 	end
 end
 
