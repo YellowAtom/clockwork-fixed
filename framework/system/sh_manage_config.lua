@@ -55,6 +55,31 @@ if CLIENT then
 		self.listView:SetTall(256)
 		self:PopulateComboBox()
 
+		self.allConfigKeys = table.Copy(self.configKeys or {})
+
+		self.searchBox = vgui.Create("DTextEntry", self.configForm)
+		self.searchBox:SetPlaceholderText("Search config...")
+		self.searchBox.OnChange = function(textEntry)
+			local query = string.lower(textEntry:GetValue() or "")
+			self.listView:Clear() -- clear all current rows
+
+			for _, v in ipairs(self.allConfigKeys) do
+				local adminValues = Clockwork.config:GetFromSystem(v)
+				if adminValues then
+					local name = string.lower(L(adminValues.name))
+					local key  = string.lower(v)
+
+					if query == "" or string.find(name, query, 1, true) or string.find(key, query, 1, true) then
+						local line = self.listView:AddLine(L(adminValues.name), v, L(adminValues.category))
+						line:SetTooltip(L(adminValues.help))
+						line.key = v
+					end
+				end
+			end
+			self.listView:SortByColumn(1)
+		end
+		self.configForm:AddItem(self.searchBox)
+
 		function self.listView.OnRowSelected(parent, lineID, line)
 			Clockwork.datastream:Start("SystemCfgValue", line.key)
 		end
