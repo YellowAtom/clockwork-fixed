@@ -12,8 +12,17 @@ function COMMAND:OnRun(player, arguments)
 
 	if target then
 		if not Clockwork.player:IsProtected(target) then
-			Clockwork.player:SetBanned(target, true)
+			-- Fully respawn
+			Clockwork.player:LightSpawn(target, true, true, false)
+			local pos = target:GetPos() + Vector(0, 0, 8);
+			local angles = target:GetAngles();
+			local eyeAngles = target:EyeAngles();
+			target:Spawn();		
+			target:SetPos(pos);
+			target:SetAngles(angles);
+			target:SetEyeAngles(eyeAngles);
 
+			Clockwork.player:SetBanned(target, true)
 			Clockwork.player:NotifyAll({"PlayerBannedPlayer", player:Name(), target:Name()})
 
 			target:KillSilent()
