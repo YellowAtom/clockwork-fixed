@@ -4541,7 +4541,11 @@ end
 	@returns {Unknown}
 --]]
 function Clockwork:DoPlayerDeath(player, attacker, damageInfo)
-	cwPly:DropWeapons(player, attacker)
+
+	if (attacker:IsPlayer() or attacker:IsNPC()) then
+		cwPly:DropWeapons(player, attacker)		
+	end
+
 	cwPly:SetAction(player, false)
 	cwPly:SetDrunk(player, false)
 	local deathSound = cwPlugin:Call("PlayerPlayDeathSound", player, player:GetGender())
