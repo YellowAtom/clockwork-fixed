@@ -4556,6 +4556,60 @@ else -- if (SERVER) then
 	end
 
 	--[[
+		@codebase Shared
+		@details Check if a player has any weapons.
+		@param {Player} player The player to check.
+		@returns {bool} True if the player has weapons, false otherwise.
+	--]]
+	function Clockwork.player:HasWeapons(player)
+		if player:IsRagdolled() then
+			local ragdollWeapons = player:GetRagdollWeapons()
+			return (ragdollWeapons and table.Count(ragdollWeapons) > 0)
+		else
+			local weapons = player:GetWeapons()
+
+			for _, v in pairs(weapons) do
+				if cwItem:GetByWeapon(v) then
+					return true
+				end
+			end
+		end
+
+		return false
+	end
+
+	--[[
+		@codebase Shared
+		@details Get a list of a player's weapons.
+		@param {Player} player The player to get weapons from.
+		@returns {table} A list of itemTables for each weapon.
+	--]]
+	function Clockwork.player:GetWeapons(player)
+		local results = {}
+
+		if player:IsRagdolled() then
+			local ragdollWeapons = player:GetRagdollWeapons()
+
+			for _, v in pairs(ragdollWeapons) do
+				if v.weaponData and v.weaponData["itemTable"] then
+					table.insert(results, v.weaponData["itemTable"])
+				end
+			end
+		else
+			for _, v in pairs(player:GetWeapons()) do
+				local itemTable = cwItem:GetByWeapon(v)
+
+				if itemTable then
+					table.insert(results, itemTable)
+				end
+			end
+		end
+
+		return results
+	end
+
+
+	--[[
 	@codebase Shared
 	@details A function to lightly spawn a player.
 	@param {Unknown} Missing description for player.
