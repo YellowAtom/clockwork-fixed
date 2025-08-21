@@ -3951,9 +3951,11 @@ else -- if (SERVER) then
 --]]
 	function Clockwork.player:SetWeapons(player, weapons, forceReturn)
 		for k, v in pairs(weapons) do
+			if v.weaponData then
 				if not player:HasWeapon(v.weaponData["class"]) then
 					if not v.teamIndex or player:Team() == v.teamIndex then
 						player:Give(v.weaponData["class"], v.weaponData["itemTable"], forceReturn)
+					end
 				end
 			end
 		end
@@ -4509,7 +4511,7 @@ else -- if (SERVER) then
 			local ragdollWeapons = player:GetRagdollWeapons()
 
 			for k, v in pairs(ragdollWeapons) do
-				local itemTable = v.weaponData["itemTable"]
+				local itemTable = v.weaponData and v.weaponData["itemTable"] or nil
 
 				if itemTable and cwPlugin:Call("PlayerCanDropWeapon", player, itemTable, NULL, true) then
 					local info = {
