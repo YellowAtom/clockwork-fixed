@@ -46,171 +46,146 @@ end
 -- A function to rebuild a panel.
 function PANEL:RebuildPanel(storagePanel, storageType, usedWeight, weight, usedSpace, space, cash, inventory)
 	storagePanel:Clear(true)
-	storagePanel.cash = cash
-	storagePanel.weight = weight
-	storagePanel.usedWeight = usedWeight
-	storagePanel.space = space
-	storagePanel.usedSpace = usedSpace
-	storagePanel.inventory = inventory
+	storagePanel.cash        = cash
+	storagePanel.weight      = weight
+	storagePanel.usedWeight  = usedWeight
+	storagePanel.space       = space
+	storagePanel.usedSpace   = usedSpace
+	storagePanel.inventory   = inventory
 	storagePanel.storageType = storageType
+
 	Clockwork.plugin:Call("PlayerPreRebuildStorage", storagePanel)
+
+	-- Setup model preview
 	local modelIcon = vgui.Create("DModelPanel", storagePanel)
 	modelIcon:SetSize(100, 250)
-	local sequence
 
-	if storageType == "Container" then
-		local ent = Clockwork.storage:GetEntity()
-
-		if IsValid(ent) then
-			modelIcon:SetModel(ent:GetModel())
-			sequence = ent:GetSequence()
-		end
-	else
-		local player = Clockwork.Client
-		modelIcon:SetModel(player:GetModel())
-		sequence = player:GetSequence()
+	local modelSource = (storageType == "Container" and Clockwork.storage:GetEntity()) or Clockwork.Client
+	if IsValid(modelSource) then
+		modelIcon:SetModel(modelSource:GetModel())
+		modelIcon:GetEntity():SetSequence(modelSource:GetSequence())
 	end
 
-	local bone = modelIcon:GetEntity():LookupBone("ValveBiped.Bip01_Head1")
-	local position = Vector(0, 0, 10)
-
-	if bone then
-		position = modelIcon:GetEntity():GetBonePosition(bone)
-	end
-
+	-- Look at head position (fallback vector if bone missing)
+	local bone     = modelIcon:GetEntity():LookupBone("ValveBiped.Bip01_Head1")
+	local position = bone and select(1, modelIcon:GetEntity():GetBonePosition(bone)) or Vector(0, 0, 10)
 	modelIcon:SetLookAt(position - Vector(0, 0, 15))
-	modelIcon:GetEntity():SetSequence(sequence)
 
 	function modelIcon:LayoutEntity(entity)
-		return self:RunAnimation()
+		self:RunAnimation()
 	end
 
 	storagePanel:AddItem(modelIcon)
+
+	-- Cash weight/space contribution
+	local cWeight = Clockwork.config:Get("cash_weight"):Get()
+	local cSpace  = Clockwork.config:Get("cash_space"):Get()
+
+	if not Clockwork.storage:GetNoCashWeight() then
+		usedWeight = (usedWeight or 0) + cash * cWeight
+	end
+	if not Clockwork.storage:GetNoCashSpace() then
+		usedSpace = (usedSpace or 0) + cash * cSpace
+	end
+
+	-- Collect items into categories
 	local categories = {}
-	local usedWeight = cash * Clockwork.config:Get("cash_weight"):Get()
-	local usedSpace = cash * Clockwork.config:Get("cash_space"):Get()
-	local itemsList = {}
+	for _, categoryItems in pairs(inventory) do
+		for _, item in pairs(categoryItems) do
+			local allowed = (storageType == "Container" and Clockwork.storage:CanTakeFrom(item))
+				or (storageType == "Inventory" and Clockwork.storage:CanGiveTo(item))
+			if allowed then
+				local cat = item("category")
+				if cat then
+					categories[cat] = categories[cat] or {category = cat, itemsList = {}}
+					table.insert(categories[cat].itemsList, item)
 
-	if Clockwork.storage:GetNoCashWeight() then
-		usedWeight = 0
-	end
-
-	if Clockwork.storage:GetNoCashSpace() then
-		usedSpace = 0
-	end
-
-	for k, v in pairs(storagePanel.inventory) do
-		for k2, v2 in pairs(v) do
-			if storageType == "Container" and Clockwork.storage:CanTakeFrom(v2) or storageType == "Inventory" and Clockwork.storage:CanGiveTo(v2) then
-				local itemCategory = v2("category")
-
-				if itemCategory then
-					itemsList[itemCategory] = itemsList[itemCategory] or {}
-					itemsList[itemCategory][#itemsList[itemCategory] + 1] = v2
-					usedWeight = usedWeight + math.max(v2("storageWeight", v2("weight")), 0)
-					usedSpace = usedSpace + math.max(v2("storageSpace", v2("space")), 0)
+					usedWeight = usedWeight + math.max(item("storageWeight", item("weight")), 0)
+					usedSpace  = usedSpace  + math.max(item("storageSpace", item("space")), 0)
 				end
 			end
 		end
 	end
 
-	for k, v in pairs(itemsList) do
-		categories[#categories + 1] = {
-			itemsList = v,
-			category = k
-		}
+	-- Sort categories alphabetically
+	local categoryList = {}
+	for _, v in pairs(categories) do
+		table.insert(categoryList, v)
 	end
+	table.sort(categoryList, function(a, b) return a.category < b.category end)
 
-	table.sort(categories, function(a, b) return a.category < b.category end)
+	storagePanel.usedWeight = storagePanel.usedWeight or usedWeight
+	storagePanel.usedSpace  = storagePanel.usedSpace  or usedSpace
 
-	if not storagePanel.usedWeight then
-		storagePanel.usedWeight = usedWeight
-	end
+	Clockwork.plugin:Call("PlayerStorageRebuilt", storagePanel, categoryList)
 
-	if not storagePanel.usedSpace then
-		storagePanel.usedSpace = usedSpace
-	end
-
-	Clockwork.plugin:Call("PlayerStorageRebuilt", storagePanel, categories)
-	local numberWang = nil
-	local cashForm = nil
-	local button = nil
-
+	-- Cash transfer UI
 	if Clockwork.config:Get("cash_enabled"):Get() and storagePanel.cash > 0 then
-		numberWang = vgui.Create("DNumberWang", storagePanel)
-		cashForm = vgui.Create("DForm", storagePanel)
-		button = vgui.Create("DButton", storagePanel)
-		button:SetText(L("StorageTransfer"))
-		button.Stretch = true
-
-		-- Called when the button is clicked.
-		function button.DoClick(button)
-			if storageType == "Inventory" then
-				Clockwork.kernel:RunCommand("StorageGiveCash", numberWang:GetValue())
-			else
-				Clockwork.kernel:RunCommand("StorageTakeCash", numberWang:GetValue())
-			end
-		end
-
-		numberWang.Stretch = true
+		local numberWang = vgui.Create("DNumberWang", storagePanel)
 		numberWang:SetDecimals(0)
 		numberWang:SetMinMax(0, storagePanel.cash)
 		numberWang:SetValue(storagePanel.cash)
+		numberWang.Stretch = true
 		numberWang:SizeToContents()
+
+		local button = vgui.Create("DButton", storagePanel)
+		button:SetText(L("StorageTransfer"))
+		button.Stretch = true
+		button.DoClick = function()
+			local cmd = (storageType == "Inventory") and "StorageGiveCash" or "StorageTakeCash"
+			Clockwork.kernel:RunCommand(cmd, numberWang:GetValue())
+		end
+
+		local cashForm = vgui.Create("DForm", storagePanel)
 		cashForm:SetPadding(5)
 		cashForm:SetName(L("Cash"))
-
 		cashForm:AddItem(numberWang)
 		cashForm:AddItem(button)
+		storagePanel:AddItem(cashForm)
 	end
 
-	local informationForm = vgui.Create("DForm", storagePanel)
-	informationForm:SetPadding(5)
-	informationForm:SetName(L("Weight"))
+	-- Weight info
+	local infoWeight = vgui.Create("DForm", storagePanel)
+	infoWeight:SetPadding(5)
+	infoWeight:SetName(L("Weight"))
 
 	local storageWeight = vgui.Create("cwStorageWeight", storagePanel)
 	storageWeight:SetWeight(weight)
 	storageWeight:SetUsedWeight(usedWeight)
-	informationForm:AddItem(storageWeight)
-	storagePanel:AddItem(informationForm)
+	infoWeight:AddItem(storageWeight)
+	storagePanel:AddItem(infoWeight)
 
+	-- Space info (only if used)
 	if Clockwork.inventory:UseSpaceSystem() and storagePanel.usedSpace > 0 then
-		local informationForm = vgui.Create("DForm", storagePanel)
-		informationForm:SetPadding(5)
-		informationForm:SetName(L("Space"))
+		local infoSpace = vgui.Create("DForm", storagePanel)
+		infoSpace:SetPadding(5)
+		infoSpace:SetName(L("Space"))
 
 		local storageSpace = vgui.Create("cwStorageSpace", storagePanel)
 		storageSpace:SetSpace(space)
 		storageSpace:SetUsedSpace(usedSpace)
-		informationForm:AddItem(storageSpace)
-		storagePanel:AddItem(informationForm)
+		infoSpace:AddItem(storageSpace)
+		storagePanel:AddItem(infoSpace)
 	end
 
-	if cashForm then
-		storagePanel:AddItem(cashForm)
-	end
+	-- Category panels
+	for _, cat in ipairs(categoryList) do
+		local collapsible = Clockwork.kernel:CreateCustomCategoryPanel(cat.category, storagePanel)
+		collapsible:SetCookieName(storageType .. cat.category)
+		storagePanel:AddItem(collapsible)
 
-	if #categories > 0 then
-		for k, v in pairs(categories) do
-			local collapsibleCategory = Clockwork.kernel:CreateCustomCategoryPanel(v.category, storagePanel)
-			collapsibleCategory:SetCookieName(storageType .. v.category)
-			storagePanel:AddItem(collapsibleCategory)
-			local categoryList = vgui.Create("DPanelList", collapsibleCategory)
-			categoryList:EnableHorizontal(true)
-			categoryList:SetAutoSize(true)
-			categoryList:SetPadding(4)
-			categoryList:SetSpacing(4)
-			collapsibleCategory:SetContents(categoryList)
-			table.sort(v.itemsList, function(a, b) return a("itemID") < b("itemID") end)
+		local list = vgui.Create("DPanelList", collapsible)
+		list:EnableHorizontal(true)
+		list:SetAutoSize(true)
+		list:SetPadding(4)
+		list:SetSpacing(4)
+		collapsible:SetContents(list)
 
-			for k2, v2 in pairs(v.itemsList) do
-				CURRENT_ITEM_DATA = {
-					itemTable = v2,
-					storageType = storagePanel.storageType
-				}
+		table.sort(cat.itemsList, function(a, b) return a("itemID") < b("itemID") end)
 
-				categoryList:AddItem(vgui.Create("cwStorageItem", categoryList))
-			end
+		for _, item in ipairs(cat.itemsList) do
+			CURRENT_ITEM_DATA = {itemTable = item, storageType = storageType}
+			list:AddItem(vgui.Create("cwStorageItem", list))
 		end
 	end
 end
@@ -422,82 +397,109 @@ end
 
 vgui.Register("cwStorageSpace", PANEL, "DPanel")
 
-Clockwork.datastream:Hook("StorageStart", function(data)
-	if Clockwork.storage:IsStorageOpen() then
-		CloseDermaMenus()
-		Clockwork.storage.panel:Close()
-		Clockwork.storage.panel:Remove()
-	end
+/* -------------------------------------------------------------------------- */
+/*                            NETWORKING FUNCTIONS                            */
+/* -------------------------------------------------------------------------- */
 
-	gui.EnableScreenClicker(true)
-	Clockwork.storage.noCashWeight = data.noCashWeight
-	Clockwork.storage.noCashSpace = data.noCashSpace
-	Clockwork.storage.isOneSided = data.isOneSided
-	Clockwork.storage.inventory = {}
-	Clockwork.storage.weight = Clockwork.config:Get("default_inv_weight"):Get()
-	Clockwork.storage.space = Clockwork.config:Get("default_inv_space"):Get()
-	Clockwork.storage.entity = data.entity
-	Clockwork.storage.name = data.name
-	Clockwork.storage.cash = 0
-	Clockwork.storage.panel = vgui.Create("cwStorage")
-	Clockwork.storage.panel:Rebuild()
-	Clockwork.storage.panel:MakePopup()
-	Clockwork.kernel:RegisterBackgroundBlur(Clockwork.storage:GetPanel(), SysTime())
-end)
+net.Receive(
+    "cwStorageStart",
+    function()
+        gui.EnableScreenClicker(true)
+        Clockwork.storage.noCashWeight = net.ReadBool()
+        Clockwork.storage.noCashSpace = net.ReadBool()
+        Clockwork.storage.isOneSided = net.ReadBool()
+        Clockwork.storage.entity = net.ReadEntity()
+        Clockwork.storage.name = net.ReadString()
+        Clockwork.storage.inventory = {}
+        Clockwork.storage.weight = Clockwork.config:Get("default_inv_weight"):Get()
+        Clockwork.storage.space = Clockwork.config:Get("default_inv_space"):Get()
+        Clockwork.storage.cash = 0
 
-Clockwork.datastream:Hook("StorageCash", function(data)
-	if Clockwork.storage:IsStorageOpen() then
-		Clockwork.storage.cash = data
-		Clockwork.storage:GetPanel():Rebuild()
-	end
-end)
+        Clockwork.storage.panel = vgui.Create("cwStorage")
+        Clockwork.storage.panel:Rebuild()
+        Clockwork.storage.panel:MakePopup()
+        Clockwork.kernel:RegisterBackgroundBlur(Clockwork.storage:GetPanel(), SysTime())
+    end
+)
 
-Clockwork.datastream:Hook("StorageWeight", function(data)
-	if Clockwork.storage:IsStorageOpen() then
-		Clockwork.storage.weight = data
-		Clockwork.storage:GetPanel():Rebuild()
-	end
-end)
+net.Receive(
+    "cwStorageCash",
+    function()
+        if Clockwork.storage:IsStorageOpen() then
+            Clockwork.storage.cash = net.ReadInt(32)
+            Clockwork.storage:GetPanel():Rebuild()
+        end
+    end
+)
 
-Clockwork.datastream:Hook("StorageSpace", function(data)
-	if Clockwork.storage:IsStorageOpen() then
-		Clockwork.storage.space = data
-		Clockwork.storage:GetPanel():Rebuild()
-	end
-end)
+net.Receive(
+    "cwStorageWeight",
+    function()
+        if Clockwork.storage:IsStorageOpen() then
+            Clockwork.storage.weight = net.ReadInt(32)
+            Clockwork.storage:GetPanel():Rebuild()
+        end
+    end
+)
 
-Clockwork.datastream:Hook("StorageClose", function(data)
-	if Clockwork.storage:IsStorageOpen() then
-		Clockwork.kernel:RemoveBackgroundBlur(Clockwork.storage:GetPanel())
-		CloseDermaMenus()
-		Clockwork.storage:GetPanel():Close()
-		Clockwork.storage:GetPanel():Remove()
-		gui.EnableScreenClicker(false)
-		Clockwork.storage.inventory = nil
-		Clockwork.storage.weight = nil
-		Clockwork.storage.space = nil
-		Clockwork.storage.entity = nil
-		Clockwork.storage.name = nil
-	end
-end)
+net.Receive(
+    "cwStorageSpace",
+    function()
+        if Clockwork.storage:IsStorageOpen() then
+            Clockwork.storage.space = net.ReadInt(32)
+            Clockwork.storage:GetPanel():Rebuild()
+        end
+    end
+)
 
-Clockwork.datastream:Hook("StorageTake", function(data)
-	if Clockwork.storage:IsStorageOpen() then
-		Clockwork.inventory:RemoveUniqueID(Clockwork.storage.inventory, data.uniqueID, data.itemID)
-		Clockwork.storage:GetPanel():Rebuild()
-	end
-end)
+net.Receive(
+    "cwStorageClose",
+    function()
+        if Clockwork.storage:IsStorageOpen() then
+            Clockwork.kernel:RemoveBackgroundBlur(Clockwork.storage:GetPanel())
+            CloseDermaMenus()
+            Clockwork.storage:GetPanel():Close()
+            Clockwork.storage:GetPanel():Remove()
+            gui.EnableScreenClicker(false)
+            Clockwork.storage.inventory = nil
+            Clockwork.storage.weight = nil
+            Clockwork.storage.space = nil
+            Clockwork.storage.entity = nil
+            Clockwork.storage.name = nil
+        end
+    end
+)
 
-Clockwork.datastream:Hook("StorageGive", function(data)
-	if Clockwork.storage:IsStorageOpen() then
-		local itemTable = Clockwork.item:FindByID(data.index)
+net.Receive(
+    "cwStorageTake",
+    function()
+        if Clockwork.storage:IsStorageOpen() then
+            local sig = net.ReadTable()
+            Clockwork.inventory:RemoveUniqueID(Clockwork.storage.inventory, sig.uniqueID, sig.itemID)
+            Clockwork.storage:GetPanel():Rebuild()
+        end
+    end
+)
 
-		if itemTable then
-			for k, v in pairs(data.itemList) do
-				Clockwork.inventory:AddInstance(Clockwork.storage.inventory, Clockwork.item:CreateInstance(data.index, v.itemID, v.data))
-			end
+net.Receive(
+    "cwStorageGive",
+    function()
+        if Clockwork.storage:IsStorageOpen() then
+            local index = net.ReadUInt(16)
+            local count = net.ReadUInt(12)
+            local itemTable = Clockwork.item:FindByID(index)
 
-			Clockwork.storage:GetPanel():Rebuild()
-		end
-	end
-end)
+            if itemTable then
+                for i = 1, count do
+                    local id = net.ReadUInt(32)
+                    local data = net.ReadTable()
+                    Clockwork.inventory:AddInstance(
+                        Clockwork.storage.inventory,
+                        Clockwork.item:CreateInstance(index, id, data)
+                    )
+                end
+                Clockwork.storage:GetPanel():Rebuild()
+            end
+        end
+    end
+)
