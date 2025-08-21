@@ -582,7 +582,7 @@ function playerMeta:RagdollHasWeapon(weaponClass)
 
 	if ragdollWeapons then
 		for k, v in pairs(ragdollWeapons) do
-			if v.weaponData["class"] == weaponClass then return true end
+			if v.weaponData and v.weaponData["class"] == weaponClass then return true end
 		end
 	end
 end

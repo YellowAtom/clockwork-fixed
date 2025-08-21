@@ -3951,9 +3951,9 @@ else -- if (SERVER) then
 --]]
 	function Clockwork.player:SetWeapons(player, weapons, forceReturn)
 		for k, v in pairs(weapons) do
-			if not player:HasWeapon(v.weaponData["class"]) then
-				if not v.teamIndex or player:Team() == v.teamIndex then
-					player:Give(v.weaponData["class"], v.weaponData["itemTable"], forceReturn)
+				if not player:HasWeapon(v.weaponData["class"]) then
+					if not v.teamIndex or player:Team() == v.teamIndex then
+						player:Give(v.weaponData["class"], v.weaponData["itemTable"], forceReturn)
 				end
 			end
 		end
@@ -4577,37 +4577,6 @@ else -- if (SERVER) then
 
 		return false
 	end
-
-	--[[
-		@codebase Shared
-		@details Get a list of a player's weapons.
-		@param {Player} player The player to get weapons from.
-		@returns {table} A list of itemTables for each weapon.
-	--]]
-	function Clockwork.player:GetWeapons(player)
-		local results = {}
-
-		if player:IsRagdolled() then
-			local ragdollWeapons = player:GetRagdollWeapons()
-
-			for _, v in pairs(ragdollWeapons) do
-				if v.weaponData and v.weaponData["itemTable"] then
-					table.insert(results, v.weaponData["itemTable"])
-				end
-			end
-		else
-			for _, v in pairs(player:GetWeapons()) do
-				local itemTable = cwItem:GetByWeapon(v)
-
-				if itemTable then
-					table.insert(results, itemTable)
-				end
-			end
-		end
-
-		return results
-	end
-
 
 	--[[
 	@codebase Shared
