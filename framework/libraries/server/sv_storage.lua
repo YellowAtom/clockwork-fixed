@@ -30,7 +30,7 @@ end
 -- Chunked iteration helper (synchronous across several ticks).
 -- Calls `work(itemKey)` for up to `chunkSize` keys per tick.
 local function StreamKeysOverTicks(timerName, owner, keys, chunkSize, work)
-	chunkSize = chunkSize or 200
+	chunkSize = chunkSize or 10
 	local i = 1
 	local reps = math.ceil(#keys / chunkSize)
 
@@ -231,7 +231,7 @@ function Clockwork.storage:Open(player, data)
 
 	-- Stream inventory entries in batches to prevent net overflow.
 	local keys = table.GetKeys(data.inventory)
-	StreamKeysOverTicks("cwInvStream_" .. player:EntIndex(), player, keys, 200, function(k)
+	StreamKeysOverTicks("cwInvStream_" .. player:EntIndex(), player, keys, 10, function(k)
 		self:UpdateByID(player, k)
 	end)
 end
@@ -562,7 +562,7 @@ function Clockwork.storage:UpdateByID(player, uniqueID)
 	end
 
 	-- Send in chunks
-	local chunkSize = 100
+	local chunkSize = 10
 	for i = 1, #itemList, chunkSize do
 		local count = math.min(chunkSize, #itemList - i + 1)
 		net.Start("cwStorageGive")
