@@ -168,18 +168,6 @@ if CLIENT then
 
 	--[[
 	@codebase Shared
-	@details A function to find a player by an identifier.
-	@param {Unknown} Missing description for identifier.
-	@returns {Unknown}
---]]
-	function Clockwork.player:FindByID(identifier)
-		for k, v in pairs(player.GetAll()) do
-			if v:HasInitialized() and (v:SteamID() == identifier or string.find(string.lower(v:Name()), string.lower(identifier), 1, true)) then return v end
-		end
-	end
-
-	--[[
-	@codebase Shared
 	@details A function to get the local player's clothes data.
 	@returns {Unknown}
 --]]
