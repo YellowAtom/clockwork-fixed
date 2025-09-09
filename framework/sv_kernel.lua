@@ -1722,13 +1722,15 @@ function Clockwork:PlayerGivenWeapon(player, class, itemTable)
 
 	if cwItem:IsWeapon(itemTable) and not itemTable:IsFakeWeapon() then
 		if itemTable:IsMeleeWeapon() then
-		cwPly:CreateGear(player, "Melee", itemTable)
+			cwPly:CreateGear(player, "Melee", itemTable)
 		elseif itemTable:IsThrowableWeapon() then
-		cwPly:CreateGear(player, "Throwable", itemTable)
+			cwPly:CreateGear(player, "Throwable", itemTable)
 		elseif itemTable:IsPrimaryWeapon() then
-		cwPly:CreateGear(player, "Primary", itemTable)
+			cwPly:CreateGear(player, "Primary", itemTable)
 		elseif itemTable:IsSecondaryWeapon() then
-		cwPly:CreateGear(player, "Secondary", itemTable)
+			cwPly:CreateGear(player, "Secondary", itemTable)
+		elseif itemTable:IsTool() then
+			cwPly:CreateGear(player, "Tool", itemTable)
 		end
 	end
 end

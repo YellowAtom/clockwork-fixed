@@ -172,6 +172,11 @@ function ITEM:IsSecondaryWeapon()
 	return self("isSecondaryWeapon")
 end
 
+-- A function to get whether the item is a tool.
+function ITEM:IsTool()
+	return self("isTool")
+end
+
 -- Called when the item is given to a player as a weapon.
 function ITEM:OnWeaponGiven(player, weapon)
 	Clockwork.player:StripDefaultAmmo(player, weapon, self)
