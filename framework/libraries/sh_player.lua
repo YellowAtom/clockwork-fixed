@@ -4569,6 +4569,31 @@ else -- if (SERVER) then
 	end
 
 	--[[
+		@codebase Shared
+		@details Check if a player has any weapons.
+		@param {Player} player The player to check.
+		@returns {bool} True if the player has weapons, false otherwise.
+	--]]
+	function Clockwork.player:HasLethalWeapons(player)
+		if player:IsRagdolled() then
+			local ragdollWeapons = player:GetRagdollWeapons()
+			return (ragdollWeapons and table.Count(ragdollWeapons) > 0)
+		else
+			local weapons = player:GetWeapons()
+
+			for _, v in pairs(weapons) do
+				local itemTable = cwItem:GetByWeapon(v)
+				if itemTable then
+					if itemTable("white") then return false end
+					return true
+				end
+			end
+		end
+
+		return false
+	end
+
+	--[[
 	@codebase Shared
 	@details A function to lightly spawn a player.
 	@param {Unknown} Missing description for player.
