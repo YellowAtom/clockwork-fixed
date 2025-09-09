@@ -1798,12 +1798,12 @@ function GM:GetFallDamage(player, velocity)
 
 		if IsValid(entity) and entity:GetClass() == "prop_physics" and trace.MatType == MAT_WOOD then
 			local entHealth = entity:Health()
-			local dmgInfo = DamageInfo()
+			local damageInfo = DamageInfo()
 
-			dmgInfo:SetDamage(reduction * 4)
-			dmgInfo:SetDamageType(DMG_CRUSH)
-			dmgInfo:SetAttacker(player)
-			entity:DispatchTraceAttack(dmgInfo, data.start, data.endpos)
+			damageInfo:SetDamage(reduction * 4)
+			damageInfo:SetDamageType(DMG_CRUSH)
+			damageInfo:SetAttacker(player)
+			entity:DispatchTraceAttack(damageInfo, data.start, data.endpos)
 
 			if entHealth > entity:Health() then
 				damage = damage - reduction
@@ -4908,6 +4908,13 @@ function Clockwork:EntityTakeDamage(entity, damageInfo)
 		end
 	end
 
+
+	if IsValid(attacker) then
+		if (attacker:IsNPC()) then
+			damageInfo:ScaleDamage(2)
+		end
+    end
+
 	if damageInfo:GetDamage() == 0 then return end
 	local isPlayerRagdoll = cwEntity:IsPlayerRagdoll(entity)
 	local player = cwEntity:GetPlayer(entity)
@@ -5048,6 +5055,34 @@ function Clockwork:EntityTakeDamage(entity, damageInfo)
 			damageInfo:ScaleDamage(0.25)
 		end
 	end
+end
+
+function Clockwork:OnEntityCreated(ent)
+	if not IsValid(ent) then return end
+
+	local combine = {
+		["npc_combine_s"] = true,
+		["npc_metropolice"] = true,
+		["npc_rollermine"] = true,
+		["npc_stalker"] = true,
+		["npc_strider"] = true,
+		["npc_cscanner"] = true,
+		["npc_turret_floor"] = true,
+		["npc_turret_ground"] = true,
+		["npc_clawscanner"] = true,
+		["npc_helicopter"] = true,
+		["npc_turret_ceiling"] = true,
+		["npc_combine_camera"] = true,
+		["npc_combinedropship"] = true,
+		["npc_hunter"] = true,
+		["npc_combinegunship"] = true,
+		["npc_manhack"] = true,
+		["npc_sniper"] = true,
+	}
+
+	if combine[ent:GetClass()] then
+        ent:AddSpawnFlags(256)
+    end
 end
 
 --[[
