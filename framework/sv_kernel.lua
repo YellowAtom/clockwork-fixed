@@ -5065,20 +5065,6 @@ function Clockwork:OnEntityCreated(ent)
 	local combine = {
 		["npc_combine_s"] = true,
 		["npc_metropolice"] = true,
-		["npc_rollermine"] = true,
-		["npc_stalker"] = true,
-		["npc_strider"] = true,
-		["npc_cscanner"] = true,
-		["npc_turret_floor"] = true,
-		["npc_turret_ground"] = true,
-		["npc_clawscanner"] = true,
-		["npc_helicopter"] = true,
-		["npc_turret_ceiling"] = true,
-		["npc_combine_camera"] = true,
-		["npc_combinedropship"] = true,
-		["npc_hunter"] = true,
-		["npc_combinegunship"] = true,
-		["npc_manhack"] = true,
 		["npc_sniper"] = true,
 	}
 
