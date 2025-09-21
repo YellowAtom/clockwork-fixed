@@ -20,7 +20,7 @@ function COMMAND:OnRun(player, arguments)
 			player.cwSalesmanHitPos = player:GetEyeTraceNoCursor().HitPos
 
 			if not player.cwSalesmanAnim and type(arguments[1]) == "string" then
-				player.cwSalesmanAnim = tonumber(_G[arguments[1]])
+				player.cwSalesmanAnim = target:LookupSequence(arguments[1])
 			end
 
 			if not player.cwSalesmanAnim and salesmanTable.animation then
