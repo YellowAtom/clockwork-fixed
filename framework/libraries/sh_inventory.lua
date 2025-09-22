@@ -63,7 +63,8 @@ end
 -- A function to create a duplicate of an inventory.
 function Clockwork.inventory:CreateDuplicate(inventory)
 	local duplicate = {}
-
+	local inventory = inventory or {}
+	
 	for k, v in pairs(inventory) do
 		duplicate[k] = {}
 
