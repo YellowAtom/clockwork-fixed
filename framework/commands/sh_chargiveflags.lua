@@ -5,8 +5,6 @@ COMMAND.text = "CmdCharGiveFlagsDesc"
 COMMAND.access = "s"
 COMMAND.arguments = 2
 
-COMMAND.alias = {"PlyGiveFlags"}
-
 -- Called when the command has been run.
 function COMMAND:OnRun(player, arguments)
 	local target = Clockwork.player:FindByID(arguments[1])
