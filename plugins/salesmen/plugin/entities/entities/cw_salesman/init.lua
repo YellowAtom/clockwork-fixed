@@ -120,9 +120,6 @@ function ENT:TalkToPlayer(player, text, default)
 			firstName = "Player"
 		end
 
-		-- Debug output
-		print("Final names - FirstName:", firstName, "LastName:", lastName)
-
 		-- Replace placeholders
 		dialogueText = string.gsub(dialogueText, "%%firstname%%", firstName)
 
