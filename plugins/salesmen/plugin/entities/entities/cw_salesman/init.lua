@@ -81,16 +81,13 @@ function ENT:TalkToPlayer(player, text, default)
 		local firstName = ""
 		local lastName = ""
 
-		-- Try to get character name data - debug what fields are available
+		-- Try to get character name data
 		if player.GetCharacterData then
 			local characterData = player:GetCharacterData()
 			if characterData then
 				-- Try common Clockwork name field variations
 				firstName = characterData("firstname") or characterData("forename") or ""
 				lastName = characterData("surname") or characterData("lastname") or characterData("name") or ""
-
-				-- Debug output to see what we get
-				print("Character data - FirstName:", firstName, "LastName:", lastName)
 			end
 		end
 
