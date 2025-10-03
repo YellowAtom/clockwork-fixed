@@ -100,44 +100,317 @@ function PANEL:Init()
 	self.responsesForm:SetName("Responses")
 	self.settingsForm:AddItem(self.responsesForm)
 
-	self.startText = self.responsesForm:TextEntry("When the player starts trading.")
-	self.startSound = self.responsesForm:TextEntry("The sound to play for the above phrase.")
-	self.startHideName = self.responsesForm:CheckBox("Hide the salesman's name for the above phrase.")
-	self.noSaleText = self.responsesForm:TextEntry("When the player cannot trade with them.")
-	self.noSaleSound = self.responsesForm:TextEntry("The sound to play for the above phrase.")
-	self.noSaleHideName = self.responsesForm:CheckBox("Hide the salesman's name for the above phrase.")
-	self.noStockText = self.responsesForm:TextEntry("When the salesman does not have an item in stock.")
-	self.noStockSound = self.responsesForm:TextEntry("The sound to play for the above phrase.")
-	self.noStockHideName = self.responsesForm:CheckBox("Hide the salesman's name for the above phrase.")
-	self.needMoreText = self.responsesForm:TextEntry("When the player cannot afford the item.")
-	self.needMoreSound = self.responsesForm:TextEntry("The sound to play for the above phrase.")
-	self.needMoreHideName = self.responsesForm:CheckBox("Hide the salesman's name for the above phrase.")
-	self.cannotAffordText = self.responsesForm:TextEntry("When the salesman cannot afford the item.")
-	self.cannotAffordSound = self.responsesForm:TextEntry("The sound to play for the above phrase.")
-	self.cannotAffordHideName = self.responsesForm:CheckBox("Hide the salesman's name for the above phrase.")
-	self.doneBusinessText = self.responsesForm:TextEntry("When the player is done doing trading.")
-	self.doneBusinessSound = self.responsesForm:TextEntry("The sound to play for the above phrase.")
-	self.doneBusinessHideName = self.responsesForm:CheckBox("Hide the salesman's name for the above phrase.")
+	-- Create dialogue management panels for each response type
+	self.dialoguePanels = {}
 
-	Clockwork.salesman.text.start = Clockwork.salesman.text.start or {}
-	self.startText:SetValue(Clockwork.salesman.text.start.text or "How can I help you today?")
-	self.startSound:SetValue(Clockwork.salesman.text.start.sound or "")
-	self.startHideName:SetValue(Clockwork.salesman.text.start.bHideName == true)
-	self.noSaleText:SetValue(Clockwork.salesman.text.noSale.text or "I cannot trade my inventory with you!")
-	self.noSaleSound:SetValue(Clockwork.salesman.text.noSale.sound or "")
-	self.noSaleHideName:SetValue(Clockwork.salesman.text.noSale.bHideName == true)
-	self.noStockText:SetValue(Clockwork.salesman.text.noStock.text or "I do not have that item in stock!")
-	self.noStockSound:SetValue(Clockwork.salesman.text.noStock.sound or "")
-	self.noStockHideName:SetValue(Clockwork.salesman.text.noStock.bHideName == true)
-	self.needMoreText:SetValue(Clockwork.salesman.text.needMore.text or "You cannot afford to buy that from me!")
-	self.needMoreSound:SetValue(Clockwork.salesman.text.needMore.sound or "")
-	self.needMoreHideName:SetValue(Clockwork.salesman.text.needMore.bHideName == true)
-	self.cannotAffordText:SetValue(Clockwork.salesman.text.cannotAfford.text or "I cannot afford to buy that item from you!")
-	self.cannotAffordSound:SetValue(Clockwork.salesman.text.cannotAfford.sound or "")
-	self.cannotAffordHideName:SetValue(Clockwork.salesman.text.cannotAfford.bHideName == true)
-	self.doneBusinessText:SetValue(Clockwork.salesman.text.doneBusiness.text or "Thanks for doing business, see you soon!")
-	self.doneBusinessSound:SetValue(Clockwork.salesman.text.doneBusiness.sound or "")
-	self.doneBusinessHideName:SetValue(Clockwork.salesman.text.doneBusiness.bHideName == true)
+	-- Helper function to create a dialogue management panel
+	local function CreateDialoguePanel(parentForm, label, dialogueType, defaultText)
+		local panel = vgui.Create("DPanel", parentForm)
+		panel:SetTall(140) -- Increased height to accommodate help text
+		panel:Dock(TOP)
+		panel:DockMargin(0, 0, 0, 10)
+
+		-- Label
+		local labelControl = vgui.Create("DLabel", panel)
+		labelControl:SetText(label)
+		labelControl:Dock(TOP)
+		labelControl:DockMargin(0, 0, 0, 5)
+
+		-- Help text for name placeholders
+		local helpLabel = vgui.Create("DLabel", panel)
+		helpLabel:SetText("Tip: Use %firstname% in your dialogue to personalize it with the player's name! (%lastname% also works for factions that use last names)")
+		helpLabel:Dock(TOP)
+		helpLabel:DockMargin(0, 0, 0, 5)
+		helpLabel:SetTextColor(Color(100, 100, 255)) -- Light blue color to make it stand out
+
+		-- Dialogue list
+		local dialogueList = vgui.Create("DListView", panel)
+		dialogueList:Dock(FILL)
+		dialogueList:SetMultiSelect(false)
+		dialogueList:AddColumn("Text"):SetWidth(220)
+		dialogueList:AddColumn("Sound"):SetWidth(140)
+		dialogueList:AddColumn("Hide Name"):SetWidth(80)
+
+		-- Controls
+		local controlsPanel = vgui.Create("DPanel", panel)
+		controlsPanel:Dock(BOTTOM)
+		controlsPanel:SetTall(30)
+
+		local addButton = vgui.Create("DButton", controlsPanel)
+		addButton:SetText("Add")
+		addButton:Dock(LEFT)
+		addButton:SetWide(60)
+
+		local removeButton = vgui.Create("DButton", controlsPanel)
+		removeButton:SetText("Remove")
+		removeButton:Dock(LEFT)
+		removeButton:DockMargin(5, 0, 0, 0)
+		removeButton:SetWide(60)
+
+		-- Initialize with existing dialogue
+		local currentDialogues = Clockwork.salesman.text[dialogueType] or {}
+
+		-- Handle backward compatibility - convert single dialogue to array if needed
+		if currentDialogues.text then
+			currentDialogues = {currentDialogues}
+		end
+
+		if not istable(currentDialogues) then
+			currentDialogues = {}
+		end
+
+		-- Store reference to the current dialogues array for this panel
+		panel.currentDialogues = currentDialogues
+
+		-- Populate the list
+		if #currentDialogues == 0 then
+			-- Show placeholder text when no dialogues are configured
+			dialogueList:AddLine(defaultText or "Click 'Add' to create dialogue lines...", "", "")
+		else
+			for i, dialogue in ipairs(currentDialogues) do
+				dialogueList:AddLine(
+					dialogue.text or dialogue,
+					dialogue.sound or "",
+					dialogue.bHideName and "Yes" or "No"
+				)
+			end
+		end
+
+		-- Add button functionality
+		addButton.DoClick = function()
+			-- Create a multi-field add dialog
+			local addFrame = vgui.Create("DFrame")
+			addFrame:SetTitle("Add Dialogue")
+			addFrame:SetSize(400, 220)
+			addFrame:Center()
+			addFrame:MakePopup()
+
+			local textEntry = vgui.Create("DTextEntry", addFrame)
+			textEntry:SetPos(80, 40)
+			textEntry:SetSize(300, 25)
+			textEntry:SetText("")
+
+			local textLabel = vgui.Create("DLabel", addFrame)
+			textLabel:SetPos(10, 45)
+			textLabel:SetText("Text:")
+			textLabel:SizeToContents()
+
+			local soundEntry = vgui.Create("DTextEntry", addFrame)
+			soundEntry:SetPos(80, 75)
+			soundEntry:SetSize(300, 25)
+			soundEntry:SetText("")
+			soundEntry:SetPlaceholderText("Optional sound file path...")
+
+			local soundLabel = vgui.Create("DLabel", addFrame)
+			soundLabel:SetPos(10, 80)
+			soundLabel:SetText("Sound:")
+			soundLabel:SizeToContents()
+
+			local hideNameCheck = vgui.Create("DCheckBoxLabel", addFrame)
+			hideNameCheck:SetPos(80, 110)
+			hideNameCheck:SetText("Hide salesman name")
+			hideNameCheck:SetValue(false)
+			hideNameCheck:SizeToContents()
+
+			local addButton = vgui.Create("DButton", addFrame)
+			addButton:SetPos(100, 160)
+			addButton:SetSize(80, 25)
+			addButton:SetText("Add")
+
+			local cancelButton = vgui.Create("DButton", addFrame)
+			cancelButton:SetPos(200, 160)
+			cancelButton:SetSize(80, 25)
+			cancelButton:SetText("Cancel")
+
+			-- Add functionality
+			addButton.DoClick = function()
+				local newText = textEntry:GetValue()
+				local newSound = soundEntry:GetValue()
+				local hideName = hideNameCheck:GetChecked()
+
+				if newText and newText ~= "" then
+					-- If there's a placeholder, remove it safely
+					local lines = dialogueList:GetLines()
+					if #lines > 0 then
+						local firstLine = lines[1]
+						local firstLineText = firstLine:GetColumnText(1)
+						if firstLineText == (defaultText or "Click 'Add' to create dialogue lines...") then
+							dialogueList:RemoveLine(1)
+						end
+					end
+
+					local newDialogue = {
+						text = newText,
+						sound = newSound,
+						bHideName = hideName
+					}
+
+					-- Add to our data structure
+					table.insert(panel.currentDialogues, newDialogue)
+
+					-- Update the list view
+					dialogueList:AddLine(newText, newSound, hideName and "Yes" or "No")
+
+					addFrame:Close()
+				end
+			end
+
+			-- Cancel functionality
+			cancelButton.DoClick = function()
+				addFrame:Close()
+			end
+		end
+
+		-- Remove button functionality
+		removeButton.DoClick = function()
+			local selected = dialogueList:GetSelectedLine()
+			if selected then
+				-- Don't allow removing the placeholder
+				local lineText = dialogueList:GetLine(selected):GetColumnText(1)
+				if lineText == (defaultText or "Click 'Add' to create dialogue lines...") then
+					return
+				end
+
+				-- Store the dialogue data before removing from UI
+				local dialogueToRemove = nil
+				if selected <= #panel.currentDialogues then
+					dialogueToRemove = panel.currentDialogues[selected]
+				end
+
+				-- Remove from UI first
+				dialogueList:RemoveLine(selected)
+
+				-- Remove from data structure
+				if dialogueToRemove and selected <= #panel.currentDialogues then
+					table.remove(panel.currentDialogues, selected)
+				end
+
+				-- If no dialogues left, show placeholder
+				if #panel.currentDialogues == 0 then
+					dialogueList:AddLine(defaultText or "Click 'Add' to create dialogue lines...", "", "")
+				end
+
+				-- Clear selection to prevent issues
+				dialogueList:ClearSelection()
+			end
+		end
+
+		-- Edit functionality (double-click to edit)
+		dialogueList.DoDoubleClick = function(parent, lineID, line)
+			-- Don't allow editing placeholder text
+			local lineText = line:GetColumnText(1)
+			if lineText == (defaultText or "Click 'Add' to create dialogue lines...") then
+				return
+			end
+
+			-- Find the corresponding dialogue in our data structure
+			local dialogue = nil
+			local dialogueIndex = nil
+
+			-- Since lineID might not match array index after removals, search for the dialogue
+			for i, dlgData in ipairs(panel.currentDialogues) do
+				-- Match by text content (most reliable way)
+				if (dlgData.text or dlgData) == lineText then
+					dialogue = dlgData
+					dialogueIndex = i
+					break
+				end
+			end
+
+			if dialogue and dialogueIndex then
+
+				-- Create a multi-field edit dialog
+				local editFrame = vgui.Create("DFrame")
+				editFrame:SetTitle("Edit Dialogue")
+				editFrame:SetSize(400, 200)
+				editFrame:Center()
+				editFrame:MakePopup()
+
+				local textEntry = vgui.Create("DTextEntry", editFrame)
+				textEntry:SetPos(80, 40)
+				textEntry:SetSize(300, 25)
+				textEntry:SetText(dialogue.text or dialogue)
+
+				local textLabel = vgui.Create("DLabel", editFrame)
+				textLabel:SetPos(10, 45)
+				textLabel:SetText("Text:")
+				textLabel:SizeToContents()
+
+				local soundEntry = vgui.Create("DTextEntry", editFrame)
+				soundEntry:SetPos(80, 75)
+				soundEntry:SetSize(300, 25)
+				soundEntry:SetText(dialogue.sound or "")
+
+				local soundLabel = vgui.Create("DLabel", editFrame)
+				soundLabel:SetPos(10, 80)
+				soundLabel:SetText("Sound:")
+				soundLabel:SizeToContents()
+
+				local hideNameCheck = vgui.Create("DCheckBoxLabel", editFrame)
+				hideNameCheck:SetPos(80, 110)
+				hideNameCheck:SetText("Hide salesman name")
+				hideNameCheck:SetValue(dialogue.bHideName or false)
+				hideNameCheck:SizeToContents()
+
+				local saveButton = vgui.Create("DButton", editFrame)
+				saveButton:SetPos(100, 150)
+				saveButton:SetSize(80, 25)
+				saveButton:SetText("Save")
+
+				local cancelButton = vgui.Create("DButton", editFrame)
+				cancelButton:SetPos(200, 150)
+				cancelButton:SetSize(80, 25)
+				cancelButton:SetText("Cancel")
+
+				-- Save functionality
+				saveButton.DoClick = function()
+					local newText = textEntry:GetValue()
+					local newSound = soundEntry:GetValue()
+					local hideName = hideNameCheck:GetChecked()
+
+					if newText and newText ~= "" then
+						-- Update the dialogue in our data structure
+						panel.currentDialogues[dialogueIndex] = {
+							text = newText,
+							sound = newSound,
+							bHideName = hideName
+						}
+
+						-- Update the list view
+						line:SetColumnText(1, newText)
+						line:SetColumnText(2, newSound)
+						line:SetColumnText(3, hideName and "Yes" or "No")
+
+						editFrame:Close()
+					end
+				end
+
+				-- Cancel functionality
+				cancelButton.DoClick = function()
+					editFrame:Close()
+				end
+			end
+		end
+
+		return panel
+	end
+
+	-- Create dialogue panels for each response type
+	self.startPanel = CreateDialoguePanel(self.responsesForm, "Start Trading Dialogues", "start", "How can I help you today?")
+	self.noSalePanel = CreateDialoguePanel(self.responsesForm, "Cannot Trade Dialogues", "noSale", "I cannot trade my inventory with you!")
+	self.noStockPanel = CreateDialoguePanel(self.responsesForm, "Out of Stock Dialogues", "noStock", "I do not have that item in stock!")
+	self.needMorePanel = CreateDialoguePanel(self.responsesForm, "Cannot Afford Dialogues", "needMore", "You cannot afford to buy that from me!")
+	self.cannotAffordPanel = CreateDialoguePanel(self.responsesForm, "Cannot Buy Dialogues", "cannotAfford", "I cannot afford to buy that item from you!")
+	self.doneBusinessPanel = CreateDialoguePanel(self.responsesForm, "Business Complete Dialogues", "doneBusiness", "Thanks for doing business, see you soon!")
+
+	self.dialoguePanels = {
+		start = self.startPanel,
+		noSale = self.noSalePanel,
+		noStock = self.noStockPanel,
+		needMore = self.needMorePanel,
+		cannotAfford = self.cannotAffordPanel,
+		doneBusiness = self.doneBusinessPanel
+	}
 
 	self.factionsForm = vgui.Create("DForm")
 	self.factionsForm:SetPadding(4)
@@ -265,41 +538,8 @@ function PANEL:Think()
 	self:SetSize(ScrW() * 0.5, ScrH() * 0.75)
 	self:SetPos(ScrW() / 2 - self:GetWide() / 2, ScrH() / 2 - self:GetTall() / 2)
 
-	Clockwork.salesman.text.doneBusiness = {
-		text = self.doneBusinessText:GetValue(),
-		bHideName = self.doneBusinessHideName:GetChecked() == true,
-		sound = self.doneBusinessSound:GetValue()
-	}
-
-	Clockwork.salesman.text.cannotAfford = {
-		text = self.cannotAffordText:GetValue(),
-		bHideName = self.cannotAffordHideName:GetChecked() == true,
-		sound = self.cannotAffordSound:GetValue()
-	}
-
-	Clockwork.salesman.text.needMore = {
-		text = self.needMoreText:GetValue(),
-		bHideName = self.needMoreHideName:GetChecked() == true,
-		sound = self.needMoreSound:GetValue()
-	}
-
-	Clockwork.salesman.text.noStock = {
-		text = self.noStockText:GetValue(),
-		bHideName = self.noStockHideName:GetChecked() == true,
-		sound = self.noStockSound:GetValue()
-	}
-
-	Clockwork.salesman.text.noSale = {
-		text = self.noSaleText:GetValue(),
-		bHideName = self.noSaleHideName:GetChecked() == true,
-		sound = self.noSaleSound:GetValue()
-	}
-
-	Clockwork.salesman.text.start = {
-		text = self.startText:GetValue(),
-		bHideName = self.startHideName:GetChecked() == true,
-		sound = self.startSound:GetValue()
-	}
+	-- Update dialogue data structure (no longer need individual text fields)
+	-- The dialogue panels handle their own data management
 
 	Clockwork.salesman.showChatBubble = self.showChatBubble:GetChecked() == true
 	Clockwork.salesman.buyInShipments = self.buyInShipments:GetChecked() == true

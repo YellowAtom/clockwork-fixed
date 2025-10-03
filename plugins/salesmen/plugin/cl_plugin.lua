@@ -106,7 +106,28 @@ Clockwork.datastream:Hook("SalesmanEdit", function(data)
 		Clockwork.salesman.model = data.model
 		Clockwork.salesman.items = {}
 		Clockwork.salesman.cash = data.cash
-		Clockwork.salesman.text = data.textTab
+
+		-- Handle new dialogue array format or convert legacy format
+		Clockwork.salesman.text = {}
+		for dialogueType, dialogueData in pairs(data.textTab or {}) do
+			if istable(dialogueData) then
+				-- Handle backward compatibility: if it's a single dialogue object, convert to array
+				if dialogueData.text then
+					Clockwork.salesman.text[dialogueType] = {dialogueData}
+				else
+					-- If it's already an array (possibly empty), use it as-is
+					Clockwork.salesman.text[dialogueType] = dialogueData
+				end
+			else
+				-- Legacy string format - convert to new format
+				Clockwork.salesman.text[dialogueType] = {{
+					text = dialogueData,
+					sound = "",
+					bHideName = false
+				}}
+			end
+		end
+
 		Clockwork.salesman.buys = data.buyTab
 		Clockwork.salesman.name = text
 
