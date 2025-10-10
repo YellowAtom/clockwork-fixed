@@ -162,28 +162,50 @@ function PANEL:Init()
 		-- Store reference to the current dialogues array for this panel
 		panel.currentDialogues = currentDialogues
 
-		-- Populate the list
-		if #currentDialogues == 0 then
+		-- Add unique IDs to dialogue entries for better tracking
+		for i, dialogue in ipairs(currentDialogues) do
+			if not dialogue.uniqueID then
+				dialogue.uniqueID = tostring(os.time()) .. "_" .. math.random(1000, 9999) .. "_" .. i
+			end
+		end
+
+		-- Populate the list with a reasonable limit for performance
+		local maxDialogues = 50 -- Limit to prevent performance issues
+		local dialoguesToShow = currentDialogues
+
+		if #currentDialogues > maxDialogues then
+			dialogueList:AddLine("Warning: Too many dialogues (" .. #currentDialogues .. ")! Showing first " .. maxDialogues .. " only.", "", "")
+			dialoguesToShow = {unpack(currentDialogues, 1, maxDialogues)}
+		end
+
+		if #dialoguesToShow == 0 then
 			-- Show placeholder text when no dialogues are configured
 			dialogueList:AddLine(defaultText or "Click 'Add' to create dialogue lines...", "", "")
 		else
-			for i, dialogue in ipairs(currentDialogues) do
-				dialogueList:AddLine(
+			for i, dialogue in ipairs(dialoguesToShow) do
+				local line = dialogueList:AddLine(
 					dialogue.text or dialogue,
 					dialogue.sound or "",
 					dialogue.bHideName and "Yes" or "No"
 				)
+				line.uniqueID = dialogue.uniqueID -- Store unique ID on the line for reference
 			end
 		end
 
-		-- Add button functionality
-		addButton.DoClick = function()
-			-- Create a multi-field add dialog
-			local addFrame = vgui.Create("DFrame")
-			addFrame:SetTitle("Add Dialogue")
-			addFrame:SetSize(400, 220)
-			addFrame:Center()
-			addFrame:MakePopup()
+			-- Add button functionality
+			addButton.DoClick = function()
+				-- Check if we're at the limit
+				if #panel.currentDialogues >= 50 then
+					Derma_Message("You have reached the maximum limit of 50 dialogues per response type.", "Limit Reached", "OK")
+					return
+				end
+
+				-- Create a multi-field add dialog
+				local addFrame = vgui.Create("DFrame")
+				addFrame:SetTitle("Add Dialogue")
+				addFrame:SetSize(400, 220)
+				addFrame:Center()
+				addFrame:MakePopup()
 
 			local textEntry = vgui.Create("DTextEntry", addFrame)
 			textEntry:SetPos(80, 40)
@@ -242,14 +264,16 @@ function PANEL:Init()
 					local newDialogue = {
 						text = newText,
 						sound = newSound,
-						bHideName = hideName
+						bHideName = hideName,
+						uniqueID = tostring(os.time()) .. "_" .. math.random(1000, 9999) .. "_" .. (#panel.currentDialogues + 1)
 					}
 
 					-- Add to our data structure
 					table.insert(panel.currentDialogues, newDialogue)
 
 					-- Update the list view
-					dialogueList:AddLine(newText, newSound, hideName and "Yes" or "No")
+					local newLine = dialogueList:AddLine(newText, newSound, hideName and "Yes" or "No")
+					newLine.uniqueID = newDialogue.uniqueID -- Store unique ID on the line for reference
 
 					addFrame:Close()
 				end
@@ -263,31 +287,60 @@ function PANEL:Init()
 
 		-- Remove button functionality
 		removeButton.DoClick = function()
-			local selected = dialogueList:GetSelectedLine()
-			if selected then
+			local selectedLine = dialogueList:GetSelectedLine()
+			if selectedLine then
+				local line = dialogueList:GetLine(selectedLine)
 				-- Don't allow removing the placeholder
-				local lineText = dialogueList:GetLine(selected):GetColumnText(1)
+				local lineText = line:GetColumnText(1)
 				if lineText == (defaultText or "Click 'Add' to create dialogue lines...") then
 					return
 				end
 
-				-- Store the dialogue data before removing from UI
-				local dialogueToRemove = nil
-				if selected <= #panel.currentDialogues then
-					dialogueToRemove = panel.currentDialogues[selected]
+				-- Get the unique ID for this line
+				local lineUniqueID = line.uniqueID
+				if not lineUniqueID then
+					-- Fallback to old method if uniqueID is missing
+					lineUniqueID = lineText
+				end
+
+				-- Find and remove the corresponding dialogue from our data structure
+				local dialogueIndex = nil
+				for i, dialogue in ipairs(panel.currentDialogues) do
+					if (dialogue.uniqueID and dialogue.uniqueID == lineUniqueID) or
+					   (not dialogue.uniqueID and (dialogue.text or dialogue) == lineUniqueID) then
+						dialogueIndex = i
+						break
+					end
 				end
 
 				-- Remove from UI first
-				dialogueList:RemoveLine(selected)
+				dialogueList:RemoveLine(selectedLine)
 
 				-- Remove from data structure
-				if dialogueToRemove and selected <= #panel.currentDialogues then
-					table.remove(panel.currentDialogues, selected)
+				if dialogueIndex then
+					table.remove(panel.currentDialogues, dialogueIndex)
 				end
 
 				-- If no dialogues left, show placeholder
 				if #panel.currentDialogues == 0 then
+					dialogueList:Clear()
 					dialogueList:AddLine(defaultText or "Click 'Add' to create dialogue lines...", "", "")
+				else
+					-- Refresh the list if we're still over the limit or need to show the truncated view
+					local maxDialogues = 50
+					if #panel.currentDialogues > maxDialogues then
+						dialogueList:Clear()
+						dialogueList:AddLine("Warning: Too many dialogues (" .. #panel.currentDialogues .. ")! Showing first " .. maxDialogues .. " only.", "", "")
+						local dialoguesToShow = {unpack(panel.currentDialogues, 1, maxDialogues)}
+						for i, dialogue in ipairs(dialoguesToShow) do
+							local line = dialogueList:AddLine(
+								dialogue.text or dialogue,
+								dialogue.sound or "",
+								dialogue.bHideName and "Yes" or "No"
+							)
+							line.uniqueID = dialogue.uniqueID
+						end
+					end
 				end
 
 				-- Clear selection to prevent issues
@@ -303,14 +356,20 @@ function PANEL:Init()
 				return
 			end
 
-			-- Find the corresponding dialogue in our data structure
+			-- Get the unique ID for this line
+			local lineUniqueID = line.uniqueID
+			if not lineUniqueID then
+				-- Fallback to old method if uniqueID is missing
+				lineUniqueID = lineText
+			end
+
+			-- Find the corresponding dialogue in our data structure using unique ID
 			local dialogue = nil
 			local dialogueIndex = nil
 
-			-- Since lineID might not match array index after removals, search for the dialogue
 			for i, dlgData in ipairs(panel.currentDialogues) do
-				-- Match by text content (most reliable way)
-				if (dlgData.text or dlgData) == lineText then
+				if (dlgData.uniqueID and dlgData.uniqueID == lineUniqueID) or
+				   (not dlgData.uniqueID and (dlgData.text or dlgData) == lineUniqueID) then
 					dialogue = dlgData
 					dialogueIndex = i
 					break
