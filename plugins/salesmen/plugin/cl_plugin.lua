@@ -34,7 +34,22 @@ end)
 
 Clockwork.datastream:Hook("SalesmanPlaySound", function(data)
 	if data[2] and data[2]:IsValid() then
-		data[2]:EmitSound(data[1])
+		local soundPath = data[1]
+
+		-- Check if this is a streaming URL (starts with http)
+		if string.StartWith(soundPath, "http") then
+			-- Use streaming URL playback
+			sound.PlayURL(soundPath, "3d", function(soundChannel)
+				if IsValid(soundChannel) then
+					soundChannel:SetPos(data[2]:GetPos())
+					soundChannel:Set3DFadeDistance(300, 768)
+					soundChannel:Play()
+				end
+			end)
+		else
+			-- Use regular sound playback
+			data[2]:EmitSound(soundPath)
+		end
 	end
 end)
 
