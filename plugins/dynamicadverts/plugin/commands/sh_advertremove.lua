@@ -7,27 +7,26 @@ COMMAND.access = "a"
 -- Called when the command has been run.
 function COMMAND:OnRun(player, arguments)
 	local position = player:GetEyeTraceNoCursor().HitPos
-	local removed = 0
+	local nearbyAdverts = {}
 
 	for k, v in pairs(cwDynamicAdverts.storedList) do
 		if v.position:Distance(position) <= 256 then
-			Clockwork.datastream:Start(nil, "DynamicAdvertRemove", v.position)
-			cwDynamicAdverts.storedList[k] = nil
-			removed = removed + 1
+			table.insert(nearbyAdverts, {
+				index = k,
+				url = v.url,
+				position = v.position,
+				scale = v.scale or 0.25,
+				width = v.width,
+				height = v.height
+			})
 		end
 	end
 
-	if removed > 0 then
-		if removed == 1 then
-			Clockwork.player:Notify(player, "You have removed " .. removed .. " dynamic advert.")
-		else
-			Clockwork.player:Notify(player, "You have removed " .. removed .. " dynamic adverts.")
-		end
+	if #nearbyAdverts > 0 then
+		Clockwork.datastream:Start(player, "AdvertRemoveSelection", nearbyAdverts)
 	else
 		Clockwork.player:Notify(player, "There were no dynamic adverts near this position.")
 	end
-
-	cwDynamicAdverts:SaveDynamicAdverts()
 end
 
 COMMAND:Register()
