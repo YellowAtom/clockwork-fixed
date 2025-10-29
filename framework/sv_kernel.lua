@@ -4913,7 +4913,7 @@ function Clockwork:EntityTakeDamage(entity, damageInfo)
 
 	if IsValid(attacker) then
 		if (attacker:IsNPC()) then
-			damageInfo:ScaleDamage(2)
+			damageInfo:ScaleDamage(1.75)
 		end
     end
 
