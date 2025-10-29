@@ -205,16 +205,16 @@ function Clockwork.command:HasAccess(ply, command)
 	end
 
 	-- Allow if player has ULX privilege.
-	if command.privilege and ULib and ULib.ucl and ULib.ucl.query(ply, command.privilege) then
-		return true
+	if command.privilege and ULib and ULib.ucl then
+		return ULib.ucl.query(ply, command.privilege)
 	end
 
 	local faction = ply:GetFaction()
 	local team = ply:Team()
 
 	-- Check faction access.
-	if command.factions and not table.HasValue(command.factions, faction) then
-		return false
+	if command.factions and table.HasValue(command.factions, faction) then
+		return true
 	end
 
 	-- Backwards compatibility for old `faction` field.
@@ -223,8 +223,8 @@ function Clockwork.command:HasAccess(ply, command)
 			if not table.HasValue(command.faction, faction) then
 				return false
 			end
-		elseif command.faction ~= faction then
-			return false
+		elseif command.faction == faction then
+			return true
 		end
 	end
 
@@ -235,13 +235,13 @@ function Clockwork.command:HasAccess(ply, command)
 			local validClass = table.HasValue(command.classes, team)
 				or table.HasValue(command.classes, class.name)
 
-			if not validClass then
-				return false
+			if validClass then
+				return true
 			end
 		end
 	end
 
-	return true
+	return false
 end
 
 
