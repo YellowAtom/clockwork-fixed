@@ -136,9 +136,9 @@ function Clockwork.command:Register(data, name)
 			["a"] = ULib.ACCESS_ADMIN,
 			["s"] = ULib.ACCESS_SUPERADMIN
 		}
-
+		
 		local minAccess = accessTable[data.flags] or accessTable[data.access] or ULib.ACCESS_ALL
-		ULib.ucl.registerAccess(privilege, ULib.ACCESS_OPERATOR, ("Clockwork Command: " .. realName), (data.category or "Clockwork"))
+		ULib.ucl.registerAccess(privilege, minAccess, ("Clockwork Command: " .. realName), (data.category or "Clockwork"))
 		print(string.format("Registering Clockwork Command Privilege: %s [%s]", privilege, minAccess))
 	end
 
