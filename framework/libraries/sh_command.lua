@@ -238,8 +238,8 @@ function Clockwork.command:HasAccess(ply, command)
 
 	
 	if command.privilege and ULib and ULib.ucl then
-		-- Allow if player has ULX privilege.	
-		if ULib.ucl.query(ply, command.privilege) then return true end
+		-- Allow if player has ULX privilege AND the command flags.
+		return (ULib.ucl.query(ply, command.privilege) and Clockwork.player:HasFlags(player, command.access))
 	end
 	
 	-- Allow if player has the command flags.
