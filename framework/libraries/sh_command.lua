@@ -120,12 +120,28 @@ function Clockwork.command:Register(data, name)
 		end
 	end
 
+	local privilege = data.privilege or ("CW - " .. realName)
 	self.stored[uniqueID] = data
 	self.stored[uniqueID].name = realName
 	self.stored[uniqueID].text = data.text or "<none>"
 	self.stored[uniqueID].flags = data.flags or 0
 	self.stored[uniqueID].access = data.access or "b"
 	self.stored[uniqueID].arguments = data.arguments or 0
+	self.stored[uniqueID].privilege = privilege
+	self.stored[uniqueID].category = data.category or "Clockwork"
+
+	if (ULib and ULib.ucl and ULib.ucl.registerAccess) then
+		local accessTable = {
+			["o"] = ULib.ACCESS_OPERATOR,
+			["a"] = ULib.ACCESS_ADMIN,
+			["s"] = ULib.ACCESS_SUPERADMIN
+		}
+
+		local minAccess = accessTable[data.flags] or accessTable[data.access] or ULib.ACCESS_ALL
+		ULib.ucl.registerAccess(privilege, ULib.ACCESS_OPERATOR, ("Clockwork Command: " .. realName), (data.category or "Clockwork"))
+		print(string.format("Registering Clockwork Command Privilege: %s [%s]", privilege, minAccess))
+	end
+
 
 	return self.stored[uniqueID]
 end
@@ -174,36 +190,61 @@ end
 
 --[[
 	@codebase Shared
-	@details Whether or not the player has access to the command.
-	@param {Userdata} The player whose access to check.
-	@param {Table:String} The command name or command table to check against.
+	@details Checks whether the player has access to a specific Clockwork command.
+	@param {Userdata} ply The player whose access is being checked.
+	@param {string|table} command The command name or command table to check against.
 --]]
-function Clockwork.command:HasAccess(player, command)
-	if type(command) == "string" then
+function Clockwork.command:HasAccess(ply, command)
+	-- Resolve command if given as a string.
+	if isstring(command) then
 		command = self:FindByAlias(command)
 	end
 
-	if not Clockwork.player:HasFlags(player, command.access) then return false end
-	local faction = player:GetFaction()
-	local team = player:Team()
-	if command.factions and not table.HasValue(command.factions, faction) then return false end
+	if not command then
+		return false
+	end
 
-	--[[ Backwards compatibility... --]]
+	-- Allow if player has ULX privilege.
+	if command.privilege and ULib and ULIb.ucl and ULib.ucl.query(ply, command.privilege) then
+		return true
+	end
+
+	local faction = ply:GetFaction()
+	local team = ply:Team()
+
+	-- Check faction access.
+	if command.factions and not table.HasValue(command.factions, faction) then
+		return false
+	end
+
+	-- Backwards compatibility for old `faction` field.
 	if command.faction then
 		if istable(command.faction) then
-			if not table.HasValue(command.factions, faction) then return false end
+			if not table.HasValue(command.faction, faction) then
+				return false
+			end
 		elseif command.faction ~= faction then
 			return false
 		end
 	end
 
+	-- Check class access.
 	if command.classes then
 		local class = Clockwork.class:FindByID(team)
-		if class and (not table.HasValue(command.classes, team) and not table.HasValue(command.classes, class.name)) then return false end
+		if class then
+			local validClass = table.HasValue(command.classes, team)
+				or table.HasValue(command.classes, class.name)
+
+			if not validClass then
+				return false
+			end
+		end
 	end
 
 	return true
 end
+
+
 
 if SERVER then
 	function Clockwork.command:ConsoleCommand(player, command, arguments)

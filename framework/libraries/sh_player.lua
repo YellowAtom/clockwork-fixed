@@ -265,7 +265,11 @@ if CLIENT then
 	@returns {Unknown}
 --]]
 	function Clockwork.player:IsAdmin(player)
-		if self:HasFlags(player, "o") then return true end
+		if not ULib then
+			return self:HasFlags(player, "o")
+		end
+
+		return player:CheckGroup("operator")
 	end
 
 	--[[
@@ -1474,7 +1478,11 @@ else -- if (SERVER) then
 	@returns {Unknown}
 --]]
 	function Clockwork.player:IsAdmin(player)
-		if self:HasFlags(player, "o") then return true end
+		if not ULib then
+			return self:HasFlags(player, "o")
+		end
+
+		return player:CheckGroup("operator")
 	end
 
 	--[[
