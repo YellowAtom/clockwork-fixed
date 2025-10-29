@@ -205,7 +205,7 @@ function Clockwork.command:HasAccess(ply, command)
 	end
 
 	-- Allow if player has ULX privilege.
-	if command.privilege and ULib and ULIb.ucl and ULib.ucl.query(ply, command.privilege) then
+	if command.privilege and ULib and ULib.ucl and ULib.ucl.query(ply, command.privilege) then
 		return true
 	end
 
