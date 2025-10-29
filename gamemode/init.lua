@@ -1,13 +1,17 @@
 
 local startTime = os.clock()
 
+
+cwReloading = false
+cwReloaded = false
+
 if Clockwork and Clockwork.kernel then
 	MsgC(Color(0, 255, 100, 255), "[Clockwork] Change has been detected! Auto-refreshing...\n")
+	cwReloading =  true
 else
 	MsgC(Color(0, 255, 100, 255), "[Clockwork] The framework is initializing...\n")
+	require("cwutil")
 end
-
-require("cwutil")
 
 AddCSLuaFile("external/utf8.lua")
 AddCSLuaFile("cl_init.lua")
@@ -26,3 +30,4 @@ else
 end
 
 cwBootComplete = true
+if cwReloading then cwReloaded = true end

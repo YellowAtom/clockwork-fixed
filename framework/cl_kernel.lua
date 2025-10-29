@@ -69,6 +69,7 @@ local cwClient
 	We also want the base Sandbox entities and weapons.
 --]]
 DeriveGamemode("sandbox")
+
 --[[
 	This is a hack to allow us to call plugin hooks based
 	on default GMod hooks that are called.
@@ -77,7 +78,7 @@ hook.ClockworkCall = hook.ClockworkCall or hook.Call
 hook.Timings = hook.Timings or {}
 
 function hook.Call(name, gamemode, ...)
-	if not IsValid(Clockwork.Client) then
+	if not IsValid(Clockwork.Client) or (not IsValid(cwClient)) then
 		Clockwork.Client = LocalPlayer()
 		cwClient = Clockwork.Client
 	end
