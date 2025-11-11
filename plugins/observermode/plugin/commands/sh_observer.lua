@@ -3,6 +3,7 @@ local COMMAND = Clockwork.command:New("Observer")
 COMMAND.tip = "Enter or exit observer mode."
 COMMAND.flags = CMD_DEFAULT
 COMMAND.access = "o"
+COMMAND.privilege = "cw - observer" -- ! DO NOT CHANGE ! -- 
 
 -- Called when the command has been run.
 function COMMAND:OnRun(player, arguments)

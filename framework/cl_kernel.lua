@@ -1813,8 +1813,9 @@ function Clockwork:HUDPaintForeground()
 			})
 		end
 	end
-
-	if cwPly:IsAdmin(cwClient) then
+	
+	local canESP = (cwPly:IsAdmin(cwClient)) or (ULib and ULib.ucl and ULib.ucl.query and ULib.ucl.query(LocalPlayer(), "cw - admin esp"))
+	if canESP then
 		if cwPlugin:Call("PlayerCanSeeAdminESP") then
 			cwKernel:DrawAdminESP()
 		end

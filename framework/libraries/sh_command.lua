@@ -238,8 +238,12 @@ function Clockwork.command:HasAccess(ply, command)
 
 	
 	if command.privilege and ULib and ULib.ucl then
+		-- Check for flags, unless it's admin stuff.
+		local adminFlags = {"o" = true, "a" = true, "s" = true}
+		local hasFlags = (Clockwork.player:HasFlags(player, command.access) or (adminFlags[command.access]))
+		
 		-- Allow if player has ULX privilege.
-		return (ULib.ucl.query(ply, command.privilege))
+		return (ULib.ucl.query(ply, command.privilege) and hasFlags)
 	end
 	
 	-- Allow if player has the command flags.
