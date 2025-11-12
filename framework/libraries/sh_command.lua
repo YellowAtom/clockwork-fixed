@@ -139,7 +139,7 @@ function Clockwork.command:Register(data, name)
 		
 		local minAccess = accessTable[data.flags] or accessTable[data.access] or ULib.ACCESS_ALL
 		ULib.ucl.registerAccess(privilege, minAccess, ("Clockwork Command: " .. realName), (data.category or "Clockwork"))
-		print(string.format("Registering Clockwork Command Privilege: %s [%s]", privilege, minAccess))
+		--print(string.format("Registering Clockwork Command Privilege: %s [%s]", privilege, minAccess))
 	end
 
 
@@ -240,14 +240,14 @@ function Clockwork.command:HasAccess(ply, command)
 	if command.privilege and ULib and ULib.ucl then
 		-- Check for flags, unless it's admin stuff.
 		local adminFlags = {["o"] = true, ["a"] = true, ["s"] = true}
-		local hasFlags = (Clockwork.player:HasFlags(player, command.access) or (adminFlags[command.access]))
+		local hasFlags = (Clockwork.player:HasFlags(ply, command.access) or (adminFlags[command.access]))
 		
 		-- Allow if player has ULX privilege.
 		return (ULib.ucl.query(ply, command.privilege) and hasFlags)
 	end
 	
 	-- Allow if player has the command flags.
-	if Clockwork.player:HasFlags(player, command.access) then return true end
+	if Clockwork.player:HasFlags(ply, command.access) then return true end
 
 	return false
 end

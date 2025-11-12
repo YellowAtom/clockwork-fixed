@@ -4,7 +4,7 @@ Clockwork.Timers = Clockwork.Timers or {}
 Clockwork.Libraries = Clockwork.Libraries or {}
 Clockwork.SharedTables = Clockwork.SharedTables or {}
 
-if (ULib and ULib.ucl) then
+if (SERVER and ULib and ULib.ucl) then
 	ULib.ucl.registerAccess("cw - admin esp", ULib.ACCESS_ALL, "Access to Admin ESP", "Clockwork")
 end
 
