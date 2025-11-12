@@ -9,14 +9,7 @@ if CLIENT then
 
 	-- Called to get whether the local player has access to the system.
 	function SYSTEM:HasAccess()
-		local unloadTable = Clockwork.command:FindByID("PluginUnload")
-		local loadTable = Clockwork.command:FindByID("PluginLoad")
-
-		if loadTable and unloadTable then
-			if Clockwork.player:HasFlags(Clockwork.Client, loadTable.access) or Clockwork.player:HasFlags(Clockwork.Client, unloadTable.access) then return true end
-		end
-
-		return false
+		return LocalPlayer():IsSuperAdmin()
 	end
 
 	-- Called when the system should be displayed.

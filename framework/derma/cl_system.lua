@@ -84,8 +84,14 @@ function PANEL:Rebuild()
 					self:Rebuild()
 				end
 			else
-				systemButton:SetInfoColor("red")
-				systemButton:SetTooltip(L("SystemMenuNoAccess"))
+				if (v.deprecated == true) then
+					systemButton:SetText("Deprecated")
+					systemButton:SetInfoColor("red")
+					systemButton:SetTooltip("This system panel is deprecated and should not be used.")
+				else
+					systemButton:SetInfoColor("red")
+					systemButton:SetTooltip(L("SystemMenuNoAccess"))
+				end
 			end
 
 			systemButton:SetShowIcon(false)

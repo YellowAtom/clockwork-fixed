@@ -15,12 +15,11 @@ if CLIENT then
 	SYSTEM.groupPlayers = nil
 	SYSTEM.doesCreateForm = false
 
+	SYSTEM.deprecated = true
+	
 	-- Called to get whether the local player has access to the system.
 	function SYSTEM:HasAccess()
-		if not Clockwork.config:Get("use_own_group_system"):Get() then
-			local commandTable = Clockwork.command:FindByID("PlySetGroup")
-			if commandTable and Clockwork.player:HasFlags(Clockwork.Client, commandTable.access) then return true end
-		end
+		return false -- Deprecated in favor of ULX ranks.
 	end
 
 	-- Called when the system should be displayed.

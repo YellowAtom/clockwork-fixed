@@ -9,13 +9,7 @@ if CLIENT then
 
 	-- Called to get whether the local player has access to the system.
 	function SYSTEM:HasAccess()
-		local commandTable = Clockwork.command:FindByID("CfgSetVar")
-
-		if commandTable and Clockwork.player:HasFlags(Clockwork.Client, commandTable.access) then
-			return true
-		else
-			return false
-		end
+		return LocalPlayer():IsSuperAdmin()
 	end
 
 	-- Called when the system should be displayed.

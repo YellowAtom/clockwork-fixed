@@ -5081,9 +5081,10 @@ else -- if (SERVER) then
 				player.cwUserGroup = "user"
 			end
 
-			if not cwCfg:Get("use_own_group_system"):Get() and player.cwUserGroup ~= "user" then
-				player:SetUserGroup(player.cwUserGroup)
-			end
+			-- Disabled. Deprecated in favor of ULX.
+			-- if not cwCfg:Get("use_own_group_system"):Get() and player.cwUserGroup ~= "user" then
+			-- 	player:SetUserGroup(player.cwUserGroup)
+			-- end
 
 			cwPlugin:Call("PlayerRestoreData", player, player.cwData)
 

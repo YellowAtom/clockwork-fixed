@@ -9,10 +9,11 @@ if CLIENT then
 	SYSTEM.bannedPlayers = nil
 	SYSTEM.doesCreateForm = false
 
+	SYSTEM.deprecated = true
+
 	-- Called to get whether the local player has access to the system.
 	function SYSTEM:HasAccess()
-		local unbanTable = Clockwork.command:FindByID("PlyUnban")
-		if unbanTable and Clockwork.player:HasFlags(Clockwork.Client, unbanTable.access) then return true end
+		return false -- Disabled. Deprecated in favor of ULX.
 	end
 
 	-- Called when the system should be displayed.
