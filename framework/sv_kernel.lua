@@ -3465,11 +3465,7 @@ function Clockwork:PlayerSpawnNPC(player, model)
 		return false
 	end
 
-	if not cwPly:IsAdmin(player) then
-		return false
-	else
-		return true
-	end
+	return true
 end
 
 --[[
@@ -3802,11 +3798,7 @@ function Clockwork:PlayerSpawnRagdoll(player, model)
 		return false
 	end
 
-	if not cwPly:IsAdmin(player) then
-		return false
-	else
-		return true
-	end
+	return true
 end
 
 --[[

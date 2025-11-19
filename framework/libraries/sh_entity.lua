@@ -420,9 +420,10 @@ end
 	@returns {Bool} Whether or not the entity is a chair entity.
 --]]
 function Clockwork.entity:IsChairEntity(entity)
-	if entity:GetModel() then
-		local entityModel = string.lower(entity:GetModel())
-		if string.find(entityModel, "chair") or string.find(entityModel, "seat") then return true end
+	local class = entity:GetClass()
+	-- Check for actual interactive seat entities
+	if string.find(class, "chair") or string.find(class, "seat") then
+		return true
 	end
 end
 
