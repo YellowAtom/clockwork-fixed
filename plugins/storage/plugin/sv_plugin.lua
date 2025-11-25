@@ -125,7 +125,8 @@ function cwStorage:SaveStorage()
 					startPos = startPos,
 					inventory = Clockwork.inventory:ToSaveable(v.cwInventory),
 					bNoCollision = bNoCollision,
-					isMoveable = bMoveable
+					isMoveable = bMoveable,
+					isLootable = v.cwIsLootable
 				}
 			end
 		end
@@ -180,6 +181,7 @@ function cwStorage:LoadStorage()
 		entity.cwPassword = v.password
 		entity.cwMessage = v.message
 		entity.cwCash = v.cash
+		entity.cwIsLootable = v.isLootable
 	end
 end
 

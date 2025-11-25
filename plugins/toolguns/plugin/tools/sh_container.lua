@@ -120,6 +120,12 @@ function TOOL:SetPassword(entity)
 	if CLIENT then return true end
 
 	if IsValid(trace.Entity) then
+		-- Check if container is lootable (broken)
+		if trace.Entity.cwIsLootable then
+			Clockwork.player:Notify(player, "This container is broken and cannot be locked!")
+			return
+		end
+
 		if Clockwork.entity:IsPhysicsEntity(trace.Entity) then
 			local model = string.lower(trace.Entity:GetModel())
 
