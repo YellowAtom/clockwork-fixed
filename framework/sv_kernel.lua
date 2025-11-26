@@ -4905,7 +4905,7 @@ function Clockwork:EntityTakeDamage(entity, damageInfo)
 
 	if IsValid(attacker) then
 		if (attacker:IsNPC()) then
-			damageInfo:ScaleDamage(1.75)
+			damageInfo:ScaleDamage(1.15) -- NPC Damage Scale Goes Here.
 		end
     end
 
