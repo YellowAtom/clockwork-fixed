@@ -4903,11 +4903,11 @@ function Clockwork:EntityTakeDamage(entity, damageInfo)
 	end
 
 
-	if IsValid(attacker) then
+	--[[if IsValid(attacker) then
 		if (attacker:IsNPC()) then
 			damageInfo:ScaleDamage(1.15) -- NPC Damage Scale Goes Here.
 		end
-    end
+    end --]]
 
 	if damageInfo:GetDamage() == 0 then return end
 	local isPlayerRagdoll = cwEntity:IsPlayerRagdoll(entity)
