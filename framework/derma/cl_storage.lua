@@ -63,7 +63,19 @@ function PANEL:RebuildPanel(storagePanel, storageType, usedWeight, weight, usedS
 	local modelSource = (storageType == "Container" and Clockwork.storage:GetEntity()) or Clockwork.Client
 	if IsValid(modelSource) then
 		modelIcon:SetModel(modelSource:GetModel())
-		modelIcon:GetEntity():SetSequence(modelSource:GetSequence())
+		
+		local modelEntity = modelIcon:GetEntity()
+		if IsValid(modelEntity) then
+			modelEntity:SetSequence(modelSource:GetSequence())
+			
+			-- Copy skin from source
+			modelEntity:SetSkin(modelSource:GetSkin())
+			
+			-- Copy all bodygroups from source
+			for i = 0, modelSource:GetNumBodyGroups() - 1 do
+				modelEntity:SetBodygroup(i, modelSource:GetBodygroup(i))
+			end
+		end
 	end
 
 	-- Look at head position (fallback vector if bone missing)
