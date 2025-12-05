@@ -17,6 +17,9 @@ function ENT:Initialize()
 		physicsObject:Wake()
 		physicsObject:EnableMotion(true)
 	end
+	
+	-- Track last collision time to prevent sound spam
+	self.LastCollisionSound = 0
 
 	local generator = Clockwork.generator:FindByID(self:GetClass())
 
@@ -35,6 +38,34 @@ function ENT:Initialize()
 				self:Remove()
 			end
 		end)
+	end
+end
+
+-- Called when the entity collides with something
+-- Note: SENTs don't play native physics sounds (GMod bug), so we handle it manually
+function ENT:PhysicsCollide(data, phys)
+	local curTime = CurTime()
+	
+	-- Prevent sound spam (100ms cooldown)
+	if curTime - self.LastCollisionSound < 0.1 then return end
+	
+	local speed = data.Speed
+	if speed < 20 then return end
+	
+	self.LastCollisionSound = curTime
+	
+	-- Get surface property from the model's physics object
+	local surfaceProp = phys:GetMaterial()
+	local surfaceData = util.GetSurfaceData(util.GetSurfaceIndex(surfaceProp))
+	
+	if surfaceData then
+		-- Use the model's native impact sound
+		local volume = math.Clamp(speed / 300, 0.1, 1.0)
+		local soundName = speed > 100 and surfaceData.impactHardSound or surfaceData.impactSoftSound
+		
+		if soundName and soundName ~= "" then
+			sound.Play(soundName, data.HitPos, 75, math.random(95, 105), volume)
+		end
 	end
 end
 

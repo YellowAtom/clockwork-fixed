@@ -1304,7 +1304,7 @@ Clockwork.chatBox:RegisterDefaultClass("notify_all", "ooc", function(info)
 	Clockwork.chatBox:Add(filtered, "icon16/" .. icon .. ".png", unpack(localized))
 end)
 
-Clockwork.chatBox:RegisterDefaultClass("notify", "ooc", function(info)
+Clockwork.chatBox:RegisterDefaultClass("notify", "ic", function(info)
 	if Clockwork.kernel:GetNoticePanel() then
 		Clockwork.kernel:AddCinematicText(info.text, Color(255, 255, 255, 255), 32, 6, Clockwork.option:GetFont("menu_text_tiny"), true)
 	end
