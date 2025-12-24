@@ -22,7 +22,11 @@ function PANEL:Init()
 			physDesc = Clockwork.salesman.physDesc,
 			buyRate = Clockwork.salesman.buyRate,
 			classes = Clockwork.salesman.classes,
+			customClasses = Clockwork.salesman.customClasses,
+			steamIDs = Clockwork.salesman.steamIDs,
+			charNames = Clockwork.salesman.charNames,
 			stock = Clockwork.salesman.stock,
+			stockOverrides = Clockwork.salesman.stockOverrides,
 			model = Clockwork.salesman.model,
 			sells = Clockwork.salesman.sells,
 			cash = Clockwork.salesman.cash,
@@ -34,9 +38,13 @@ function PANEL:Init()
 		Clockwork.salesman.priceScale = nil
 		Clockwork.salesman.factions = nil
 		Clockwork.salesman.classes = nil
+		Clockwork.salesman.customClasses = nil
+		Clockwork.salesman.steamIDs = nil
+		Clockwork.salesman.charNames = nil
 		Clockwork.salesman.physDesc = nil
 		Clockwork.salesman.buyRate = nil
 		Clockwork.salesman.stock = nil
+		Clockwork.salesman.stockOverrides = nil
 		Clockwork.salesman.model = nil
 		Clockwork.salesman.sells = nil
 		Clockwork.salesman.buys = nil
@@ -481,6 +489,65 @@ function PANEL:Init()
 	self.classesForm:SetName("Classes")
 	self.settingsForm:AddItem(self.classesForm)
 	self.classesForm:Help("Leave these unchecked to allow all classes to buy and sell.")
+	
+	-- Custom access restrictions form
+	self.customAccessForm = vgui.Create("DForm")
+	self.customAccessForm:SetPadding(4)
+	self.customAccessForm:SetName("Custom Access Restrictions")
+	self.settingsForm:AddItem(self.customAccessForm)
+	self.customAccessForm:Help("Enter comma-separated values. Leave empty to allow all. If ANY restriction matches, the player can use the salesman.")
+	
+	-- Custom Classes text entry
+	self.customClassesEntry = self.customAccessForm:TextEntry("Custom Classes (comma-separated)")
+	self.customClassesEntry:SetTooltip("Enter custom class names separated by commas (e.g. 'Rebel, Citizen, Combine')")
+	
+	-- Ensure customClasses table exists
+	Clockwork.salesman.customClasses = Clockwork.salesman.customClasses or {}
+	
+	-- Convert table to comma-separated string for display
+	local customClassesStr = ""
+	local classNames = {}
+	for className, _ in pairs(Clockwork.salesman.customClasses) do
+		table.insert(classNames, className)
+	end
+	customClassesStr = table.concat(classNames, ", ")
+	self.customClassesEntry:SetValue(customClassesStr)
+	
+	-- Steam IDs text entry
+	self.steamIDsEntry = self.customAccessForm:TextEntry("Steam IDs (comma-separated)")
+	self.steamIDsEntry:SetTooltip("Enter Steam IDs separated by commas (e.g. 'STEAM_0:1:12345, STEAM_0:0:67890')")
+	
+	-- Ensure steamIDs table exists
+	Clockwork.salesman.steamIDs = Clockwork.salesman.steamIDs or {}
+	
+	-- Convert table to comma-separated string for display
+	local steamIDsStr = ""
+	local steamIDs = {}
+	for steamID, _ in pairs(Clockwork.salesman.steamIDs) do
+		table.insert(steamIDs, steamID)
+	end
+	steamIDsStr = table.concat(steamIDs, ", ")
+	self.steamIDsEntry:SetValue(steamIDsStr)
+	
+	-- Character Names text entry
+	self.charNamesEntry = self.customAccessForm:TextEntry("Character Names (comma-separated)")
+	self.charNamesEntry:SetTooltip("Enter character names separated by commas (e.g. 'John Doe, Jane Smith')")
+	
+	-- Ensure charNames table exists
+	Clockwork.salesman.charNames = Clockwork.salesman.charNames or {}
+	
+	-- Convert table to comma-separated string for display
+	local charNamesStr = ""
+	local charNames = {}
+	for charName, _ in pairs(Clockwork.salesman.charNames) do
+		table.insert(charNames, charName)
+	end
+	charNamesStr = table.concat(charNames, ", ")
+	self.charNamesEntry:SetValue(charNamesStr)
+	
+	-- Ensure stockOverrides table exists
+	Clockwork.salesman.stockOverrides = Clockwork.salesman.stockOverrides or {}
+	
 	self.classBoxes = {}
 	self.factionBoxes = {}
 
@@ -592,6 +659,20 @@ function PANEL:Rebuild()
 	self:RebuildPanel(self.itemsPanel, "Items", Clockwork.salesman:GetItems())
 end
 
+-- Helper function to parse comma-separated string into table
+local function ParseCommaSeparated(str)
+	local result = {}
+	if str and str ~= "" then
+		for value in string.gmatch(str, "[^,]+") do
+			local trimmed = string.Trim(value)
+			if trimmed ~= "" then
+				result[trimmed] = true
+			end
+		end
+	end
+	return result
+end
+
 -- Called each frame.
 function PANEL:Think()
 	self:SetSize(ScrW() * 0.5, ScrH() * 0.75)
@@ -609,6 +690,11 @@ function PANEL:Think()
 	Clockwork.salesman.cash = self.cash:GetValue()
 	local priceScale = self.priceScale:GetValue()
 	Clockwork.salesman.priceScale = tonumber(priceScale) or 1
+	
+	-- Parse custom access restriction fields
+	Clockwork.salesman.customClasses = ParseCommaSeparated(self.customClassesEntry:GetValue())
+	Clockwork.salesman.steamIDs = ParseCommaSeparated(self.steamIDsEntry:GetValue())
+	Clockwork.salesman.charNames = ParseCommaSeparated(self.charNamesEntry:GetValue())
 end
 
 -- Called when the layout should be performed.
@@ -680,10 +766,28 @@ function PANEL:Init()
 			end
 		elseif self.typeName == "Sells" then
 			Clockwork.salesman.sells[self.itemTable("uniqueID")] = nil
+			Clockwork.salesman.stockOverrides[self.itemTable("uniqueID")] = nil
 			Clockwork.salesman:GetPanel():Rebuild()
 		elseif self.typeName == "Buys" then
 			Clockwork.salesman.buys[self.itemTable("uniqueID")] = nil
 			Clockwork.salesman:GetPanel():Rebuild()
+		end
+	end
+	
+	-- Right-click to set individual stock override for Sells items
+	function self.spawnIcon.DoRightClick(spawnIcon)
+		if self.typeName == "Sells" then
+			local uniqueID = self.itemTable("uniqueID")
+			local currentStock = Clockwork.salesman.stockOverrides[uniqueID] or ""
+			
+			Derma_StringRequest("Stock Override", "Set individual stock for this item (leave empty to use global stock):", tostring(currentStock), function(text)
+				local stockValue = tonumber(text)
+				if stockValue and stockValue >= 0 then
+					Clockwork.salesman.stockOverrides[uniqueID] = stockValue
+				else
+					Clockwork.salesman.stockOverrides[uniqueID] = nil
+				end
+			end)
 		end
 	end
 
@@ -737,8 +841,16 @@ function PANEL:Think()
 			end
 		end
 
-		if self.typeName == "Sells" and Clockwork.salesman.stock ~= -1 then
-			displayInfo.itemTitle = "[" .. Clockwork.salesman.stock .. "] [" .. displayInfo.name .. ", " .. displayInfo.weight .. "]"
+		if self.typeName == "Sells" then
+			local uniqueID = self.itemTable("uniqueID")
+			local itemStock = Clockwork.salesman.stockOverrides[uniqueID]
+			
+			-- Use item-specific stock if set, otherwise use global stock
+			if itemStock then
+				displayInfo.itemTitle = "[" .. itemStock .. "] [" .. displayInfo.name .. ", " .. displayInfo.weight .. "]"
+			elseif Clockwork.salesman.stock ~= -1 then
+				displayInfo.itemTitle = "[" .. Clockwork.salesman.stock .. "] [" .. displayInfo.name .. ", " .. displayInfo.weight .. "]"
+			end
 		end
 	end
 

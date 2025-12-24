@@ -58,11 +58,16 @@ Clockwork.datastream:Hook("Salesmenu", function(player, data)
 						end
 
 						data.entity.cwCash = data.entity.cwCash + cost
-						Clockwork.datastream:Start(player, "SalesmenuRebuild", data.entity.cwCash)
 
 						if data.entity.cwStock[itemUniqueID] then
 							data.entity.cwStock[itemUniqueID] = data.entity.cwStock[itemUniqueID] - 1
 						end
+						
+						-- Send updated cash and stock to client
+						Clockwork.datastream:Start(player, "SalesmenuRebuild", {
+							cash = data.entity.cwCash,
+							stock = data.entity.cwStock
+						})
 					end
 				else
 					local cashRequired = cost * amount - player:GetCash()
@@ -113,9 +118,13 @@ Clockwork.datastream:Hook("SalesmanAdd", function(player, data)
 			["physDesc"] = "string",
 			["buyRate"] = "number",
 			["classes"] = "table",
+			["customClasses"] = "table",
+			["steamIDs"] = "table",
+			["charNames"] = "table",
 			["model"] = "string",
 			["sells"] = "table",
 			["stock"] = "number",
+			["stockOverrides"] = "table",
 			["text"] = "table",
 			["cash"] = "number",
 			["buys"] = "table",
@@ -164,11 +173,18 @@ Clockwork.datastream:Hook("SalesmanAdd", function(player, data)
 		salesman:SetModel(data.model)
 		salesman:Spawn()
 		salesman.cwStock = {}
+		salesman.cwStockOverrides = data.stockOverrides or {}
 
-		if data.stock ~= -1 then
-			for k, v in pairs(data.sells) do
+		-- Initialize stock for all sell items
+		for k, v in pairs(data.sells) do
+			-- Use item-specific stock override if available
+			if salesman.cwStockOverrides[k] then
+				salesman.cwStock[k] = salesman.cwStockOverrides[k]
+			elseif data.stock ~= -1 then
+				-- Use global stock if set (not infinite)
 				salesman.cwStock[k] = data.stock
 			end
+			-- If no override and global stock is -1 (infinite), cwStock[k] stays nil (infinite)
 		end
 
 		salesman.cwCash = data.cash
@@ -176,6 +192,9 @@ Clockwork.datastream:Hook("SalesmanAdd", function(player, data)
 		salesman.cwSellTab = data.sells
 		salesman.cwTextTab = data.text
 		salesman.cwClasses = data.classes
+		salesman.cwCustomClasses = data.customClasses or {}
+		salesman.cwSteamIDs = data.steamIDs or {}
+		salesman.cwCharNames = data.charNames or {}
 		salesman.cwBuyRate = data.buyRate
 		salesman.cwFactions = data.factions
 		salesman.cwPriceScale = data.priceScale
@@ -239,7 +258,11 @@ function cwSalesmen:LoadSalesmen()
 
 		salesman.cwCash = v.cash
 		salesman.cwStock = v.stock
+		salesman.cwStockOverrides = v.stockOverrides or {}
 		salesman.cwClasses = v.classes
+		salesman.cwCustomClasses = v.customClasses or {}
+		salesman.cwSteamIDs = v.steamIDs or {}
+		salesman.cwCharNames = v.charNames or {}
 		salesman.cwBuyRate = v.buyRate
 		salesman.cwFactions = v.factions
 		salesman.cwBuyTab = v.buyTab
@@ -261,6 +284,7 @@ function cwSalesmen:GetTableFromEntity(entity)
 		name = entity:GetNWString("Name"),
 		cash = entity.cwCash,
 		stock = entity.cwStock,
+		stockOverrides = entity.cwStockOverrides or {},
 		model = entity:GetModel(),
 		material = entity:GetMaterial(),
 		color = entity:GetColor(),
@@ -273,6 +297,9 @@ function cwSalesmen:GetTableFromEntity(entity)
 		sellTab = entity.cwSellTab,
 		textTab = entity.cwTextTab,
 		classes = entity.cwClasses,
+		customClasses = entity.cwCustomClasses or {},
+		steamIDs = entity.cwSteamIDs or {},
+		charNames = entity.cwCharNames or {},
 		position = entity:GetPos(),
 		physDesc = entity:GetNWString("PhysDesc"),
 		animation = entity.cwAnimation,

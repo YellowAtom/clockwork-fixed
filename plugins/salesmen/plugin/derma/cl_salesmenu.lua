@@ -268,9 +268,10 @@ function PANEL:Think()
 			end
 		end
 
-		local iStockLeft = Clockwork.salesmenu.stock[self.itemTable("uniqueID")]
+		local stockTable = Clockwork.salesmenu.stock or {}
+		local iStockLeft = stockTable[self.itemTable("uniqueID")]
 
-		if self.typeName == "Sells" and iStockLeft then
+		if self.typeName == "Sells" and iStockLeft ~= nil then
 			displayInfo.itemTitle = "[" .. iStockLeft .. "] [" .. displayInfo.name .. ", " .. displayInfo.weight .. "]"
 		end
 	end

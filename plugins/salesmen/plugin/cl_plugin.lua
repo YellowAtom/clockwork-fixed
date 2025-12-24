@@ -24,10 +24,14 @@ Clockwork.datastream:Hook("Salesmenu", function(data)
 end)
 
 Clockwork.datastream:Hook("SalesmenuRebuild", function(data)
-	local cash = data
-
 	if Clockwork.salesmenu:IsSalesmenuOpen() then
-		Clockwork.salesmenu.cash = cash
+		if type(data) == "table" then
+			Clockwork.salesmenu.cash = data.cash
+			Clockwork.salesmenu.stock = data.stock
+		else
+			-- Legacy support: just cash value
+			Clockwork.salesmenu.cash = data
+		end
 		Clockwork.salesmenu.panel:Rebuild()
 	end
 end)
@@ -71,7 +75,11 @@ Clockwork.datastream:Hook("SalesmanAdd", function(data)
 		Clockwork.salesman.factions = {}
 		Clockwork.salesman.buyRate = 100
 		Clockwork.salesman.classes = {}
+		Clockwork.salesman.customClasses = {}
+		Clockwork.salesman.steamIDs = {}
+		Clockwork.salesman.charNames = {}
 		Clockwork.salesman.stock = -1
+		Clockwork.salesman.stockOverrides = {}
 		Clockwork.salesman.sells = {}
 		Clockwork.salesman.model = "models/humans/group01/male_0" .. math.random(1, 9) .. ".mdl"
 		Clockwork.salesman.items = {}
@@ -116,7 +124,11 @@ Clockwork.datastream:Hook("SalesmanEdit", function(data)
 		Clockwork.salesman.physDesc = data.physDesc
 		Clockwork.salesman.buyRate = data.buyRate
 		Clockwork.salesman.classes = data.classes
+		Clockwork.salesman.customClasses = data.customClasses or {}
+		Clockwork.salesman.steamIDs = data.steamIDs or {}
+		Clockwork.salesman.charNames = data.charNames or {}
 		Clockwork.salesman.stock = -1
+		Clockwork.salesman.stockOverrides = data.stockOverrides or {}
 		Clockwork.salesman.sells = data.sellTab
 		Clockwork.salesman.model = data.model
 		Clockwork.salesman.items = {}
