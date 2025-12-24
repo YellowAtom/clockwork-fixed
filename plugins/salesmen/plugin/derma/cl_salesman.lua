@@ -654,9 +654,29 @@ end
 
 -- A function to rebuild the panel.
 function PANEL:Rebuild()
+	-- Check if we should preserve items scroll (set by Items tab when adding items)
+	local preserveScroll = Clockwork.salesman._preserveItemsScroll
+	Clockwork.salesman._preserveItemsScroll = nil
+	
+	-- Save scroll position before rebuild
+	local itemsScroll = 0
+	if preserveScroll and IsValid(self.itemsPanel) and self.itemsPanel.GetVBar and self.itemsPanel:GetVBar() then
+		itemsScroll = self.itemsPanel:GetVBar():GetScroll()
+	end
+	
 	self:RebuildPanel(self.sellsPanel, "Sells", Clockwork.salesman:GetSells())
 	self:RebuildPanel(self.buysPanel, "Buys", Clockwork.salesman:GetBuys())
-	self:RebuildPanel(self.itemsPanel, "Items", Clockwork.salesman:GetItems())
+	
+	-- Only rebuild items panel if not preserving scroll
+	if not preserveScroll then
+		self:RebuildPanel(self.itemsPanel, "Items", Clockwork.salesman:GetItems())
+	else
+		-- Restore items scroll position
+		self.pendingScroll = {
+			items = itemsScroll,
+			time = CurTime() + 0.1
+		}
+	end
 end
 
 -- Helper function to parse comma-separated string into table
@@ -677,6 +697,14 @@ end
 function PANEL:Think()
 	self:SetSize(ScrW() * 0.5, ScrH() * 0.75)
 	self:SetPos(ScrW() / 2 - self:GetWide() / 2, ScrH() / 2 - self:GetTall() / 2)
+
+	-- Restore scroll positions after rebuild
+	if self.pendingScroll and CurTime() >= self.pendingScroll.time then
+		if self.pendingScroll.items and IsValid(self.itemsPanel) and self.itemsPanel.GetVBar and self.itemsPanel:GetVBar() then
+			self.itemsPanel:GetVBar():SetScroll(self.pendingScroll.items)
+		end
+		self.pendingScroll = nil
+	end
 
 	-- Update dialogue data structure (no longer need individual text fields)
 	-- The dialogue panels handle their own data management
@@ -728,12 +756,14 @@ function PANEL:Init()
 					["Buys"] = function()
 						Derma_StringRequest(cashName, "How much do you want the item to be bought for?", "", function(text)
 							Clockwork.salesman.buys[self.itemTable("uniqueID")] = tonumber(text) or true
+							Clockwork.salesman._preserveItemsScroll = true
 							Clockwork.salesman:GetPanel():Rebuild()
 						end)
 					end,
 					["Sells"] = function()
 						Derma_StringRequest(cashName, "How much do you want the item to sell for?", "", function(text)
 							Clockwork.salesman.sells[self.itemTable("uniqueID")] = tonumber(text) or true
+							Clockwork.salesman._preserveItemsScroll = true
 							Clockwork.salesman:GetPanel():Rebuild()
 						end)
 					end,
@@ -742,6 +772,7 @@ function PANEL:Init()
 							Derma_StringRequest(cashName, "How much do you want the item to be bought for?", "", function(buyPrice)
 								Clockwork.salesman.sells[self.itemTable("uniqueID")] = tonumber(sellPrice) or true
 								Clockwork.salesman.buys[self.itemTable("uniqueID")] = tonumber(buyPrice) or true
+								Clockwork.salesman._preserveItemsScroll = true
 								Clockwork.salesman:GetPanel():Rebuild()
 							end)
 						end)
@@ -751,43 +782,75 @@ function PANEL:Init()
 				Clockwork.kernel:AddMenuFromData(nil, {
 					["Buys"] = function()
 						Clockwork.salesman.buys[self.itemTable("uniqueID")] = true
+						Clockwork.salesman._preserveItemsScroll = true
 						Clockwork.salesman:GetPanel():Rebuild()
 					end,
 					["Sells"] = function()
 						Clockwork.salesman.sells[self.itemTable("uniqueID")] = true
+						Clockwork.salesman._preserveItemsScroll = true
 						Clockwork.salesman:GetPanel():Rebuild()
 					end,
 					["Both"] = function()
 						Clockwork.salesman.sells[self.itemTable("uniqueID")] = true
 						Clockwork.salesman.buys[self.itemTable("uniqueID")] = true
+						Clockwork.salesman._preserveItemsScroll = true
 						Clockwork.salesman:GetPanel():Rebuild()
 					end
 				})
 			end
 		elseif self.typeName == "Sells" then
-			Clockwork.salesman.sells[self.itemTable("uniqueID")] = nil
-			Clockwork.salesman.stockOverrides[self.itemTable("uniqueID")] = nil
-			Clockwork.salesman:GetPanel():Rebuild()
+			local uniqueID = self.itemTable("uniqueID")
+			local currentStock = Clockwork.salesman.stockOverrides[uniqueID]
+			local stockText = currentStock and (" [" .. currentStock .. "]") or ""
+			local currentPrice = Clockwork.salesman.sells[uniqueID]
+			local priceText = (type(currentPrice) == "number") and (" [" .. currentPrice .. "]") or ""
+			
+			Clockwork.kernel:AddMenuFromData(nil, {
+				["Set Price" .. priceText] = function()
+					local currentValue = (type(Clockwork.salesman.sells[uniqueID]) == "number") and Clockwork.salesman.sells[uniqueID] or ""
+					Derma_StringRequest("Price Override", "Set custom price for this item (leave empty to use default price with scaling):", tostring(currentValue), function(text)
+						local priceValue = tonumber(text)
+						if priceValue and priceValue >= 0 then
+							Clockwork.salesman.sells[uniqueID] = priceValue
+						else
+							Clockwork.salesman.sells[uniqueID] = true
+						end
+						Clockwork.salesman:GetPanel():Rebuild()
+					end)
+				end,
+				["Set Stock" .. stockText] = function()
+					local currentValue = Clockwork.salesman.stockOverrides[uniqueID] or ""
+					Derma_StringRequest("Stock Override", "Set individual stock for this item (leave empty to use global stock):", tostring(currentValue), function(text)
+						local stockValue = tonumber(text)
+						if stockValue and stockValue >= 0 then
+							Clockwork.salesman.stockOverrides[uniqueID] = stockValue
+						else
+							Clockwork.salesman.stockOverrides[uniqueID] = nil
+						end
+						Clockwork.salesman:GetPanel():Rebuild()
+					end)
+				end,
+				["Remove Item"] = function()
+					Clockwork.salesman.sells[uniqueID] = nil
+					Clockwork.salesman.stockOverrides[uniqueID] = nil
+					Clockwork.salesman:GetPanel():Rebuild()
+				end
+			})
 		elseif self.typeName == "Buys" then
 			Clockwork.salesman.buys[self.itemTable("uniqueID")] = nil
 			Clockwork.salesman:GetPanel():Rebuild()
 		end
 	end
 	
-	-- Right-click to set individual stock override for Sells items
+	-- Right-click to quickly remove item from Sells
 	function self.spawnIcon.DoRightClick(spawnIcon)
 		if self.typeName == "Sells" then
-			local uniqueID = self.itemTable("uniqueID")
-			local currentStock = Clockwork.salesman.stockOverrides[uniqueID] or ""
-			
-			Derma_StringRequest("Stock Override", "Set individual stock for this item (leave empty to use global stock):", tostring(currentStock), function(text)
-				local stockValue = tonumber(text)
-				if stockValue and stockValue >= 0 then
-					Clockwork.salesman.stockOverrides[uniqueID] = stockValue
-				else
-					Clockwork.salesman.stockOverrides[uniqueID] = nil
-				end
-			end)
+			Clockwork.salesman.sells[self.itemTable("uniqueID")] = nil
+			Clockwork.salesman.stockOverrides[self.itemTable("uniqueID")] = nil
+			Clockwork.salesman:GetPanel():Rebuild()
+		elseif self.typeName == "Buys" then
+			Clockwork.salesman.buys[self.itemTable("uniqueID")] = nil
+			Clockwork.salesman:GetPanel():Rebuild()
 		end
 	end
 
@@ -816,20 +879,24 @@ function PANEL:Think()
 		end
 
 		if Clockwork.config:Get("cash_enabled"):Get() then
-			if self.itemTable("cost") ~= 0 then
-				displayInfo.weight = Clockwork.kernel:FormatCash((self.itemTable("cost") * priceScale) * math.max(amount, 1))
-			else
-				displayInfo.weight = "Free"
-			end
-
 			local overrideCash = Clockwork.salesman.sells[self.itemTable("uniqueID")]
 
 			if self.typeName == "Buys" then
 				overrideCash = Clockwork.salesman.buys[self.itemTable("uniqueID")]
 			end
 
+			-- Check for custom price first (takes priority and ignores scaling)
 			if type(overrideCash) == "number" then
-				displayInfo.weight = Clockwork.kernel:FormatCash(overrideCash * math.max(amount, 1))
+				if overrideCash == 0 then
+					displayInfo.weight = "Free"
+				else
+					displayInfo.weight = Clockwork.kernel:FormatCash(overrideCash * math.max(amount, 1))
+				end
+			elseif self.itemTable("cost") ~= 0 then
+				-- Default price with scaling
+				displayInfo.weight = Clockwork.kernel:FormatCash((self.itemTable("cost") * priceScale) * math.max(amount, 1))
+			else
+				displayInfo.weight = "Free"
 			end
 		end
 

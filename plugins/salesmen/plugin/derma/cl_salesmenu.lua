@@ -243,20 +243,24 @@ function PANEL:Think()
 		end
 
 		if Clockwork.config:Get("cash_enabled"):Get() then
-			if self.itemTable("cost") ~= 0 then
-				displayInfo.weight = Clockwork.kernel:FormatCash((self.itemTable("cost") * priceScale) * math.max(amount, 1))
-			else
-				displayInfo.weight = "Free"
-			end
-
 			local overrideCash = Clockwork.salesmenu.sells[self.itemTable("uniqueID")]
 
 			if self.typeName == "Buys" then
 				overrideCash = Clockwork.salesmenu.buys[self.itemTable("uniqueID")]
 			end
 
+			-- Check for custom price first (takes priority and ignores scaling)
 			if type(overrideCash) == "number" then
-				displayInfo.weight = Clockwork.kernel:FormatCash(overrideCash * math.max(amount, 1))
+				if overrideCash == 0 then
+					displayInfo.weight = "Free"
+				else
+					displayInfo.weight = Clockwork.kernel:FormatCash(overrideCash * math.max(amount, 1))
+				end
+			elseif self.itemTable("cost") ~= 0 then
+				-- Default price with scaling
+				displayInfo.weight = Clockwork.kernel:FormatCash((self.itemTable("cost") * priceScale) * math.max(amount, 1))
+			else
+				displayInfo.weight = "Free"
 			end
 		end
 

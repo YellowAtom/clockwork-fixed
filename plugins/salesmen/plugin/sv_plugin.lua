@@ -20,12 +20,13 @@ Clockwork.datastream:Hook("Salesmenu", function(player, data)
 
 				local amount = 1
 				local cost = itemTable("cost")
+				local hasCustomPrice = type(data.entity.cwSellTab[itemUniqueID]) == "number"
 
-				if type(data.entity.cwSellTab[itemUniqueID]) == "number" then
+				if hasCustomPrice then
+					-- Custom price is a final price, not affected by scaling
 					cost = data.entity.cwSellTab[itemUniqueID]
-				end
-
-				if data.entity.cwPriceScale then
+				elseif data.entity.cwPriceScale then
+					-- Only apply price scale to default item prices
 					cost = cost * data.entity.cwPriceScale
 				end
 
@@ -188,6 +189,7 @@ Clockwork.datastream:Hook("SalesmanAdd", function(player, data)
 		end
 
 		salesman.cwCash = data.cash
+		salesman.cwDefaultStock = data.stock
 		salesman.cwBuyTab = data.buys
 		salesman.cwSellTab = data.sells
 		salesman.cwTextTab = data.text
@@ -258,6 +260,7 @@ function cwSalesmen:LoadSalesmen()
 
 		salesman.cwCash = v.cash
 		salesman.cwStock = v.stock
+		salesman.cwDefaultStock = v.defaultStock or -1
 		salesman.cwStockOverrides = v.stockOverrides or {}
 		salesman.cwClasses = v.classes
 		salesman.cwCustomClasses = v.customClasses or {}
@@ -284,6 +287,7 @@ function cwSalesmen:GetTableFromEntity(entity)
 		name = entity:GetNWString("Name"),
 		cash = entity.cwCash,
 		stock = entity.cwStock,
+		defaultStock = entity.cwDefaultStock or -1,
 		stockOverrides = entity.cwStockOverrides or {},
 		model = entity:GetModel(),
 		material = entity:GetMaterial(),

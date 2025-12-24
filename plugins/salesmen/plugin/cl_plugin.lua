@@ -127,7 +127,7 @@ Clockwork.datastream:Hook("SalesmanEdit", function(data)
 		Clockwork.salesman.customClasses = data.customClasses or {}
 		Clockwork.salesman.steamIDs = data.steamIDs or {}
 		Clockwork.salesman.charNames = data.charNames or {}
-		Clockwork.salesman.stock = -1
+		Clockwork.salesman.stock = data.defaultStock or -1
 		Clockwork.salesman.stockOverrides = data.stockOverrides or {}
 		Clockwork.salesman.sells = data.sellTab
 		Clockwork.salesman.model = data.model
