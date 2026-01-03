@@ -103,6 +103,7 @@ function PANEL:Init()
 	self.stock:SetValue(Clockwork.salesman.stock)
 	self.model:SetValue(Clockwork.salesman.model)
 	self.cash:SetValue(Clockwork.salesman.cash)
+	
 	self.responsesForm = vgui.Create("cwForm")
 	self.responsesForm:SetPadding(4)
 	self.responsesForm:SetName("Responses")
@@ -592,11 +593,163 @@ function PANEL:Init()
 	Clockwork.kernel:SetNoticePanel(self)
 end
 
+-- A function to add the presets form to the Items panel
+function PANEL:AddPresetsForm(panelList)
+	local salesmanPanel = self
+	
+	-- Create the presets form
+	local presetsForm = vgui.Create("DForm")
+	presetsForm:SetPadding(4)
+	presetsForm:SetName("Item Presets (Business Flags)")
+	panelList:AddItem(presetsForm)
+	presetsForm:Help("Add items to Sells list based on business menu access flags.")
+	
+	-- Dynamically discover business flags from all items
+	local discoveredFlags = {}
+	local flagItemCounts = {}
+	
+	for uniqueID, itemTable in pairs(Clockwork.item:GetAll()) do
+		local itemAccess = itemTable.access or itemTable("access")
+		if itemAccess and itemAccess ~= "" then
+			for i = 1, #itemAccess do
+				local flag = string.sub(itemAccess, i, i)
+				if not discoveredFlags[flag] then
+					discoveredFlags[flag] = true
+					flagItemCounts[flag] = 0
+				end
+				flagItemCounts[flag] = flagItemCounts[flag] + 1
+			end
+		end
+	end
+	
+	-- Get flag names from Clockwork's flag system
+	local function getFlagName(flag)
+		local flagName = Clockwork.flag:GetName(flag)
+		if flagName then
+			return flagName
+		end
+		return "Flag " .. flag
+	end
+	
+	-- Sort flags alphabetically
+	local sortedFlags = {}
+	for flag, _ in pairs(discoveredFlags) do
+		table.insert(sortedFlags, flag)
+	end
+	table.sort(sortedFlags)
+	
+	-- Create preset dropdown
+	local presetCombo = vgui.Create("DComboBox")
+	presetCombo:SetValue("Select a preset to add items...")
+	for _, flag in ipairs(sortedFlags) do
+		local flagName = getFlagName(flag)
+		local itemCount = flagItemCounts[flag] or 0
+		presetCombo:AddChoice(flagName .. " (" .. flag .. ") [" .. itemCount .. " items]", flag)
+	end
+	presetCombo:AddChoice("All Business Items", "ALL")
+	presetsForm:AddItem(presetCombo)
+	
+	-- Add button to apply preset
+	local addPresetButton = vgui.Create("DButton")
+	addPresetButton:SetText("Apply Preset")
+	presetsForm:AddItem(addPresetButton)
+	
+	-- Helper function to apply preset items
+	local function applyPreset(selectedFlag, replaceExisting)
+		if replaceExisting then
+			Clockwork.salesman.sells = {}
+			Clockwork.salesman.stockOverrides = {}
+		end
+		
+		for uniqueID, itemTable in pairs(Clockwork.item:GetAll()) do
+			local itemAccess = itemTable.access or itemTable("access")
+			
+			if itemAccess then
+				local shouldAdd = false
+				
+				if selectedFlag == "ALL" then
+					shouldAdd = true
+				else
+					shouldAdd = string.find(itemAccess, selectedFlag, 1, true) ~= nil
+				end
+				
+				if shouldAdd and not Clockwork.salesman.sells[uniqueID] then
+					Clockwork.salesman.sells[uniqueID] = true
+				end
+			end
+		end
+		
+		Clockwork.salesman._preserveItemsScroll = true
+		salesmanPanel:Rebuild()
+	end
+	
+	addPresetButton.DoClick = function()
+		local _, selectedFlag = presetCombo:GetSelected()
+		if not selectedFlag then
+			return
+		end
+		
+		local confirmFrame = vgui.Create("DFrame")
+		confirmFrame:SetTitle("Apply Preset")
+		confirmFrame:SetSize(300, 120)
+		confirmFrame:Center()
+		confirmFrame:MakePopup()
+		confirmFrame:SetBackgroundBlur(true)
+		
+		local label = vgui.Create("DLabel", confirmFrame)
+		label:SetText("How would you like to apply this preset?")
+		label:Dock(TOP)
+		label:DockMargin(10, 10, 10, 10)
+		label:SetContentAlignment(5)
+		
+		local buttonPanel = vgui.Create("DPanel", confirmFrame)
+		buttonPanel:Dock(BOTTOM)
+		buttonPanel:SetTall(35)
+		buttonPanel:DockMargin(10, 0, 10, 10)
+		buttonPanel.Paint = function() end
+		
+		local replaceButton = vgui.Create("DButton", buttonPanel)
+		replaceButton:SetText("Replace All")
+		replaceButton:Dock(LEFT)
+		replaceButton:SetWide(85)
+		replaceButton:SetTooltip("Clear existing items and add preset items")
+		replaceButton.DoClick = function()
+			confirmFrame:Close()
+			applyPreset(selectedFlag, true)
+		end
+		
+		local addButton = vgui.Create("DButton", buttonPanel)
+		addButton:SetText("Add to Existing")
+		addButton:Dock(LEFT)
+		addButton:DockMargin(5, 0, 0, 0)
+		addButton:SetWide(100)
+		addButton:SetTooltip("Keep existing items and add new ones")
+		addButton.DoClick = function()
+			confirmFrame:Close()
+			applyPreset(selectedFlag, false)
+		end
+		
+		local cancelButton = vgui.Create("DButton", buttonPanel)
+		cancelButton:SetText("Cancel")
+		cancelButton:Dock(RIGHT)
+		cancelButton:SetWide(70)
+		cancelButton.DoClick = function()
+			confirmFrame:Close()
+		end
+	end
+end
+
 -- A function to rebuild a panel.
 function PANEL:RebuildPanel(panelList, typeName, inventory)
 	panelList:Clear(true)
 	panelList.typeName = typeName
 	panelList.inventory = inventory
+	
+	-- Add preset form at the top of Items panel
+	if typeName == "Items" then
+		self:AddPresetsForm(panelList)
+	end
+	
 	local categories = {}
 	local items = {}
 
