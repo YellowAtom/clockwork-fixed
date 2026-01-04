@@ -610,6 +610,12 @@ function PANEL:AddPresetsForm(panelList)
 	
 	for uniqueID, itemTable in pairs(Clockwork.item:GetAll()) do
 		local itemAccess = itemTable.access or itemTable("access")
+		local itemBusiness = itemTable.business
+		if itemBusiness == nil then itemBusiness = itemTable("business") end
+		
+		-- Skip items with business = false
+		if itemBusiness == false then continue end
+		
 		if itemAccess and itemAccess ~= "" then
 			for i = 1, #itemAccess do
 				local flag = string.sub(itemAccess, i, i)
@@ -663,6 +669,11 @@ function PANEL:AddPresetsForm(panelList)
 		
 		for uniqueID, itemTable in pairs(Clockwork.item:GetAll()) do
 			local itemAccess = itemTable.access or itemTable("access")
+			local itemBusiness = itemTable.business
+			if itemBusiness == nil then itemBusiness = itemTable("business") end
+			
+			-- Skip items with business = false
+			if itemBusiness == false then continue end
 			
 			if itemAccess then
 				local shouldAdd = false
