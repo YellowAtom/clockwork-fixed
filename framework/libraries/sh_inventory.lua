@@ -354,7 +354,7 @@ if CLIENT then
 	end)
 
 	Clockwork.datastream:Hook("InvGive", function(data)
-		local itemTable = Clockwork.item:CreateInstance(data.index, data.itemID, data.data)
+		local itemTable = Clockwork.item:CreateInstance(data.uniqueID or data.index, data.itemID, data.data)
 		Clockwork.inventory:AddInstance(Clockwork.inventory.client, itemTable)
 		Clockwork.inventory:Rebuild()
 		Clockwork.plugin:Call("PlayerItemGiven", itemTable)
@@ -390,7 +390,7 @@ if CLIENT then
 
 	Clockwork.datastream:Hook("InvUpdate", function(data)
 		for k, v in pairs(data) do
-			local itemTable = Clockwork.item:CreateInstance(v.index, v.itemID, v.data)
+			local itemTable = Clockwork.item:CreateInstance(v.uniqueID or v.index, v.itemID, v.data)
 			Clockwork.inventory:AddInstance(Clockwork.inventory.client, itemTable)
 		end
 

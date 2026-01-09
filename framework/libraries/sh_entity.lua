@@ -478,7 +478,7 @@ if CLIENT then
 
 		if IsValid(data.entity) then
 			data.entity.cwFetchedItemData = true
-			data.entity.cwItemTable = Clockwork.item:CreateInstance(data.definition.index, data.definition.itemID, data.definition.data)
+			data.entity.cwItemTable = Clockwork.item:CreateInstance(data.definition.uniqueID or data.definition.index, data.definition.itemID, data.definition.data)
 		end
 	end)
 else

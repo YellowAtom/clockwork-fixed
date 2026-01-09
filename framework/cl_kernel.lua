@@ -385,7 +385,7 @@ cwDatastream:Hook("WeaponItemData", function(data)
 	local weapon = Entity(data.weapon)
 
 	if IsValid(weapon) then
-		weapon.cwItemTable = cwItem:CreateInstance(data.definition.index, data.definition.itemID, data.definition.data)
+		weapon.cwItemTable = cwItem:CreateInstance(data.definition.uniqueID or data.definition.index, data.definition.itemID, data.definition.data)
 	end
 end)
 

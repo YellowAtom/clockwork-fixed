@@ -1000,7 +1000,7 @@ function playerMeta:TakeItem(itemTable)
 	cwPlugin:Call("PlayerItemTaken", self, itemTable)
 	cwInventory:RemoveInstance(inventory, itemTable)
 
-	cwDatastream:Start(self, "InvTake", {itemTable("index"), itemTable("itemID")})
+	cwDatastream:Start(self, "InvTake", {itemTable("uniqueID"), itemTable("itemID")})
 
 	return true
 end

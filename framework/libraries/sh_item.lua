@@ -428,6 +428,7 @@ end
 function Clockwork.item:GetDefinition(itemTable, bNetworkData)
 	local definition = {
 		itemID = itemTable("itemID"),
+		uniqueID = itemTable("uniqueID"),
 		index = itemTable("index"),
 		data = {}
 	}
@@ -857,6 +858,6 @@ else
 	end
 
 	Clockwork.datastream:Hook("ItemData", function(data)
-		Clockwork.item:CreateInstance(data.index, data.itemID, data.data)
+		Clockwork.item:CreateInstance(data.uniqueID or data.index, data.itemID, data.data)
 	end)
 end
