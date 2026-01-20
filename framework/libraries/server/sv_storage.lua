@@ -401,7 +401,7 @@ function Clockwork.storage:SyncItem(player, itemTable)
 		for _, r in pairs(viewers) do
 			net.Start("cwStorageGive")
 				-- one item entry
-				net.WriteUInt(itemTable("index"), 16) -- base item index
+				net.WriteString(itemTable("uniqueID")) -- base item uniqueID
 				net.WriteUInt(1, 12) -- count
 				NetWriteItemEntry({ id = definition.itemID, data = definition.data })
 			net.Send(r)
@@ -456,7 +456,7 @@ function Clockwork.storage:GiveTo(player, itemTable)
 	-- notify viewers
 	SendToInventoryViewers(inventory, function(r)
 		net.Start("cwStorageGive")
-			net.WriteUInt(itemTable("index"), 16)
+			net.WriteString(itemTable("uniqueID"))
 			net.WriteUInt(1, 12)
 			NetWriteItemEntry({ id = definition.itemID, data = definition.data })
 		net.Send(r)
@@ -566,7 +566,7 @@ function Clockwork.storage:UpdateByID(player, uniqueID)
 	for i = 1, #itemList, chunkSize do
 		local count = math.min(chunkSize, #itemList - i + 1)
 		net.Start("cwStorageGive")
-			net.WriteUInt(itemTable("index"), 16)
+			net.WriteString(itemTable("uniqueID"))
 			net.WriteUInt(count, 12)
 			for j = i, i + count - 1 do
 				NetWriteItemEntry(itemList[j])

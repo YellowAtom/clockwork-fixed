@@ -497,9 +497,9 @@ net.Receive(
     "cwStorageGive",
     function()
         if Clockwork.storage:IsStorageOpen() then
-            local index = net.ReadUInt(16)
+            local uniqueID = net.ReadString()
             local count = net.ReadUInt(12)
-            local itemTable = Clockwork.item:FindByID(index)
+            local itemTable = Clockwork.item:FindByID(uniqueID)
 
             if itemTable then
                 for i = 1, count do
@@ -507,7 +507,7 @@ net.Receive(
                     local data = net.ReadTable()
                     Clockwork.inventory:AddInstance(
                         Clockwork.storage.inventory,
-                        Clockwork.item:CreateInstance(index, id, data)
+                        Clockwork.item:CreateInstance(uniqueID, id, data)
                     )
                 end
                 Clockwork.storage:GetPanel():Rebuild()
