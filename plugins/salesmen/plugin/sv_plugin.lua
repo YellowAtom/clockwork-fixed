@@ -257,6 +257,11 @@ function cwSalesmen:LoadSalesmen()
 				salesman:SetFlexWeight(tonumber(flexId), weight)
 			end
 		end
+		
+		-- Apply no-collide state if it exists
+		if v.noCollide then
+			salesman:SetCollisionGroup(COLLISION_GROUP_WORLD)
+		end
 
 		salesman.cwCash = v.cash
 		salesman.cwStock = v.stock
@@ -310,7 +315,8 @@ function cwSalesmen:GetTableFromEntity(entity)
 		priceScale = entity.cwPriceScale,
 		buyInShipments = entity.cwBuyInShipments,
 		showChatBubble = IsValid(entity:GetChatBubble()),
-		skin = entity:GetSkin()
+		skin = entity:GetSkin(),
+		noCollide = entity:GetCollisionGroup() == COLLISION_GROUP_WORLD
 	}
 	
 	-- Save flex data if the model supports it
