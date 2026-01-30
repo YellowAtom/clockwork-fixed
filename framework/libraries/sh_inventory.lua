@@ -138,6 +138,7 @@ end
 -- A function to get an inventory as an items list.
 function Clockwork.inventory:GetAsItemsList(inventory)
 	local itemsList = {}
+	if not inventory then return itemsList end
 
 	for k, v in pairs(inventory) do
 		table.Add(itemsList, v)
@@ -154,6 +155,8 @@ end
 	@returns {Number} Number of items in the inventory that match the ID.
 --]]
 function Clockwork.inventory:GetItemCountByID(inventory, uniqueID)
+	if not inventory then return 0 end
+	
 	local itemTable = Clockwork.item:FindByID(uniqueID)
 
 	if itemTable and inventory[itemTable("uniqueID")] then
@@ -165,6 +168,8 @@ end
 
 -- A function to get whether an inventory has an item by ID.
 function Clockwork.inventory:HasItemByID(inventory, uniqueID)
+	if not inventory then return false end
+	
 	local itemTable = Clockwork.item:FindByID(uniqueID)
 
 	if itemTable then
