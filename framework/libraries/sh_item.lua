@@ -705,6 +705,7 @@ else
 	function Clockwork.item:GetIconInfo(itemTable)
 		local model = itemTable("iconModel", itemTable("model"))
 		local skin = itemTable("iconSkin", itemTable("skin"))
+		local bodygroups = nil
 
 		if itemTable.GetClientSideModel then
 			model = itemTable:GetClientSideModel()
@@ -714,11 +715,15 @@ else
 			skin = itemTable:GetClientSideSkin()
 		end
 
+		if itemTable.GetClientSideBodygroups then
+			bodygroups = itemTable:GetClientSideBodygroups()
+		end
+
 		if not model then
 			model = "models/props_c17/oildrum001.mdl"
 		end
 
-		return model, skin
+		return model, skin, bodygroups
 	end
 
 	-- A function to get an item's markup tooltip.

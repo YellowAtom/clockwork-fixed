@@ -329,15 +329,16 @@ function PANEL:Init()
 		Clockwork.kernel:HandleItemSpawnIconClick(self.itemTable, spawnIcon)
 	end
 
-	local model, skin = Clockwork.item:GetIconInfo(self.itemTable)
-	self.spawnIcon:SetModel(model, skin)
+	local model, skin, bodygroups = Clockwork.item:GetIconInfo(self.itemTable)
+	self.spawnIcon:SetModel(model, skin, bodygroups)
 	self.spawnIcon:SetSize(52, 52)
 	self.spawnIcon:SetColor(self.itemTable.color)
 	self.spawnIcon:SetTooltip(false)
 
 	self.cachedInfo = {
 		model = model,
-		skin = skin
+		skin = skin,
+		bodygroups = bodygroups
 	}
 end
 
@@ -346,12 +347,13 @@ function PANEL:Think()
 	self.spawnIcon:SetMarkupToolTip(Clockwork.item:GetMarkupToolTip(self.itemTable))
 
 	--[[ Check if the model or skin has changed and update the spawn icon. --]]
-	local model, skin = Clockwork.item:GetIconInfo(self.itemTable)
+	local model, skin, bodygroups = Clockwork.item:GetIconInfo(self.itemTable)
 
-	if model ~= self.cachedInfo.model or skin ~= self.cachedInfo.skin then
-		self.spawnIcon:SetModel(model, skin)
+	if model ~= self.cachedInfo.model or skin ~= self.cachedInfo.skin or bodygroups ~= self.cachedInfo.bodygroups then
+		self.spawnIcon:SetModel(model, skin, bodygroups)
 		self.cachedInfo.model = model
 		self.cachedInfo.skin = skin
+		self.cachedInfo.bodygroups = bodygroups
 	end
 end
 
