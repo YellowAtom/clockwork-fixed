@@ -2493,6 +2493,11 @@ end
 function Clockwork:PlayerCanUseCharacter(player, character)
 	if character.data["CharBanned"] then return character.name .. " is banned and cannot be used!" end
 	local faction = cwFaction:FindByID(character.faction)
+	
+	if faction and faction.whitelist and not cwPly:IsWhitelisted(player, character.faction) then
+		return "You are not whitelisted for this faction!"
+	end
+	
 	local playerRank, rank = player:GetFactionRank(character)
 	local factionCount = 0
 	local rankCount = 0
@@ -4258,11 +4263,6 @@ end
 	@returns {Unknown}
 --]]
 function Clockwork:PlayerAdjustCharacterTable(player, character)
-	if self.faction.stored[character.faction] then
-		if self.faction.stored[character.faction].whitelist and not cwPly:IsWhitelisted(player, character.faction) then
-			character.data["CharBanned"] = true
-		end
-	end
 end
 
 --[[
