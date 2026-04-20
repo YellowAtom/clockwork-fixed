@@ -95,9 +95,29 @@ end
 -- Called when an entity is removed.
 function cwStorage:EntityRemoved(entity)
 	if IsValid(entity) and not entity.cwIsBelongings then
-		Clockwork.entity:DropItemsAndCash(entity.cwInventory, entity.cwCash, entity:GetPos(), entity)
-		entity.cwInventory = nil
-		entity.cwCash = nil
+		if entity.cwRemoverToolDeleted then
+			entity.cwInventory = nil
+			entity.cwCash = nil
+		else
+			Clockwork.entity:DropItemsAndCash(entity.cwInventory, entity.cwCash, entity:GetPos(), entity)
+			entity.cwInventory = nil
+			entity.cwCash = nil
+		end
+	end
+end
+
+-- Called when a player attempts to use a tool.
+function cwStorage:CanTool(player, trace, tool)
+	if tool == "remover" and IsValid(trace.Entity) then
+		if not trace.Entity:IsMapEntity() then
+			local entities = constraint.GetAllConstrainedEntities(trace.Entity)
+
+			for k, v in pairs(entities) do
+				if not v:IsMapEntity() then
+					v.cwRemoverToolDeleted = true
+				end
+			end
+		end
 	end
 end
 

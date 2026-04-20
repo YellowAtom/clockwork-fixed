@@ -25,68 +25,57 @@ function cwSalesmen:PlayerCanUseSalesman(player, entity)
 		return
 	end
 	
+	-- Identity bypass: if the player matches a Steam ID, character name, or custom class,
+	-- they are explicitly allowed and bypass all faction/class requirements.
+	if numSteamIDs > 0 then
+		local playerSteamID = player:SteamID()
+		local playerSteamID64 = player:SteamID64()
+		for steamID, _ in pairs(entity.cwSteamIDs) do
+			if playerSteamID == steamID or playerSteamID64 == steamID then
+				return
+			end
+		end
+	end
+
+	if numCharNames > 0 then
+		local playerCharName = player:Name()
+		for charName, _ in pairs(entity.cwCharNames) do
+			if string.lower(playerCharName) == string.lower(charName) then
+				return
+			end
+		end
+	end
+
+	if numCustomClasses > 0 then
+		local playerCustomClass = player:GetCharacterData("customclass") or ""
+		for customClass, _ in pairs(entity.cwCustomClasses) do
+			if playerCustomClass ~= "" and string.lower(playerCustomClass) == string.lower(customClass) then
+				return
+			end
+		end
+	end
+
+	-- If only identity-based restrictions were configured and none matched, deny access
+	local hasStructuralRestrictions = numFactions > 0 or numClasses > 0
+	if not hasStructuralRestrictions then
+		entity:TalkToPlayer(player, entity.cwTextTab.noSale, "I cannot trade my inventory with you!")
+		return false
+	end
+
 	-- Check faction restriction (must pass if factions are set)
 	local factionAllowed = true
 	if numFactions > 0 then
 		factionAllowed = entity.cwFactions[player:GetFaction()] == true
 	end
 
-	-- Check class restriction - must match built-in class OR custom class (if either is set)
+	-- Check built-in class restriction (must pass if classes are set)
 	local classAllowed = true
-	if numClasses > 0 or numCustomClasses > 0 then
-		classAllowed = false
-		
-		-- Check built-in classes
-		if numClasses > 0 then
-			if entity.cwClasses[cwTeam.GetName(player:Team())] then
-				classAllowed = true
-			end
-		end
-		
-		-- Check custom class restriction (uses CharSetCustomClass character data)
-		if not classAllowed and numCustomClasses > 0 then
-			local playerCustomClass = player:GetCharacterData("customclass") or ""
-			
-			for customClass, _ in pairs(entity.cwCustomClasses) do
-				if playerCustomClass ~= "" and string.lower(playerCustomClass) == string.lower(customClass) then
-					classAllowed = true
-					break
-				end
-			end
-		end
-	end
-	
-	-- Check identity restrictions (Steam ID or character name) - these are OR with each other
-	local identityAllowed = true
-	if numSteamIDs > 0 or numCharNames > 0 then
-		identityAllowed = false
-		
-		-- Check Steam ID restriction
-		if numSteamIDs > 0 then
-			local playerSteamID = player:SteamID()
-			local playerSteamID64 = player:SteamID64()
-			for steamID, _ in pairs(entity.cwSteamIDs) do
-				if playerSteamID == steamID or playerSteamID64 == steamID then
-					identityAllowed = true
-					break
-				end
-			end
-		end
-		
-		-- Check character name restriction
-		if not identityAllowed and numCharNames > 0 then
-			local playerCharName = player:Name()
-			for charName, _ in pairs(entity.cwCharNames) do
-				if string.lower(playerCharName) == string.lower(charName) then
-					identityAllowed = true
-					break
-				end
-			end
-		end
+	if numClasses > 0 then
+		classAllowed = entity.cwClasses[cwTeam.GetName(player:Team())] == true
 	end
 
-	-- Player must pass ALL restriction categories that are set
-	if not (factionAllowed and classAllowed and identityAllowed) then
+	-- Player must pass all structural restriction categories that are set
+	if not (factionAllowed and classAllowed) then
 		entity:TalkToPlayer(player, entity.cwTextTab.noSale, "I cannot trade my inventory with you!")
 		return false
 	end
