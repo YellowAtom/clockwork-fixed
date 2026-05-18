@@ -133,18 +133,22 @@ function Clockwork.lang:ReplaceSubs(language, input, subs)
 	if not input then return end
 
 	for child in string.gmatch(input, "%{(.-)%}") do
-		input = string.gsub(input, "{" .. child .. "}", self:GetString(language, child))
+		local safe = string.gsub(self:GetString(language, child), "%%", "%%%%")
+		input = string.gsub(input, "{" .. child .. "}", safe)
 	end
 
 	for child in string.gmatch(input, "%~(.-)%~") do
-		input = string.gsub(input, "~" .. child .. "~", string.lower(self:GetString(language, child)))
+		local safe = string.gsub(string.lower(self:GetString(language, child)), "%%", "%%%%")
+		input = string.gsub(input, "~" .. child .. "~", safe)
 	end
 
 	for k, v in ipairs(subs) do
 		if istable(v) then
-			input = string.gsub(input, "#" .. k, T(v), 1)
+			local safe = string.gsub(T(v), "%%", "%%%%")
+			input = string.gsub(input, "#" .. k, safe, 1)
 		else
-			input = string.gsub(input, "#" .. k, tostring(v), 1)
+			local safe = string.gsub(tostring(v), "%%", "%%%%")
+			input = string.gsub(input, "#" .. k, safe, 1)
 		end
 	end
 

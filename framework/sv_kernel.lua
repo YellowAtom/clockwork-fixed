@@ -4306,7 +4306,9 @@ end
 function Clockwork:ChatBoxAdjustInfo(info)
 	if table.HasValue(Clockwork.voices.chatClasses, info.class) then
 		if IsValid(info.speaker) and info.speaker:HasInitialized() then
-			info.text = string.upper(string.sub(info.text, 1, 1)) .. string.sub(info.text, 2)
+			if string.byte(info.text, 1) < 128 then
+				info.text = string.upper(string.sub(info.text, 1, 1)) .. string.sub(info.text, 2)
+			end
 			local areVoiceCommandsEnabled = cwConfig:Get("enable_voice_commands"):Get()
 			local voiceGroups = Clockwork.voices:GetAll()
 			local voices = {}
@@ -4323,6 +4325,7 @@ function Clockwork:ChatBoxAdjustInfo(info)
 
 			local textTable = string.Explode("; ?", info.text, true)
 			local voiceList = {}
+			local anyVoiceFound = false
 
 			for k, v in pairs(textTable) do
 				local wasFound = false
@@ -4331,6 +4334,7 @@ function Clockwork:ChatBoxAdjustInfo(info)
 				for k2, v2 in pairs(voices or {}) do
 					if string.upper(v2.command) == cmd then
 						wasFound = true
+						anyVoiceFound = true
 						local voice = v2 or {}
 						voice.global = voice.global or false
 						voice.volume = voice.volume or v2.volume or 80
@@ -4365,17 +4369,16 @@ function Clockwork:ChatBoxAdjustInfo(info)
 						break
 					end
 				end
-
-				if wasFound == false and k < 1 then
-					textTable[k] = v .. ";"
-				end
 			end
 
 			local function fixMarkup(a, b)
 				return a .. " " .. string.upper(b)
 			end
 
-			info.text = table.concat(textTable, " ")
+			if anyVoiceFound then
+				info.text = table.concat(textTable, " ")
+			end
+
 			info.text = string.gsub(info.text, " ?([.?!]) (%l?)", fixMarkup)
 
 			if voiceList[1] then
@@ -5725,7 +5728,25 @@ function ClockworkPlayerSay(player, text)
 	local curTime = CurTime()
 
 	if string.len(text) >= maxChatLength then
-		text = string.sub(text, 0, maxChatLength)
+		text = string.sub(text, 1, maxChatLength)
+
+		-- Trim any trailing incomplete UTF-8 sequence to prevent corruption
+		local b = string.byte(text, #text)
+
+		if b and b >= 128 then
+			local seqStart = #text
+
+			while seqStart > 1 and string.byte(text, seqStart) >= 128 and string.byte(text, seqStart) < 192 do
+				seqStart = seqStart - 1
+			end
+
+			local leadByte = string.byte(text, seqStart)
+			local expected = (leadByte >= 240 and 4) or (leadByte >= 224 and 3) or (leadByte >= 192 and 2) or 1
+
+			if seqStart + expected - 1 > #text then
+				text = string.sub(text, 1, seqStart - 1)
+			end
+		end
 	end
 
 	if string.sub(text, 1, 2) == "//" then
