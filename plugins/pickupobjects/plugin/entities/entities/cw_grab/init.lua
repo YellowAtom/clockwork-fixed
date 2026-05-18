@@ -11,6 +11,7 @@ function ENT:Initialize()
 	self:PhysicsInit(SOLID_BBOX)
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self.cwComputePos = Vector(0, 0, 0)
+	self.cwTargetAngle = Angle(0, 0, 0)
 	self.cwPlayer = NULL
 	local physicsObject = self:GetPhysicsObject()
 
@@ -48,6 +49,22 @@ end
 -- A function to set the entity's target.
 function ENT:SetTarget(target)
 	self.cwTargetEnt = target
+
+	if IsValid(target) then
+		self.cwTargetAngle = target:GetAngles()
+	end
+end
+
+-- A function to apply a rotation delta to the target angle.
+function ENT:ApplyRotation(pitch, yaw)
+	if not self.cwIsRotating then
+		self.cwTargetAngle = self:GetAngles()
+	end
+
+	self.cwIsRotating = true
+	self.cwLastRotateTime = CurTime()
+	self.cwTargetAngle:RotateAroundAxis(self.cwTargetAngle:Up(), yaw)
+	self.cwTargetAngle:RotateAroundAxis(self.cwTargetAngle:Right(), pitch)
 end
 
 -- Called when the physics should be simulated.
@@ -62,6 +79,17 @@ function ENT:PhysicsSimulate(physicsObject, deltaTime)
 
 	physicsObject:Wake()
 
+	-- Only override angle when actively rotating, otherwise let physics be natural.
+	local angle = self:GetAngles()
+
+	if self.cwIsRotating then
+		if self.cwLastRotateTime and CurTime() - self.cwLastRotateTime > 0.1 then
+			self.cwIsRotating = false
+		else
+			angle = self.cwTargetAngle
+		end
+	end
+
 	physicsObject:ComputeShadowControl({
 		secondstoarrive = 0.01,
 		teleportdistance = 128,
@@ -71,7 +99,7 @@ function ENT:PhysicsSimulate(physicsObject, deltaTime)
 		deltatime = deltaTime,
 		maxangular = 512,
 		maxspeed = 256,
-		angle = self:GetAngles(),
+		angle = angle,
 		pos = self.cwComputePos
 	})
 end

@@ -64,6 +64,8 @@ end
 
 -- Called when a player's shared variables should be set.
 function cwPickupObjects:PlayerSetSharedVars(player, curTime)
+	player:SetSharedVar("IsHolding", IsValid(player.cwHoldingEnt))
+
 	if player:IsRagdolled() and Clockwork.player:GetUnragdollTime(player) then
 		local entity = player:GetRagdollEntity()
 

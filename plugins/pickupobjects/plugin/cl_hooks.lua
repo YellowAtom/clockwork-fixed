@@ -6,6 +6,10 @@ function cwPickupObjects:GetTopText(topText)
 	if Clockwork.Client:IsRagdolled() and beingDragged then
 		topText:Add("BEING_DRAGGED", "You are being dragged")
 	end
+
+	if Clockwork.Client:GetSharedVar("IsHolding") then
+		topText:Add("HOLDING_ROTATE", "Hold ALT to rotate.")
+	end
 end
 
 -- Called when the local player attempts to get up.

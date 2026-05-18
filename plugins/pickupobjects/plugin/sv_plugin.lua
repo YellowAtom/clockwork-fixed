@@ -1,6 +1,28 @@
 
 Clockwork.config:Add("take_physcannon", true)
 
+-- Rotation sensitivity multiplier (degrees per mouse delta unit).
+cwPickupObjects.rotateSensitivity = 0.1
+
+-- Net receiver for object rotation input.
+net.Receive("cwPickupRotate", function(length, player)
+	local pitch = net.ReadFloat()
+	local yaw = net.ReadFloat()
+
+	if not IsValid(player) or not player:Alive() then return end
+
+	local holdingGrab = player.cwHoldingGrab
+
+	if IsValid(holdingGrab) and IsValid(player.cwHoldingEnt) then
+		holdingGrab:ApplyRotation(
+			pitch * cwPickupObjects.rotateSensitivity,
+			yaw * cwPickupObjects.rotateSensitivity
+		)
+	end
+end)
+
+Clockwork.hint:Add("PickupRotate", "Hold ALT while carrying an object to rotate it.")
+
 -- A function to force a player to throw the entity that they are holding.
 function cwPickupObjects:ForceThrowEntity(player)
 	local entity = self:ForceDropEntity(player)
