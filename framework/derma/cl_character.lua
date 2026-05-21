@@ -2316,18 +2316,24 @@ end)
 Clockwork.datastream:Hook("SetWhitelisted", function(data)
 	local whitelisted = Clockwork.character:GetWhitelisted()
 
-	for k, v in pairs(whitelisted) do
-		if v == data[1] then
-			if not data[2] then
-				whitelisted[k] = nil
-
+	if data[2] then
+		for k, v in pairs(whitelisted) do
+			if v == data[1] then
 				return
 			end
 		end
-	end
 
-	if data[2] then
-		whitelisted[#whitelisted + 1] = data[1]
+		table.insert(whitelisted, data[1])
+	else
+		local cleaned = {}
+
+		for k, v in pairs(whitelisted) do
+			if v ~= data[1] then
+				table.insert(cleaned, v)
+			end
+		end
+
+		Clockwork.character.whitelisted = cleaned
 	end
 end)
 

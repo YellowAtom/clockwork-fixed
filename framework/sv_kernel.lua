@@ -1856,13 +1856,16 @@ function Clockwork:PlayerDataStreamInfoSent(player)
 			cwPly:SetCharacterMenuState(player, CHARACTER_MENU_OPEN)
 
 			if whitelisted then
+				local cleaned = {}
+
 				for k, v in pairs(whitelisted) do
 					if self.faction.stored[v] then
+						table.insert(cleaned, v)
 						cwDatastream:Start(player, "SetWhitelisted", {v, true})
-					else
-						whitelisted[k] = nil
 					end
 				end
+
+				player:SetData("Whitelisted", cleaned)
 			end
 
 			cwPly:GetCharacters(player, function(characters)

@@ -2131,15 +2131,18 @@ else -- if (SERVER) then
 
 		if isWhitelisted then
 			if not self:IsWhitelisted(player, faction) then
-				whitelisted[table.Count(whitelisted) + 1] = faction
+				table.insert(whitelisted, faction)
 			end
 		else
+			local cleaned = {}
+
 			for k, v in pairs(whitelisted) do
-				if v == faction then
-					table.remove(whitelisted, k)
-					break
+				if v ~= faction then
+					table.insert(cleaned, v)
 				end
 			end
+
+			player:SetData("Whitelisted", cleaned)
 		end
 
 		cwDatastream:Start(player, "SetWhitelisted", {faction, isWhitelisted})
