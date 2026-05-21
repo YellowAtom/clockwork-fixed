@@ -390,6 +390,15 @@ if CLIENT then
 			Clockwork.inventory:RemoveInstance(Clockwork.inventory.client, itemTable)
 			Clockwork.inventory:Rebuild()
 			Clockwork.plugin:Call("PlayerItemTaken", itemTable)
+		else
+			-- Fallback: directly remove by key to prevent ghost items.
+			local uniqueID = data[1]
+			local itemID = tonumber(data[2])
+
+			if uniqueID and itemID and Clockwork.inventory.client[uniqueID] then
+				Clockwork.inventory.client[uniqueID][itemID] = nil
+				Clockwork.inventory:Rebuild()
+			end
 		end
 	end)
 

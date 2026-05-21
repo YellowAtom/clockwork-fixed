@@ -53,6 +53,16 @@ function COMMAND:OnRun(player, arguments)
 		end
 	else
 		Clockwork.player:Notify(player, {"YouHaveNoInstanceOfThisItem"})
+
+		-- Self-heal ghost items: if the client sent a valid uniqueID and itemID
+		-- but the server doesn't have it, send InvTake to purge the phantom.
+		local uniqueID = arguments[2]
+		local itemID = tonumber(arguments[3])
+
+		if uniqueID and itemID and Clockwork.item:FindByID(uniqueID) then
+			Clockwork.datastream:Start(player, "InvTake", {uniqueID, itemID})
+			Clockwork.kernel:PrintLog(LOGTYPE_MINOR, player:Name() .. " had ghost item purged: " .. uniqueID .. " (ID: " .. itemID .. ")")
+		end
 	end
 end
 
