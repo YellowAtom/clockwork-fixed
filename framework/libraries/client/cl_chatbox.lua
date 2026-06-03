@@ -438,9 +438,13 @@ function Clockwork.chatBox:CreateDermaPanel()
 		self.panel.Hide = function(editablePanel, textTyped)
 			editablePanel:SetKeyboardInputEnabled(false)
 			editablePanel:SetMouseInputEnabled(false)
-			editablePanel:SetVisible(false)
 			self.textEntry:SetText("")
 			self.scroll:SetVisible(false)
+
+			CloseDermaMenus()
+			gui.EnableScreenClicker(false)
+
+			editablePanel:SetVisible(false)
 
 			if IsValid(Clockwork.Client) then
 				Clockwork.plugin:Call("ChatBoxClosed", textTyped)
@@ -466,10 +470,6 @@ function Clockwork.chatBox:CreateDermaPanel()
 			editablePanel:SetSize(panelWidth + 8, 24)
 			self.textEntry:SetPos(4, 4)
 			self.textEntry:SetSize(panelWidth, 16)
-
-			if editablePanel:IsVisible() and input.IsKeyDown(KEY_ESCAPE) then
-				editablePanel:Hide()
-			end
 		end
 
 		self.scroll = vgui.Create("Panel")
@@ -1351,6 +1351,13 @@ hook.Add("PlayerBindPress", "Clockwork.chatBox:PlayerBindPress", function(player
 		end
 
 		return true
+	end
+end)
+
+hook.Add("OnPauseMenuShow", "Clockwork.chatBox:OnPauseMenuShow", function()
+	if Clockwork.chatBox:IsOpen() then
+		Clockwork.chatBox.panel:Hide()
+		return false
 	end
 end)
 
