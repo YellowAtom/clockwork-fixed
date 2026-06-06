@@ -3854,6 +3854,10 @@ end
 function Clockwork:PlayerStartVoice(player)
 	if cwConfig:Get("local_voice"):Get() then
 		if player:IsRagdolled(RAGDOLL_FALLENOVER) or not player:Alive() then return end
+
+		local localPlayer = LocalPlayer()
+
+		if IsValid(localPlayer) and localPlayer:GetPos():Distance(player:GetPos()) > cwConfig:Get("talk_radius"):Get() then return end
 	end
 
 	if self.BaseClass and self.BaseClass.PlayerStartVoice then

@@ -52,13 +52,13 @@ function cwDynamicAdverts:ShowAdvertSelection(nearbyAdverts)
 		panel:SetTall(80)
 
 		local checkBox = vgui.Create("DCheckBox", panel)
-		checkBox:Dock(LEFT)
-		checkBox:DockMargin(0, 25, 10, 0)
+		checkBox:SetSize(16, 16)
+		checkBox:SetPos(10, 32)
 		checkBoxes[k] = checkBox
 
 		local imagePanel = vgui.Create("DPanel", panel)
 		imagePanel:Dock(LEFT)
-		imagePanel:DockMargin(0, 5, 10, 5)
+		imagePanel:DockMargin(30, 5, 10, 5)
 		imagePanel:SetWide(60)
 		imagePanel:SetTall(60)
 
@@ -117,7 +117,7 @@ function cwDynamicAdverts:ShowAdvertSelection(nearbyAdverts)
 	local removeButton = vgui.Create("DButton", buttonPanel)
 	removeButton:Dock(RIGHT)
 	removeButton:DockMargin(5, 0, 0, 0)
-	removeButton:SetWide(80)
+	removeButton:SetWide(130)
 	removeButton:SetText("Remove Selected")
 	removeButton:SetEnabled(false) -- Initially disabled
 
