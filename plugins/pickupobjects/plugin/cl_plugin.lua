@@ -23,7 +23,7 @@ hook.Add("InputMouseApply", "cwPickupObjects.Rotate", function(cmd, x, y, screen
 	-- ALT is held and player is holding an object.
 	cwPickupObjects.isRotating = true
 
-	local pitch = -y
+	local pitch = y
 	local yaw = x
 
 	-- Only send if there's actual input.

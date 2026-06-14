@@ -63,8 +63,22 @@ function ENT:ApplyRotation(pitch, yaw)
 
 	self.cwIsRotating = true
 	self.cwLastRotateTime = CurTime()
-	self.cwTargetAngle:RotateAroundAxis(self.cwTargetAngle:Up(), yaw)
-	self.cwTargetAngle:RotateAroundAxis(self.cwTargetAngle:Right(), pitch)
+
+	-- Rotate around stable, view-relative world axes instead of the object's own
+	-- (already-tumbled) axes, so the motion always matches the player's mouse:
+	--   yaw  -> world up (turntable spin)
+	--   pitch-> the player's horizontal right axis (tilt toward/away)
+	-- Using fixed axes also avoids the unwanted roll that local-axis rotation
+	-- accumulates when the mouse moves in a circle.
+	local yawAxis = vector_up
+	local rightAxis = Vector(0, -1, 0)
+
+	if IsValid(self.cwPlayer) then
+		rightAxis = Angle(0, self.cwPlayer:EyeAngles().yaw, 0):Right()
+	end
+
+	self.cwTargetAngle:RotateAroundAxis(yawAxis, yaw)
+	self.cwTargetAngle:RotateAroundAxis(rightAxis, pitch)
 end
 
 -- Called when the physics should be simulated.
