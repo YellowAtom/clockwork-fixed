@@ -465,7 +465,7 @@ end
 	@details Called when the context menu is opened.
 --]]
 function Clockwork:OnContextMenuOpen()
-	if cwKernel:IsUsingTool() then
+	if cwKernel:IsUsingTool() or cwPly:HasFlags(Clockwork.Client, "o") then
 		return self.BaseClass:OnContextMenuOpen(self)
 	else
 		gui.EnableScreenClicker(true)
@@ -477,7 +477,7 @@ end
 	@details Called when the context menu is close.
 --]]
 function Clockwork:OnContextMenuClose()
-	if cwKernel:IsUsingTool() then
+	if cwKernel:IsUsingTool() or cwPly:HasFlags(Clockwork.Client, "o") then
 		return self.BaseClass:OnContextMenuClose(self)
 	else
 		gui.EnableScreenClicker(false)
