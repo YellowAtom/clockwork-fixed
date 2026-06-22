@@ -624,6 +624,13 @@ _serialize = {
 	end
 }
 
+--	NextBots, NPCs and Vehicles are entities too, but type() reports them with
+--	their own metatable name rather than "Entity". Serialize them exactly like a
+--	regular Entity (by EntIndex); they deserialize back through the "e" prefix.
+_serialize["NextBot"] = _serialize["Entity"]
+_serialize["NPC"] = _serialize["Entity"]
+_serialize["Vehicle"] = _serialize["Entity"]
+
 local _s_table = _serialize.table
 local _d_table = _deserialize.table
 
