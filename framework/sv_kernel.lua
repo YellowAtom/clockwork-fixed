@@ -1426,8 +1426,12 @@ function Clockwork:PlayerSpawn(player)
 				local ammo = player:GetSavedAmmo()
 
 				for k, v in pairs(ammo) do
-					if not string.find(k, "p_") and not string.find(k, "s_") then
-						player:GiveAmmo(v, k)
+					-- util.JSONToTable coerces purely numeric ammo type names (e.g.
+					-- "357") into number keys; restore the string name before giving.
+					local ammoType = (type(k) == "number") and tostring(k) or k
+
+					if not string.find(ammoType, "p_") and not string.find(ammoType, "s_") then
+						player:GiveAmmo(v, ammoType)
 						ammo[k] = nil
 					end
 				end

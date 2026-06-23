@@ -3969,6 +3969,10 @@ else -- if (SERVER) then
 --]]
 	function Clockwork.player:GiveAmmo(player, ammo)
 		for k, v in pairs(ammo) do
+			-- util.JSONToTable coerces purely numeric ammo type names (e.g. "357")
+			-- into number keys, which SetAmmo/GiveAmmo would misread as an ammo ID.
+			if type(k) == "number" then k = tostring(k) end
+
 			player:GiveAmmo(v, k)
 		end
 	end
@@ -3982,6 +3986,10 @@ else -- if (SERVER) then
 --]]
 	function Clockwork.player:SetAmmo(player, ammo)
 		for k, v in pairs(ammo) do
+			-- util.JSONToTable coerces purely numeric ammo type names (e.g. "357")
+			-- into number keys, which SetAmmo/GiveAmmo would misread as an ammo ID.
+			if type(k) == "number" then k = tostring(k) end
+
 			player:SetAmmo(v, k)
 		end
 	end
